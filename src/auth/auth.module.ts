@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { User, UserSchema } from 'src/user/schema/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
+import { RefreshTokenMiddleware } from './middleware/refreshToken.middleware';
+
 dotenv.config();
 
 @Module({
@@ -17,10 +19,14 @@ dotenv.config();
     ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '20h' },
+      signOptions: { expiresIn: '24h' },
     }),
   ],
   controllers: [AuthController],
   providers: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RefreshTokenMiddleware).forRoutes('auth/refresh-token');
+  }
+}

@@ -6,6 +6,7 @@ import { User, UserDocument } from 'src/user/schema/user.schema';
 import { Model } from 'mongoose';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -38,5 +39,35 @@ export class AuthService {
     };
 
     return data;
+  }
+
+  refreshToken(refreshToken: string): string {
+    // Aquí puedes implementar la lógica de renovación del token según tus necesidades
+
+    // Decodificar el token de actualización para obtener la información necesaria
+    const decodedToken = this.jwtService.decode(refreshToken) as {
+      id: string;
+      name: string;
+    };
+
+    // Generar un nuevo token de acceso utilizando el id y nombre del usuario
+    const newAccessToken = this.jwtService.sign({
+      id: decodedToken.id,
+      name: decodedToken.name,
+    });
+
+    return newAccessToken;
+  }
+
+  isRefreshTokenExpired(refreshToken: string): boolean {
+    try {
+      this.jwtService.verify(refreshToken);
+      return false; // El token no está expirado
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return true; // El token está expirado
+      }
+      throw error;
+    }
   }
 }
