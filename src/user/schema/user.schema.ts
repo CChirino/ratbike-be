@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongodb';
+import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -16,6 +16,15 @@ export class User {
 
   @Prop()
   password: string;
+
+  @Prop({ enum: ['user', 'admin', 'moderador'], default: 'user' })
+  role: string;
+
+  @Prop({ default: false })
+  delete_at: string;
+
+  @Prop({ type: Date }) // Agrega el tipo Date aquí
+  delete_date: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
