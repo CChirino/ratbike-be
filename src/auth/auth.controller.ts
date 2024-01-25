@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Response } from '@nestjs/common';
+import { Controller, Post, Body, Response, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -15,11 +15,10 @@ export class AuthController {
     console.log({ body: userObject });
     return this.authService.register(userObject);
   }
-
   @Post('login')
-  loginUser(@Body() userObjectLogin: LoginAuthDto) {
+  loginUser(@Body() userObjectLogin: LoginAuthDto, @Res() response) {
     console.log({ body: userObjectLogin });
-    return this.authService.login(userObjectLogin);
+    return this.authService.login(userObjectLogin, response);
   }
 
   @Post('refresh-token')

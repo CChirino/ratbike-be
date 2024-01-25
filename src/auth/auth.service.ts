@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -18,10 +18,20 @@ export class AuthService {
     const { password } = userObject;
     const plainToHash = await hash(password, 10);
     userObject = { ...userObject, password: plainToHash };
-    return this.userModel.create(userObject);
+    const createdUser = await this.userModel.create(userObject);
+    const data = {
+      user: {
+        id: createdUser._id,
+        name: createdUser.name,
+        lastname: createdUser.lastname,
+        email: createdUser.email,
+      },
+    };
+
+    return data;
   }
 
-  async login(userObjectLogin: LoginAuthDto) {
+  async login(userObjectLogin: LoginAuthDto, response) {
     const { email, password } = userObjectLogin;
     const findUser = await this.userModel.findOne({ email });
     if (!findUser) new HttpException('USER_NOT_FOUND', 404);
@@ -34,11 +44,16 @@ export class AuthService {
     const token = await this.jwtService.sign(payload);
 
     const data = {
-      user: findUser,
+      user: {
+        id: findUser._id,
+        name: findUser.name,
+        lastname: findUser.lastname,
+        email: findUser.email,
+      },
       token,
     };
 
-    return data;
+    response.status(HttpStatus.OK).json(data);
   }
 
   refreshToken(refreshToken: string): string {
