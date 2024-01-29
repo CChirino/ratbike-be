@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Response, Res } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Response,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';

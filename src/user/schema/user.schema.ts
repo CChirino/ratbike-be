@@ -28,6 +28,9 @@ export class User {
 
   @Prop()
   country: string;
+
+  @Prop()
+  urlProfileImage: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

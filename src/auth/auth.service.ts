@@ -27,6 +27,8 @@ export class AuthService {
       email: createdUser.email,
       password: createdUser.password,
       role: createdUser.role,
+      country: createdUser.country,
+      urlProfileImage: createdUser.urlProfileImage,
       delete_at: createdUser.delete_at,
       delete_date: createdUser.delete_date,
     };

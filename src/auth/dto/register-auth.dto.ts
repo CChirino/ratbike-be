@@ -8,4 +8,5 @@ export class RegisterAuthDto extends PartialType(LoginAuthDto) {
   lastname: string;
   email: string;
   password: string;
+  urlProfileImage?: Express.Multer.File;
 }
