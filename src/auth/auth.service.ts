@@ -6,31 +6,36 @@ import { User, UserDocument } from 'src/user/schema/user.schema';
 import { Model } from 'mongoose';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
-  async register(userObject: RegisterAuthDto) {
+  async register(userObject: RegisterAuthDto): Promise<User> {
     const { password } = userObject;
     const plainToHash = await hash(password, 10);
     userObject = { ...userObject, password: plainToHash };
     const createdUser = await this.userModel.create(userObject);
-    const data = {
-      user: {
-        id: createdUser._id,
-        name: createdUser.name,
-        lastname: createdUser.lastname,
-        email: createdUser.email,
-      },
+    const data: User = {
+      name: createdUser.name,
+      lastname: createdUser.lastname,
+      email: createdUser.email,
+      password: createdUser.password,
+      role: createdUser.role,
+      delete_at: createdUser.delete_at,
+      delete_date: createdUser.delete_date,
     };
-
+    await this.emailService.sendRegistrationConfirmation(
+      createdUser.email,
+      createdUser.name,
+    );
     return data;
   }
-
   async login(userObjectLogin: LoginAuthDto, response) {
     const { email, password } = userObjectLogin;
     const findUser = await this.userModel.findOne({ email });

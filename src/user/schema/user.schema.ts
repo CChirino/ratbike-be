@@ -20,11 +20,14 @@ export class User {
   @Prop({ enum: ['user', 'admin', 'moderador'], default: 'user' })
   role: string;
 
-  @Prop({ default: false })
+  @Prop({ default: null, required: false })
   delete_at: string;
 
-  @Prop({ type: Date }) // Agrega el tipo Date aquí
+  @Prop({ type: Date, required: false, default: null })
   delete_date: Date;
+
+  @Prop()
+  country: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

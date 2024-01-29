@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { RefreshTokenMiddleware } from './middleware/refreshToken.middleware';
+import { EmailModule } from '../email/email.module';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ dotenv.config();
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],
