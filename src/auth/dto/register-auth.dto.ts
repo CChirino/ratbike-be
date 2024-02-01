@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { LoginAuthDto } from './login-auth.dto';
 
 export class RegisterAuthDto extends PartialType(LoginAuthDto) {
@@ -8,5 +8,6 @@ export class RegisterAuthDto extends PartialType(LoginAuthDto) {
   lastname: string;
   email: string;
   password: string;
-  urlProfileImage?: Express.Multer.File;
+  @IsOptional()
+  urlProfileImage: string;
 }

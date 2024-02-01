@@ -29,8 +29,8 @@ export class User {
   @Prop()
   country: string;
 
-  @Prop()
-  urlProfileImage: string;
+  @Prop({ default: undefined })
+  urlProfileImage: string; // Cambiado a string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -7,6 +7,7 @@ import { Model } from 'mongoose';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from '../email/email.service';
+import fs from 'fs-extra';
 
 @Injectable()
 export class AuthService {
@@ -17,10 +18,12 @@ export class AuthService {
   ) {}
 
   async register(userObject: RegisterAuthDto): Promise<User> {
-    const { password } = userObject;
+    const { password, urlProfileImage } = userObject;
     const plainToHash = await hash(password, 10);
-    userObject = { ...userObject, password: plainToHash };
+    userObject = { ...userObject, password: plainToHash, urlProfileImage };
+
     const createdUser = await this.userModel.create(userObject);
+
     const data: User = {
       name: createdUser.name,
       lastname: createdUser.lastname,
@@ -32,10 +35,12 @@ export class AuthService {
       delete_at: createdUser.delete_at,
       delete_date: createdUser.delete_date,
     };
+
     await this.emailService.sendRegistrationConfirmation(
       createdUser.email,
       createdUser.name,
     );
+
     return data;
   }
   async login(userObjectLogin: LoginAuthDto, response) {
@@ -91,5 +96,18 @@ export class AuthService {
       }
       throw error;
     }
+  }
+
+  async uploadImage(file: Express.Multer.File): Promise<string> {
+    const imageBuffer = file.buffer; // Obtiene el búfer del archivo de imagen
+    const imageName = `${Date.now()}-${file.originalname}`; // Genera un nombre único para el archivo
+    const imagePath = `uploads/${imageName}`; // Ruta donde se guardará la imagen
+
+    await fs.writeFile(imagePath, imageBuffer); // Guarda la imagen en el sistema de archivos
+
+    // Elimina el archivo temporal después de guardarlo
+    await fs.unlink(file.path);
+
+    return imagePath; // Devuelve la ruta de la imagen guardada
   }
 }

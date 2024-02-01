@@ -13,16 +13,29 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ApiTags } from '@nestjs/swagger';
+import * as fs from 'fs';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  registerUser(@Body() userObject: RegisterAuthDto) {
-    console.log({ body: userObject });
-    return this.authService.register(userObject);
+  @Post('/register')
+  @UseInterceptors(FileInterceptor('urlProfileImage')) // Nombre del campo de archivo en la solicitud
+  async register(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() userObject: RegisterAuthDto,
+  ) {
+    if (file) {
+      const urlProfileImage = file.path.replace(/\\/g, '/');
+      userObject.urlProfileImage = urlProfileImage;
+    } else {
+      const defaultImagePath = 'uploads/profile/default-profile.jpg';
+      if (fs.existsSync(defaultImagePath)) {
+        userObject.urlProfileImage = defaultImagePath;
+      }
+    }
+    return await this.authService.register(userObject);
   }
   @Post('login')
   loginUser(@Body() userObjectLogin: LoginAuthDto, @Res() response) {
