@@ -1,4 +1,10 @@
-import { HttpException, Injectable, HttpStatus } from '@nestjs/common';
+import {
+  HttpException,
+  Injectable,
+  HttpStatus,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -7,6 +13,7 @@ import { Model } from 'mongoose';
 import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from '../email/email.service';
+import { RegistrationResponse } from './interfaces/registration-response.interface';
 import fs from 'fs-extra';
 
 @Injectable()
@@ -17,23 +24,23 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async register(userObject: RegisterAuthDto): Promise<User> {
+  async register(userObject: RegisterAuthDto): Promise<RegistrationResponse> {
     const { password, urlProfileImage } = userObject;
     const plainToHash = await hash(password, 10);
     userObject = { ...userObject, password: plainToHash, urlProfileImage };
 
     const createdUser = await this.userModel.create(userObject);
 
-    const data: User = {
-      name: createdUser.name,
-      lastname: createdUser.lastname,
-      email: createdUser.email,
-      password: createdUser.password,
-      role: createdUser.role,
-      country: createdUser.country,
-      urlProfileImage: createdUser.urlProfileImage,
-      delete_at: createdUser.delete_at,
-      delete_date: createdUser.delete_date,
+    // Seleccionar solo los campos deseados
+    const { name, lastname, email, role, country } = createdUser;
+
+    const data: RegistrationResponse = {
+      name,
+      lastname,
+      email,
+      role,
+      country,
+      urlProfileImage,
     };
 
     await this.emailService.sendRegistrationConfirmation(
@@ -109,5 +116,39 @@ export class AuthService {
     await fs.unlink(file.path);
 
     return imagePath; // Devuelve la ruta de la imagen guardada
+  }
+
+  async sendPasswordResetEmail(
+    email: string,
+  ): Promise<{ status: number; message: string }> {
+    try {
+      const findUser = await this.userModel.findOne({ email });
+      if (!findUser) {
+        throw new Error('User not found');
+      }
+
+      await this.emailService.sendPasswordResetRequest(email);
+
+      return { status: 200, message: 'Email sent successfully' };
+    } catch (error) {
+      return { status: 500, message: 'Failed to send email: ' + error.message };
+    }
+  }
+
+  async resetPassword(email: string, newPassword: string): Promise<void> {
+    try {
+      const user = await this.userModel.findOne({ email });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const hashedPassword = await hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+    } catch (error) {
+      throw new BadRequestException(
+        'Failed to reset password: ' + error.message,
+      );
+    }
   }
 }

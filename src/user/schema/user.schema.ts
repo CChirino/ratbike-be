@@ -20,17 +20,32 @@ export class User {
   @Prop({ enum: ['user', 'admin', 'moderador'], default: 'user' })
   role: string;
 
+  @Prop()
+  country: string;
+
+  @Prop({ default: undefined })
+  urlProfileImage: string;
+
+  @Prop()
+  questionSecurity: string;
+
+  @Prop()
+  answerSecurity: string;
+
+  @Prop({ default: false })
+  terms: boolean;
+
   @Prop({ default: null, required: false })
   delete_at: string;
 
   @Prop({ type: Date, required: false, default: null })
   delete_date: Date;
 
-  @Prop()
-  country: string;
+  @Prop({ default: null })
+  resetPasswordToken: string;
 
-  @Prop({ default: undefined })
-  urlProfileImage: string; // Cambiado a string
+  @Prop({ default: null })
+  resetPasswordExpires: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -6,6 +6,7 @@ import {
   Res,
   UploadedFile,
   UseInterceptors,
+  Patch,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
@@ -57,5 +58,18 @@ export class AuthController {
         .status(500)
         .json({ message: 'No se pudo generar un nuevo token' });
     }
+  }
+
+  @Post('reset-password')
+  async requestPasswordReset(@Body('email') email: string): Promise<void> {
+    await this.authService.sendPasswordResetEmail(email);
+  }
+
+  @Patch('reset-password')
+  async resetPassword(
+    @Body('email') email: string,
+    @Body('newPassword') newPassword: string,
+  ): Promise<void> {
+    await this.authService.resetPassword(email, newPassword);
   }
 }
