@@ -21,7 +21,7 @@ import * as fs from 'fs';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/register')
+  @Post('register')
   @UseInterceptors(FileInterceptor('urlProfileImage')) // Nombre del campo de archivo en la solicitud
   async register(
     @UploadedFile() file: Express.Multer.File,
