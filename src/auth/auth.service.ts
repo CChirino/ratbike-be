@@ -14,7 +14,7 @@ import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from '../email/email.service';
 import { RegistrationResponse } from './interfaces/registration-response.interface';
-import fs from 'fs-extra';
+const fs = require('fs-extra');
 
 @Injectable()
 export class AuthService {
@@ -24,36 +24,61 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async register(userObject: RegisterAuthDto): Promise<RegistrationResponse> {
+  async register(userObject: RegisterAuthDto, file: Express.Multer.File, response){
     const { password, urlProfileImage } = userObject;
     const plainToHash = await hash(password, 10);
-    userObject = { ...userObject, password: plainToHash, urlProfileImage };
+    userObject = { ...userObject, password: plainToHash, urlProfileImage, terms: true };
 
-    const createdUser = await this.userModel.create(userObject);
+    if(!userObject.password ||
+      !userObject.name ||
+      !userObject.lastname ||
+      !userObject.email ||
+      !userObject.country ||
+      userObject.password.length < 8
+      ){
+        throw new HttpException('UNPROCESSABLE_ENTITY', 422);
+    }
 
-    // Seleccionar solo los campos deseados
-    const { name, lastname, email, role, country } = createdUser;
+    if (file) {
+      const urlProfileImage = file.path.replace(/\\/g, '/');
+      userObject.urlProfileImage = urlProfileImage;
+    } else {
+      const defaultImagePath = 'uploads/profile/default-profile.jpg';
+      if (fs.existsSync(defaultImagePath)) {
+        userObject.urlProfileImage = defaultImagePath;
+      }
+    }
 
-    const data: RegistrationResponse = {
-      name,
-      lastname,
-      email,
-      role,
-      country,
-      urlProfileImage,
-    };
+    try{
+      const createdUser = await this.userModel.create(userObject);
+      const { name, lastname, email, role, country } = createdUser;
+  
+      const data: RegistrationResponse = {
+        name,
+        lastname,
+        email,
+        role,
+        country,
+        urlProfileImage,
+      };
+  
+      await this.emailService.sendRegistrationConfirmation(
+        createdUser.email,
+        createdUser.name,
+      );
+      response.status(HttpStatus.OK).json(data);
+    }catch(error){
+      if(error.keyValue && error.keyValue.email && error.code === 11000){
+        throw new HttpException('EMAIL_ALREADY_TAKEN', 409);
+      }
 
-    await this.emailService.sendRegistrationConfirmation(
-      createdUser.email,
-      createdUser.name,
-    );
-
-    return data;
+      throw new HttpException('INTERNAL_SERVER_ERROR', 500);
+    }
   }
   async login(userObjectLogin: LoginAuthDto, response) {
     const { email, password } = userObjectLogin;
     const findUser = await this.userModel.findOne({ email });
-    if (!findUser) new HttpException('USER_NOT_FOUND', 404);
+    if (!findUser) throw new HttpException('USER_NOT_FOUND', 404);
 
     const checkPassword = await compare(password, findUser.password);
 

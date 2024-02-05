@@ -14,7 +14,6 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ApiTags } from '@nestjs/swagger';
-import * as fs from 'fs';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,21 +25,12 @@ export class AuthController {
   async register(
     @UploadedFile() file: Express.Multer.File,
     @Body() userObject: RegisterAuthDto,
+    @Res() response
   ) {
-    if (file) {
-      const urlProfileImage = file.path.replace(/\\/g, '/');
-      userObject.urlProfileImage = urlProfileImage;
-    } else {
-      const defaultImagePath = 'uploads/profile/default-profile.jpg';
-      if (fs.existsSync(defaultImagePath)) {
-        userObject.urlProfileImage = defaultImagePath;
-      }
-    }
-    return await this.authService.register(userObject);
+    return await this.authService.register(userObject, file, response);
   }
   @Post('login')
   loginUser(@Body() userObjectLogin: LoginAuthDto, @Res() response) {
-    console.log({ body: userObjectLogin });
     return this.authService.login(userObjectLogin, response);
   }
 
