@@ -8,6 +8,7 @@ export class RegisterAuthDto extends PartialType(LoginAuthDto) {
   lastname: string;
   email: string;
   password: string;
+  country: string;
   questionSecurity: string;
   answerSecurity: string;
   terms: boolean;
