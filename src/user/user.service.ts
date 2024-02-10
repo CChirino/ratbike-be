@@ -13,11 +13,23 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    try {
+      return this.userModel
+        .find({
+          $or: [{ delete_at: null }, { delete_date: null }],
+        })
+        .exec();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOne(id: string): Promise<User> {
-    return this.userModel.findById(id).exec();
+    try {
+      return this.userModel.findById(id).exec();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async update(id: string, user: User): Promise<User> {
@@ -25,6 +37,18 @@ export class UserService {
   }
 
   async remove(id: string): Promise<User> {
-    return this.userModel.findByIdAndDelete(id);
+    try {
+      const user = await this.userModel.findById(id).exec();
+
+      if (user) {
+        user.delete_at = new Date().toISOString();
+        user.delete_date = new Date();
+        await user.save();
+      }
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 }
