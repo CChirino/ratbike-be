@@ -1,0 +1,94 @@
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { Product, ProductDocument } from './schema/products.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import fs from 'fs-extra';
+
+@Injectable()
+export class ProductsService {
+  constructor(
+    @InjectModel(Product.name)
+    private readonly productModel: Model<ProductDocument>,
+  ) {}
+
+  async create(
+    createProductDto: CreateProductDto,
+    file: Express.Multer.File,
+    response,
+  ): Promise<Product> {
+    try {
+      const newProduct = new this.productModel(createProductDto);
+
+      if (file) {
+        const urlImageProduct = file.path.replace(/\\/g, '/');
+        newProduct.urlImageProduct = urlImageProduct;
+      } else {
+        const defaultImagePath = 'uploads/products/default-product-image';
+        if (fs.existsSync(defaultImagePath)) {
+          createProductDto.urlImageProduct = defaultImagePath;
+        }
+      }
+
+      const createdProduct = await newProduct.save();
+
+      response.status(HttpStatus.CREATED).json(createdProduct);
+      return createdProduct;
+    } catch (error) {
+      response
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
+      throw error;
+    }
+  }
+
+  async findAll(): Promise<Product[]> {
+    try {
+      return this.productModel
+        .find({
+          $or: [{ delete_at: null }, { delete_date: null }],
+        })
+        .exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findOne(id: string): Promise<Product> {
+    try {
+      return this.productModel.findById(id).exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
+    try {
+      return this.productModel
+        .findByIdAndUpdate(id, updateProductDto, { new: true })
+        .exec();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async remove(id: string): Promise<Product> {
+    try {
+      const product = await this.productModel.findById(id).exec();
+
+      if (product) {
+        product.delete_at = new Date().toISOString();
+        product.delete_date = new Date();
+        await product.save();
+      }
+
+      return product;
+    } catch (error) {
+      throw error;
+    }
+  }
+}
