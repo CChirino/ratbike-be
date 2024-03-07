@@ -11,7 +11,6 @@ import { EmailService } from './email/email.service';
 import { EmailModule } from './email/email.module';
 import { ProductsModule } from './products/products.module';
 import { ArticlesModule } from './articles/articles.module';
-import { CategoriesModule } from './categories/categories.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
