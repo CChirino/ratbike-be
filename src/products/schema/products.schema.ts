@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Decimal128 } from 'mongodb';
 
 export type ProductDocument = Product & Document;
 
@@ -12,16 +11,10 @@ export class Product {
   descriptionProduct: string;
 
   @Prop()
-  sku: string;
-
-  @Prop()
   category: string;
 
-  @Prop({ type: Decimal128 })
-  price: Decimal128;
-
   @Prop()
-  currency: string;
+  link: string;
 
   @Prop({ default: undefined })
   urlImageProduct: string;

@@ -25,7 +25,7 @@ export class ProductsService {
         const urlImageProduct = file.path.replace(/\\/g, '/');
         newProduct.urlImageProduct = urlImageProduct;
       } else {
-        const defaultImagePath = 'uploads/products/default-product-image';
+        const defaultImagePath = 'uploads/products/default-product-image.jpg';
         if (fs.existsSync(defaultImagePath)) {
           createProductDto.urlImageProduct = defaultImagePath;
         }
@@ -43,13 +43,18 @@ export class ProductsService {
     }
   }
 
-  async findAll(): Promise<Product[]> {
+  async findAll(page?: number, limit?: number): Promise<Product[]> {
     try {
-      return this.productModel
-        .find({
-          $or: [{ delete_at: null }, { delete_date: null }],
-        })
-        .exec();
+      let query = this.productModel.find({
+        $or: [{ delete_at: null }, { delete_date: null }],
+      });
+
+      if (page && limit) {
+        const skipCount = (page - 1) * limit;
+        query = query.skip(skipCount).limit(limit);
+      }
+
+      return query.exec();
     } catch (error) {
       throw error;
     }

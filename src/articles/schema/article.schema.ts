@@ -1,0 +1,30 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+
+export type ArticleDocument = Article & Document;
+
+@Schema()
+export class Article {
+  @Prop()
+  title: string;
+
+  @Prop()
+  subtitle: string;
+
+  @Prop()
+  description: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'Category' })
+  category: Types.ObjectId;
+
+  @Prop({ default: undefined })
+  urlImageArticle: string;
+
+  @Prop({ default: null, required: false })
+  delete_at: string;
+
+  @Prop({ type: Date, required: false, default: null })
+  delete_date: Date;
+}
+
+export const ArticleSchema = SchemaFactory.createForClass(Article);

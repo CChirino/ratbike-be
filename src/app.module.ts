@@ -9,6 +9,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { EmailService } from './email/email.service';
 import { EmailModule } from './email/email.module';
+import { ProductsModule } from './products/products.module';
+import { ArticlesModule } from './articles/articles.module';
+import { CategoriesModule } from './categories/categories.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -35,6 +38,8 @@ import { EmailModule } from './email/email.module';
       },
     }),
     EmailModule,
+    ProductsModule,
+    ArticlesModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],
