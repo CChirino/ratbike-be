@@ -1,10 +1,10 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './schema/products.schema';
 import { PaginationResponse } from './interfaces/pagination.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 
 @Injectable()
@@ -47,7 +47,7 @@ export class ProductsService {
   async findAll(
     page?: number,
     limit?: number,
-  ): Promise<PaginationResponse<Product>> {
+  ): Promise<{ status: number; data: PaginationResponse<Product> }> {
     try {
       let query = this.productModel.find({
         $or: [{ delete_at: null }, { delete_date: null }],
@@ -63,7 +63,10 @@ export class ProductsService {
         totalPages = Math.ceil(total / limit); // Asignar el valor a totalPages
 
         if (page < 1 || page > totalPages) {
-          throw new Error('Página fuera de rango');
+          throw new HttpException(
+            'Página fuera de rango',
+            HttpStatus.BAD_REQUEST,
+          );
         }
 
         const skipCount = (page - 1) * limit;
@@ -75,12 +78,17 @@ export class ProductsService {
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
-      const response: PaginationResponse<Product> = {
-        page: page || 1,
-        limit: limit,
-        total,
-        totalPages,
-        data,
+      const response: { status: number; data: PaginationResponse<Product> } = {
+        status: HttpStatus.OK,
+        data: {
+          paginationData: {
+            page: page || 1,
+            limit: limit,
+            total,
+            totalPages,
+          },
+          data,
+        },
       };
 
       return response;
