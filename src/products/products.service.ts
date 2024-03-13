@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './schema/products.schema';
+import { PaginationResponse } from './interfaces/pagination.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import fs from 'fs-extra';
@@ -43,7 +44,10 @@ export class ProductsService {
     }
   }
 
-  async findAll(page?: number, limit?: number): Promise<Product[]> {
+  async findAll(
+    page?: number,
+    limit?: number,
+  ): Promise<PaginationResponse<Product>> {
     try {
       let query = this.productModel.find({
         $or: [{ delete_at: null }, { delete_date: null }],
@@ -54,7 +58,17 @@ export class ProductsService {
         query = query.skip(skipCount).limit(limit);
       }
 
-      return query.exec();
+      const data = await query.exec();
+      const total = await this.productModel.countDocuments({
+        $or: [{ delete_at: null }, { delete_date: null }],
+      });
+
+      return {
+        page: page || 1,
+        limit: limit || total,
+        total,
+        data,
+      };
     } catch (error) {
       throw error;
     }
