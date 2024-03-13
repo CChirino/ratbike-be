@@ -77,7 +77,7 @@ export class ProductsService {
 
       const response: PaginationResponse<Product> = {
         page: page || 1,
-        limit: limit || total,
+        limit: limit,
         total,
         totalPages,
         data,
