@@ -76,10 +76,12 @@ export class ProductsService {
       });
 
       const response: PaginationResponse<Product> = {
-        page: page || 1,
-        limit: limit || total,
-        total,
-        totalPages,
+        paginationData: {
+          page: page || 1,
+          limit: limit || total,
+          total,
+          totalPages,
+        },
         data,
       };
 
