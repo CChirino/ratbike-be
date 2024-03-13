@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schema/user.schema';
-import { RolesGuard } from './guard/roles.guard';
+// import { RolesGuard } from './guard/roles.guard';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -21,7 +21,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @SetMetadata('roles', ['admin', 'moderador'])
   create(@Body() user: User) {
     return this.userService.create(user);
@@ -35,21 +35,21 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @SetMetadata('roles', ['admin', 'moderador'])
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
   @Put(':id')
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @SetMetadata('roles', ['admin', 'moderador'])
   update(@Param('id') id: string, @Body() user: User) {
     return this.userService.update(id, user);
   }
 
   @Delete(':id')
-  @UseGuards(RolesGuard)
+  // @UseGuards(RolesGuard)
   @SetMetadata('roles', ['admin', 'moderador'])
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
