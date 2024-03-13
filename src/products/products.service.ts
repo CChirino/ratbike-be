@@ -53,7 +53,19 @@ export class ProductsService {
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
+      let totalPages = 1; // Declarar totalPages antes del bloque if
+
       if (page && limit) {
+        const total = await this.productModel.countDocuments({
+          $or: [{ delete_at: null }, { delete_date: null }],
+        });
+
+        totalPages = Math.ceil(total / limit); // Asignar el valor a totalPages
+
+        if (page < 1 || page > totalPages) {
+          throw new Error('Página fuera de rango');
+        }
+
         const skipCount = (page - 1) * limit;
         query = query.skip(skipCount).limit(limit);
       }
@@ -63,12 +75,15 @@ export class ProductsService {
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
-      return {
+      const response: PaginationResponse<Product> = {
         page: page || 1,
         limit: limit || total,
         total,
+        totalPages,
         data,
       };
+
+      return response;
     } catch (error) {
       throw error;
     }
