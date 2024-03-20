@@ -9,6 +9,8 @@ import { RefreshTokenMiddleware } from './middleware/refreshToken.middleware';
 import { EmailModule } from '../email/email.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './jwt.strategy';
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ dotenv.config();
         schema: UserSchema,
       },
     ]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '24h' },
@@ -37,7 +40,7 @@ dotenv.config();
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

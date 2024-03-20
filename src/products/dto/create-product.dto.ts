@@ -8,4 +8,5 @@ export class CreateProductDto {
   link: string;
   @IsOptional()
   urlImageProduct: string;
+  galleryImages: string;
 }

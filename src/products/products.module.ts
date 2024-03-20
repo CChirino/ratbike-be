@@ -5,9 +5,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Product, ProductSchema } from './schema/products.schema';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     MongooseModule.forFeature([
       {
         name: Product.name,

@@ -25,7 +25,7 @@ export class AuthController {
   async register(
     @UploadedFile() file: Express.Multer.File,
     @Body() userObject: RegisterAuthDto,
-    @Res() response
+    @Res() response,
   ) {
     return await this.authService.register(userObject, file, response);
   }

@@ -11,6 +11,8 @@ import { EmailService } from './email/email.service';
 import { EmailModule } from './email/email.module';
 import { ProductsModule } from './products/products.module';
 import { ArticlesModule } from './articles/articles.module';
+import { CategoriesProductsModule } from './categories-products/categories-products.module';
+import { CategoriesArticlesModule } from './categories-articles/categories-articles.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -22,7 +24,7 @@ import { ArticlesModule } from './articles/articles.module';
         service: 'Gmail',
         auth: {
           user: 'critijo@gmail.com',
-          pass: 'phmf qtgd rgth phkv',
+          pass: 'rujt irkh zwfj uzbl',
         },
       },
       defaults: {
@@ -39,6 +41,8 @@ import { ArticlesModule } from './articles/articles.module';
     EmailModule,
     ProductsModule,
     ArticlesModule,
+    CategoriesProductsModule,
+    CategoriesArticlesModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],

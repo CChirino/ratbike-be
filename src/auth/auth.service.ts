@@ -24,19 +24,29 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async register(userObject: RegisterAuthDto, file: Express.Multer.File, response){
+  async register(
+    userObject: RegisterAuthDto,
+    file: Express.Multer.File,
+    response,
+  ) {
     const { password, urlProfileImage } = userObject;
     const plainToHash = await hash(password, 10);
-    userObject = { ...userObject, password: plainToHash, urlProfileImage, terms: true };
+    userObject = {
+      ...userObject,
+      password: plainToHash,
+      urlProfileImage,
+      terms: true,
+    };
 
-    if(!userObject.password ||
+    if (
+      !userObject.password ||
       !userObject.name ||
       !userObject.lastname ||
       !userObject.email ||
       !userObject.country ||
       userObject.password.length < 8
-      ){
-        throw new HttpException('UNPROCESSABLE_ENTITY', 422);
+    ) {
+      throw new HttpException('UNPROCESSABLE_ENTITY', 422);
     }
 
     if (file) {
@@ -49,10 +59,10 @@ export class AuthService {
       }
     }
 
-    try{
+    try {
       const createdUser = await this.userModel.create(userObject);
       const { name, lastname, email, role, country } = createdUser;
-  
+
       const data: RegistrationResponse = {
         name,
         lastname,
@@ -61,17 +71,17 @@ export class AuthService {
         country,
         urlProfileImage,
       };
-  
+
       await this.emailService.sendRegistrationConfirmation(
         createdUser.email,
         createdUser.name,
       );
       response.status(HttpStatus.OK).json(data);
-    }catch(error){
-      if(error.keyValue && error.keyValue.email && error.code === 11000){
+    } catch (error) {
+      console.log(error);
+      if (error.keyValue && error.keyValue.email && error.code === 11000) {
         throw new HttpException('EMAIL_ALREADY_TAKEN', 409);
       }
-
       throw new HttpException('INTERNAL_SERVER_ERROR', 500);
     }
   }

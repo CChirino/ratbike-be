@@ -19,6 +19,9 @@ export class Product {
   @Prop({ default: undefined })
   urlImageProduct: string;
 
+  @Prop({ type: [String], default: [] })
+  galleryImages: string[];
+
   @Prop({ default: null, required: false })
   delete_at: string;
 
