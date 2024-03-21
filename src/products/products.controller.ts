@@ -10,6 +10,7 @@ import {
   UploadedFiles,
   Res,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -17,6 +18,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
@@ -29,8 +32,15 @@ export class ProductsController {
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
     @Body() createProductDto: CreateProductDto,
+    @Req() request: Request,
   ) {
-    return await this.productsService.create(createProductDto, files, response);
+    const user = request.user;
+    return await this.productsService.create(
+      createProductDto,
+      files,
+      user,
+      response,
+    );
   }
 
   @Get()

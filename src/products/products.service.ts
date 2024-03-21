@@ -14,13 +14,25 @@ export class ProductsService {
     private readonly productModel: Model<ProductDocument>,
   ) {}
 
+  public formatProductResponse(product: ProductDocument): any {
+    const { createdBy, ...rest } = product;
+    return {
+      ...rest,
+      createdBy,
+    };
+  }
+
   async create(
     createProductDto: CreateProductDto,
     files: Express.Multer.File[],
+    user: any,
     response,
   ): Promise<Product> {
     try {
-      const newProduct = new this.productModel(createProductDto);
+      const newProduct = new this.productModel({
+        ...createProductDto,
+        createdBy: user.id,
+      });
 
       if (files && files.length > 0) {
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
@@ -28,7 +40,7 @@ export class ProductsService {
       } else {
         const defaultImagePath = 'uploads/products/default-product-image.jpg';
         if (fs.existsSync(defaultImagePath)) {
-          createProductDto.urlImageProduct = defaultImagePath;
+          newProduct.urlImageProduct = defaultImagePath;
         }
       }
 
@@ -41,7 +53,9 @@ export class ProductsService {
 
       const createdProduct = await newProduct.save();
 
-      response.status(HttpStatus.CREATED).json(createdProduct);
+      const formattedProduct = this.formatProductResponse(createdProduct);
+
+      response.status(HttpStatus.CREATED).json(formattedProduct);
       return createdProduct;
     } catch (error) {
       response

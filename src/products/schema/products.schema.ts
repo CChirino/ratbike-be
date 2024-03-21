@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type ProductDocument = Product & Document;
 
-@Schema()
+@Schema({ toJSON: { virtuals: true } })
 export class Product {
   @Prop()
   nameProduct: string;
@@ -27,6 +27,9 @@ export class Product {
 
   @Prop({ type: Date, required: false, default: null })
   delete_date: Date;
+
+  @Prop()
+  createdBy: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
