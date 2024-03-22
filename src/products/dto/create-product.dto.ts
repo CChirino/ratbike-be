@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
 export class CreateProductDto {
+  [x: string]: any;
   @IsNotEmpty()
   nameProduct: string;
   descriptionProduct: string;
@@ -10,4 +11,8 @@ export class CreateProductDto {
   @IsOptional()
   urlImageProduct: string;
   galleryImages: string;
+  @IsObject()
+  languageDescriptionProduct: Record<string, any>;
+  @IsObject()
+  languageNameProduct: Record<string, any>;
 }

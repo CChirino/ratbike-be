@@ -5,7 +5,7 @@ import { PaginationResponse } from './interfaces/pagination.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import fs from 'fs-extra';
+import * as fs from 'fs';
 
 @Injectable()
 export class ProductsService {
@@ -14,14 +14,6 @@ export class ProductsService {
     private readonly productModel: Model<ProductDocument>,
   ) {}
 
-  public formatProductResponse(product: ProductDocument): any {
-    const { createdBy, ...rest } = product;
-    return {
-      ...rest,
-      createdBy,
-    };
-  }
-
   async create(
     createProductDto: CreateProductDto,
     files: Express.Multer.File[],
@@ -29,9 +21,16 @@ export class ProductsService {
     response,
   ): Promise<Product> {
     try {
+      const language = {
+        languageNameProduct: createProductDto.language.languageNameProduct,
+        languageDescriptionProduct:
+          createProductDto.language.languageDescriptionProduct,
+      };
+
       const newProduct = new this.productModel({
         ...createProductDto,
-        createdBy: user.id,
+        language,
+        createdBy: user.userId,
       });
 
       if (files && files.length > 0) {
@@ -53,9 +52,7 @@ export class ProductsService {
 
       const createdProduct = await newProduct.save();
 
-      const formattedProduct = this.formatProductResponse(createdProduct);
-
-      response.status(HttpStatus.CREATED).json(formattedProduct);
+      response.status(HttpStatus.CREATED).json(createdProduct);
       return createdProduct;
     } catch (error) {
       response

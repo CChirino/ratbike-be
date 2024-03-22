@@ -1,4 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
+import { Document } from 'mongoose';
 
 export type ProductDocument = Product & Document;
 
@@ -30,6 +32,12 @@ export class Product {
 
   @Prop()
   createdBy: string;
+
+  @Prop({ type: mongoose.Schema.Types.Mixed }) // Utilizar el tipo Mixed para almacenar un objeto JSON
+  language: {
+    languageNameProduct: Record<string, any>;
+    languageDescriptionProduct: Record<string, any>;
+  };
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
