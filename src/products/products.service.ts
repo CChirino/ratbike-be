@@ -21,15 +21,17 @@ export class ProductsService {
     response,
   ): Promise<Product> {
     try {
-      const language = {
-        languageNameProduct: createProductDto.language.languageNameProduct,
-        languageDescriptionProduct:
-          createProductDto.language.languageDescriptionProduct,
+      const translation = {
+        translationNameProduct:
+          createProductDto.translation.translationNameProduct,
+        translationDescriptionProduct:
+          createProductDto.translation.translationDescriptionProduct,
       };
 
       const newProduct = new this.productModel({
         ...createProductDto,
-        language,
+        translation,
+        status: 'revision',
         createdBy: user.userId,
       });
 

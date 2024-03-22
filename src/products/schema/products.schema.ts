@@ -33,11 +33,14 @@ export class Product {
   @Prop()
   createdBy: string;
 
-  @Prop({ type: mongoose.Schema.Types.Mixed }) // Utilizar el tipo Mixed para almacenar un objeto JSON
-  language: {
-    languageNameProduct: Record<string, any>;
-    languageDescriptionProduct: Record<string, any>;
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  translation: {
+    translationNameProduct: Record<string, any>;
+    translationDescriptionProduct: Record<string, any>;
   };
+
+  @Prop({ default: 'revision', enum: ['revision', 'aprobado', 'rechazado'] })
+  status: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
