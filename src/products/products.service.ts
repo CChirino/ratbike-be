@@ -28,11 +28,13 @@ export class ProductsService {
           createProductDto.translation.translationDescriptionProduct,
       };
 
+      console.log(user);
+
       const newProduct = new this.productModel({
         ...createProductDto,
         translation,
         status: 'revision',
-        createdBy: user.userId,
+        createdBy: user.name,
       });
 
       if (files && files.length > 0) {
