@@ -7,13 +7,12 @@ export class CreateProductDto {
   category: string;
   link: string;
   status: string;
-  @IsNotEmpty()
   createdBy: string;
   @IsOptional()
   urlImageProduct: string;
   galleryImages: string;
+  @IsOptional()
   @IsObject()
   translationDescriptionProduct: Record<string, any>;
-  @IsObject()
   translationNameProduct: Record<string, any>;
 }
