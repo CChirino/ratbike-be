@@ -34,7 +34,7 @@ export class ProductsService {
         ...createProductDto,
         translation,
         status: 'revision',
-        createdBy: user.name,
+        createdBy: user.name + user.lastname,
       });
 
       if (files && files.length > 0) {
@@ -65,47 +65,70 @@ export class ProductsService {
       throw error;
     }
   }
-
   async findAll(
     page?: number,
     limit?: number,
   ): Promise<{ status: number; data: PaginationResponse<Product> }> {
     try {
+      page = page && parseInt(page.toString(), 10);
+      limit = limit && parseInt(limit.toString(), 10);
+
+      if (page && (isNaN(page) || page < 1)) {
+        throw new HttpException(
+          'El parámetro "page" debe ser un número entero positivo.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (limit && (isNaN(limit) || limit < 1)) {
+        throw new HttpException(
+          'El parámetro "limit" debe ser un número entero positivo.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
+      const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
+
       let query = this.productModel.find({
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
-      let totalPages = 1; // Declarar totalPages antes del bloque if
-
-      if (page && limit) {
-        const total = await this.productModel.countDocuments({
-          $or: [{ delete_at: null }, { delete_date: null }],
-        });
-
-        totalPages = Math.ceil(total / limit); // Asignar el valor a totalPages
-
-        if (page < 1 || page > totalPages) {
-          throw new HttpException(
-            'Página fuera de rango',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-
-        const skipCount = (page - 1) * limit;
-        query = query.skip(skipCount).limit(limit);
-      }
-
-      const data = await query.exec();
       const total = await this.productModel.countDocuments({
         $or: [{ delete_at: null }, { delete_date: null }],
       });
+
+      const totalPages = Math.ceil(total / actualLimit);
+
+      if (totalPages === 0) {
+        throw new HttpException(
+          'No se encontraron resultados.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (page && (page < 1 || page > totalPages)) {
+        throw new HttpException(
+          'Página fuera de rango.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (page) {
+        const skipCount = (page - 1) * actualLimit;
+        query = query.skip(skipCount).limit(actualLimit);
+      } else {
+        query = query.limit(actualLimit);
+      }
+
+      const data = await query.exec();
 
       const response: { status: number; data: PaginationResponse<Product> } = {
         status: HttpStatus.OK,
         data: {
           paginationData: {
             page: page || 1,
-            limit: limit,
+            limit: actualLimit,
             total,
             totalPages,
           },
@@ -118,15 +141,22 @@ export class ProductsService {
       throw error;
     }
   }
-
-  async findOne(id: string): Promise<Product> {
+  async findOne(id: string): Promise<{ status: number; product: Product }> {
     try {
-      return this.productModel.findById(id).exec();
+      const product = await this.productModel.findById(id).exec();
+      return {
+        status: HttpStatus.OK,
+        product: product,
+      };
     } catch (error) {
-      throw error;
+      // Manejo del error
+      const errorMessage = error.message || 'Error interno del servidor';
+      const errorResponse = {
+        error: errorMessage,
+      };
+      throw new HttpException(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
   async update(
     id: string,
     updateProductDto: UpdateProductDto,
