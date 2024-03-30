@@ -6,12 +6,14 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(
@@ -28,13 +30,11 @@ export class ProductsService {
           createProductDto.translation.translationDescriptionProduct,
       };
 
-      console.log(user);
-
       const newProduct = new this.productModel({
         ...createProductDto,
         translation,
         status: 'revision',
-        createdBy: user.name + user.lastname,
+        createdBy: user.name + ' ' + user.lastname,
       });
 
       if (files && files.length > 0) {
@@ -55,6 +55,10 @@ export class ProductsService {
       }
 
       const createdProduct = await newProduct.save();
+
+      const productId = createdProduct._id;
+
+      await this.emailService.sendProductRequest(productId);
 
       response.status(HttpStatus.CREATED).json(createdProduct);
       return createdProduct;
@@ -162,11 +166,19 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
     try {
-      return this.productModel
+      const updatedProduct = await this.productModel
         .findByIdAndUpdate(id, updateProductDto, { new: true })
         .exec();
+
+      if (!updatedProduct) {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
+
+      // Realiza cualquier otra lógica adicional necesaria para el update
+
+      return updatedProduct;
     } catch (error) {
-      throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -184,5 +196,10 @@ export class ProductsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findProductsByCategory(category: string): Promise<Product[]> {
+    const products = await this.productModel.find({ category }).exec();
+    return products;
   }
 }

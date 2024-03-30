@@ -6,6 +6,7 @@ import { Product, ProductSchema } from './schema/products.schema';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AuthModule } from 'src/auth/auth.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from 'src/auth/auth.module';
         },
       }),
     }),
+    EmailModule,
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

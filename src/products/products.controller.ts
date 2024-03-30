@@ -67,4 +67,11 @@ export class ProductsController {
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
+
+  @Get(':category')
+  async getProductsByCategory(@Param('category') category: string) {
+    const products =
+      await this.productsService.findProductsByCategory(category);
+    return products;
+  }
 }

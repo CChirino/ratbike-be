@@ -7,9 +7,6 @@ export class CategoryProduct {
   @Prop()
   nameCategoryProduct: string;
 
-  @Prop()
-  descriptionCategoryProduct: string;
-
   @Prop({ default: undefined })
   urlImageCategory: string;
 

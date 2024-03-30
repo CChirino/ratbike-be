@@ -45,4 +45,25 @@ export class EmailService {
       `,
     });
   }
+
+  async sendProductRequest(productId: string): Promise<void> {
+    await this.mailerService.sendMail({
+      to: 'christopherchirinosj@gmail.com',
+      subject: 'Aprobacion de Producto - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Aprobacion de Producto</title>
+          </head>
+          <body>
+          <h1>Aprobar Producto</h1>
+          <p>Se ha creado un producto nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
+          <a href="http://localhost:3000/products/${productId}">Actualizar producto</a>
+          </body>
+        </html>
+      `,
+    });
+  }
 }
