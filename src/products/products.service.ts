@@ -23,16 +23,20 @@ export class ProductsService {
     response,
   ): Promise<Product> {
     try {
-      const translation = {
-        translationNameProduct:
-          createProductDto.translation.translationNameProduct,
-        translationDescriptionProduct:
-          createProductDto.translation.translationDescriptionProduct,
-      };
+      let translation = null;
+
+      if(createProductDto.translation){
+        translation = {
+          translationNameProduct:
+            createProductDto.translation.translationNameProduct,
+          translationDescriptionProduct:
+            createProductDto.translation.translationDescriptionProduct,
+        };
+      }
 
       const newProduct = new this.productModel({
         ...createProductDto,
-        translation,
+        ...(translation && {translation}),
         status: 'revision',
         createdBy: user.name + ' ' + user.lastname,
       });
