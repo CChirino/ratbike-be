@@ -25,7 +25,7 @@ export class ProductsService {
     try {
       let translation = null;
 
-      if(createProductDto.translation){
+      if (createProductDto.translation) {
         translation = {
           translationNameProduct:
             createProductDto.translation.translationNameProduct,
@@ -36,7 +36,7 @@ export class ProductsService {
 
       const newProduct = new this.productModel({
         ...createProductDto,
-        ...(translation && {translation}),
+        ...(translation && { translation }),
         status: 'revision',
         createdBy: user.name + ' ' + user.lastname,
       });
@@ -64,8 +64,12 @@ export class ProductsService {
 
       await this.emailService.sendProductRequest(productId);
 
-      response.status(HttpStatus.CREATED).json(createdProduct);
-      return createdProduct;
+      const responseObj = {
+        status: HttpStatus.OK,
+        data: createdProduct,
+      };
+
+      return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       response
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
