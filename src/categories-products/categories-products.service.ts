@@ -4,7 +4,6 @@ import {
   CategoryProduct,
   CategoryProductDocument,
 } from './schema/categories-products.schema';
-import { PaginationResponse } from './interfaces/pagination.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -40,50 +39,20 @@ export class CategoryProductService {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-  async findAll(
-    page?: number,
-    limit?: number,
-  ): Promise<{ status: number; data: PaginationResponse<CategoryProduct> }> {
+  async findAll(): Promise<{ status: number; data: CategoryProduct[] }> {
     try {
-      let query = this.categoryProductModel.find({
+      const query = this.categoryProductModel.find({
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
-      let totalPages = 1;
-
-      if (page && limit) {
-        const total = await this.categoryProductModel.countDocuments();
-
-        totalPages = Math.ceil(total / limit);
-
-        if (page < 1 || page > totalPages) {
-          throw new HttpException(
-            'Página fuera de rango',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-
-        const skipCount = (page - 1) * limit;
-        query = query.skip(skipCount).limit(limit);
-      }
-
       const data = await query.exec();
-      const total = await this.categoryProductModel.countDocuments();
 
       const response: {
         status: number;
-        data: PaginationResponse<CategoryProduct>;
+        data: CategoryProduct[];
       } = {
         status: HttpStatus.OK,
-        data: {
-          paginationData: {
-            page: page || 1,
-            limit: limit,
-            total,
-            totalPages,
-          },
-          data,
-        },
+        data,
       };
 
       return response;
