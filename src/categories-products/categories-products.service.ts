@@ -40,7 +40,11 @@ export class CategoryProductService {
         }
       }
       const createdCategory = await newCategoryProduct.save();
-      return response.status(HttpStatus.CREATED).json(createdCategory);
+      const responseObj = {
+        status: HttpStatus.CREATED,
+        data: createdCategory,
+      };
+      return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
