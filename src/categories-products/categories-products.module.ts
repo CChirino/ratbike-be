@@ -22,7 +22,7 @@ import { diskStorage } from 'multer';
         destination: './uploads/categories', // Directorio donde se guardarán las imágenes
         filename: (req, file, callback) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-          const extension = file.mimetype.split('/')[1]; // Obtener la extensión del archivo
+          const extension = file.mimetype.split('/')[1].replace("+xml", ""); // Obtener la extensión del archivo
           callback(null, `${uniqueSuffix}.${extension}`);
         },
       }),
