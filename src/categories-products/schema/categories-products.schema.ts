@@ -18,7 +18,7 @@ export class CategoryProduct {
   delete_date: Date;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
-  translations: {
+  translation: {
     translationNameCategoryProduct: Record<string, any>;
   };
 }

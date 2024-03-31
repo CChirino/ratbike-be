@@ -21,9 +21,15 @@ export class CategoryProductService {
     response,
   ): Promise<CategoryProduct> {
     try {
-      const newCategoryProduct = new this.categoryProductModel(
-        createCategoryProductDto,
-      );
+      let translation = null;
+      translation = {
+        translationNameCategoryProduct:
+          createCategoryProductDto.translation.translationNameCategoryProduct,
+      };
+      const newCategoryProduct = new this.categoryProductModel({
+        ...createCategoryProductDto,
+        ...(translation && { translations: translation }),
+      });
       if (file) {
         const urlImageCategory = file.path.replace(/\\/g, '/');
         newCategoryProduct.urlImageCategory = urlImageCategory;
