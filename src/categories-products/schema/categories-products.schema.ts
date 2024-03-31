@@ -5,8 +5,6 @@ export type CategoryProductDocument = CategoryProduct & Document;
 
 @Schema()
 export class CategoryProduct {
-  @Prop()
-  nameCategoryProduct: string;
 
   @Prop({ default: undefined })
   urlImageCategory: string;

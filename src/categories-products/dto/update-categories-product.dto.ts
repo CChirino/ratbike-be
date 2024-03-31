@@ -6,7 +6,6 @@ export class UpdateCategoriesProductDto extends PartialType(
   CreateCategoriesProductDto,
 ) {
   @IsNotEmpty()
-  nameCategoryProduct: string;
   @IsObject()
   translationNameCategoryProduct: Record<string, any>;
   @IsOptional()
