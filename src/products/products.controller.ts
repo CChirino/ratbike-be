@@ -58,8 +58,14 @@ export class ProductsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productsService.update(id, updateProductDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Req() request: Request,
+    @Res() response,
+  ) {
+    const user = request.user;
+    return this.productsService.update(id, updateProductDto, user, response);
   }
 
   @Delete(':id')

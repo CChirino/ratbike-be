@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { Product } from 'src/products/schema/products.schema';
 
 @Injectable()
 export class EmailService {
@@ -49,18 +50,60 @@ export class EmailService {
   async sendProductRequest(productId: string): Promise<void> {
     await this.mailerService.sendMail({
       to: 'christopherchirinosj@gmail.com',
-      subject: 'Aprobacion de Producto - Rat Bikes',
+      subject: 'Producto en Revision - Rat Bikes',
       html: `
         <!DOCTYPE html>
         <html>
           <head>
             <meta charset="utf-8">
-            <title>Aprobacion de Producto</title>
+            <title>Producto en Revision </title>
           </head>
           <body>
           <h1>Aprobar Producto</h1>
           <p>Se ha creado un producto nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
           <a href="http://localhost:3000/products/${productId}">Actualizar producto</a>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendApprovalEmail(email: string, product: Product): Promise<void> {
+    const productName = product.nameProduct;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Producto Aprobado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Producto Aprobado</title>
+          </head>
+          <body>
+            <h1>¡Felicidades!</h1>
+            <p>Tu producto ${productName} ha sido aprobado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendRejectionEmail(email: string, product: Product): Promise<void> {
+    const productName = product.nameProduct;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Producto Rechazado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Producto Rechazado</title>
+          </head>
+          <body>
+          <h1>Lamentamos informarte</h1>
+            <p>Tu producto ${productName} ha sido rechazado.</p>
           </body>
         </html>
       `,

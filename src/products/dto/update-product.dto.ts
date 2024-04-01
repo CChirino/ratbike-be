@@ -12,6 +12,7 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {
   @IsOptional()
   urlImageProduct: string;
   galleryImages: string;
+  rejectedReason: string;
   @IsNotEmpty()
   @IsObject()
   translationDescriptionProduct: Record<string, any>;

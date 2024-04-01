@@ -41,6 +41,9 @@ export class Product {
 
   @Prop({ default: 'revision', enum: ['revision', 'aprobado', 'rechazado'] })
   status: string;
+
+  @Prop()
+  rejectedReason: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

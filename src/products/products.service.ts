@@ -172,8 +172,11 @@ export class ProductsService {
   async update(
     id: string,
     updateProductDto: UpdateProductDto,
+    user: any,
+    response,
   ): Promise<Product> {
     try {
+      const emailUser = user.email;
       const updatedProduct = await this.productModel
         .findByIdAndUpdate(id, updateProductDto, { new: true })
         .exec();
@@ -182,9 +185,18 @@ export class ProductsService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      // Realiza cualquier otra lógica adicional necesaria para el update
+      if (updateProductDto.status === 'aprobado') {
+        await this.emailService.sendApprovalEmail(emailUser, updatedProduct);
+      } else if (updateProductDto.status === 'rechazado') {
+        await this.emailService.sendRejectionEmail(emailUser, updatedProduct);
+      }
 
-      return updatedProduct;
+      const responseObj = {
+        status: HttpStatus.OK,
+        data: updatedProduct,
+      };
+
+      return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
