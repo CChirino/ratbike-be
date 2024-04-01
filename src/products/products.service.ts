@@ -80,6 +80,7 @@ export class ProductsService {
   async findAll(
     page?: number,
     limit?: number,
+    category?: string
   ): Promise<{ status: number; data: PaginationResponse<Product> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -102,11 +103,19 @@ export class ProductsService {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
       const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
 
+      let andQueryArray: any = [{status: "aprobado"}];
+
+      if(!!category){
+        andQueryArray.push({category: category})
+      }
+
       let query = this.productModel.find({
+        $and: andQueryArray,
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
       const total = await this.productModel.countDocuments({
+        $and: andQueryArray,
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 

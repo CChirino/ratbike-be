@@ -46,8 +46,8 @@ export class ProductsController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.productsService.findAll(page, limit);
+  findAll(@Query('page') page?: number, @Query('limit') limit?: number, @Query('category') category?: string) {
+    return this.productsService.findAll(page, limit, category);
   }
 
   @Get(':id')
