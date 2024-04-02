@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Product } from 'src/products/schema/products.schema';
+import { Brotherhood } from 'src/brotherhood/schema/brotherhood.schema';
 
 @Injectable()
 export class EmailService {
@@ -104,6 +105,54 @@ export class EmailService {
           <body>
           <h1>Lamentamos informarte</h1>
             <p>Tu producto ${productName} ha sido rechazado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendApprovalEmailBrotherhood(
+    email: string,
+    brotherhood: Brotherhood,
+  ): Promise<void> {
+    const BrotherhoodName = brotherhood.nameBrotherhood;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Brotherhood Aprobado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Producto Aprobado</title>
+          </head>
+          <body>
+            <h1>¡Felicidades!</h1>
+            <p>Tu producto ${BrotherhoodName} ha sido aprobado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendRejectionEmailBrotherhood(
+    email: string,
+    brotherhood: Brotherhood,
+  ): Promise<void> {
+    const BrotherhoodName = brotherhood.nameBrotherhood;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Brotherhood Rechazado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Producto Rechazado</title>
+          </head>
+          <body>
+          <h1>Lamentamos informarte</h1>
+            <p>Tu producto ${BrotherhoodName} ha sido rechazado.</p>
           </body>
         </html>
       `,

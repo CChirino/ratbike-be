@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { ProductsController } from './products.controller';
+import { BrotherhoodService } from './brotherhood.service';
+import { BrotherhoodController } from './brotherhood.controller';
+import { Brotherhood, BrotherhoodSchema } from './schema/brotherhood.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Product, ProductSchema } from './schema/products.schema';
+import { AuthModule } from 'src/auth/auth.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { AuthModule } from 'src/auth/auth.module';
 import { EmailModule } from '../email/email.module';
 
 @Module({
@@ -13,13 +13,13 @@ import { EmailModule } from '../email/email.module';
     AuthModule,
     MongooseModule.forFeature([
       {
-        name: Product.name,
-        schema: ProductSchema,
+        name: Brotherhood.name,
+        schema: BrotherhoodSchema,
       },
     ]),
     MulterModule.register({
       storage: diskStorage({
-        destination: './uploads/products', // Directorio donde se guardarán las imágenes
+        destination: './uploads/brotherhood', // Directorio donde se guardarán las imágenes
         filename: (req, file, callback) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
           const extension = file.mimetype.split('/')[1].replace('+xml', ''); // Obtener la extensión del archivo
@@ -29,7 +29,7 @@ import { EmailModule } from '../email/email.module';
     }),
     EmailModule,
   ],
-  controllers: [ProductsController],
-  providers: [ProductsService],
+  controllers: [BrotherhoodController],
+  providers: [BrotherhoodService],
 })
-export class ProductsModule {}
+export class BrotherhoodModule {}

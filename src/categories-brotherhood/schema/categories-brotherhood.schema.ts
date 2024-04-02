@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 
-export type CategoryProductDocument = CategoryProduct & Document;
+export type CategoryBrotherhoodDocument = CategoryBrotherhood & Document;
 
 @Schema()
-export class CategoryProduct {
+export class CategoryBrotherhood {
   @Prop({ default: undefined })
-  urlImageCategory: string;
+  urlImageCategoryBrotherhood: string;
 
   @Prop({ default: null, required: false })
   delete_at: string;
@@ -16,9 +16,9 @@ export class CategoryProduct {
 
   @Prop({ type: mongoose.Schema.Types.Mixed })
   translation: {
-    translationNameCategoryProduct: Record<string, any>;
+    translationNameCategoryBrotherhood: Record<string, any>;
   };
 }
 
-export const CategoryProductSchema =
-  SchemaFactory.createForClass(CategoryProduct);
+export const CategoryBrotherhoodSchema =
+  SchemaFactory.createForClass(CategoryBrotherhood);

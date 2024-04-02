@@ -13,6 +13,8 @@ import { ProductsModule } from './products/products.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CategoriesProductsModule } from './categories-products/categories-products.module';
 import { CategoriesArticlesModule } from './categories-articles/categories-articles.module';
+import { BrotherhoodModule } from './brotherhood/brotherhood.module';
+import { CategoriesBrotherhoodModule } from './categories-brotherhood/categories-brotherhood.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -43,6 +45,8 @@ import { CategoriesArticlesModule } from './categories-articles/categories-artic
     ArticlesModule,
     CategoriesProductsModule,
     CategoriesArticlesModule,
+    BrotherhoodModule,
+    CategoriesBrotherhoodModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],

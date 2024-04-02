@@ -9,12 +9,14 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateCategoriesProductDto } from './dto/create-categories-product.dto';
 import { UpdateCategoriesProductDto } from './dto/update-categories-product.dto';
 import { CategoryProductService } from './categories-products.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('categories-products')
 @Controller('categories-products')
@@ -24,6 +26,7 @@ export class CategoriesProductsController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('urlImageCategory'))
   create(
     @UploadedFile() file: Express.Multer.File,
@@ -38,16 +41,19 @@ export class CategoriesProductsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   findAll() {
     return this.categoriesProductsService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
     return this.categoriesProductsService.findOne(id);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   update(
     @Param('id') id: string,
     @Body() updateCategoriesProductDto: UpdateCategoriesProductDto,
@@ -59,6 +65,7 @@ export class CategoriesProductsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   remove(@Param('id') id: string) {
     return this.categoriesProductsService.remove(id);
   }

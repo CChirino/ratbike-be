@@ -13,31 +13,31 @@ import {
   Req,
   Query,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { BrotherhoodService } from './brotherhood.service';
+import { CreateBrotherhoodDto } from './dto/create-brotherhood.dto';
+import { UpdateBrotherhoodDto } from './dto/update-brotherhood.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 
-@ApiTags('products')
-@Controller('products')
-export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+@ApiTags('brotherhood')
+@Controller('brotherhood')
+export class BrotherhoodController {
+  constructor(private readonly brotherhoodService: BrotherhoodService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
-  async create(
+  create(
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
-    @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
+    @Body() createBrotherhoodDto: CreateBrotherhoodDto,
   ) {
     const user = request.user;
-    return await this.productsService.create(
-      createProductDto,
+    return this.brotherhoodService.create(
+      createBrotherhoodDto,
       files,
       user,
       response,
@@ -51,37 +51,43 @@ export class ProductsController {
     @Query('limit') limit?: number,
     @Query('category') category?: string,
   ) {
-    return this.productsService.findAll(page, limit, category);
+    return this.brotherhoodService.findAll(page, limit, category);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
-    return this.productsService.findOne(id);
+    return this.brotherhoodService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
   update(
     @Param('id') id: string,
-    @Body() updateProductDto: UpdateProductDto,
+    @Body() updateBrotherhoodDto: UpdateBrotherhoodDto,
     @Req() request: Request,
     @Res() response,
   ) {
     const user = request.user;
-    return this.productsService.update(id, updateProductDto, user, response);
+    return this.brotherhoodService.update(
+      id,
+      updateBrotherhoodDto,
+      user,
+      response,
+    );
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
   remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+    return this.brotherhoodService.remove(id);
   }
 
   @Get(':category')
+  @UseGuards(AuthGuard('jwt'))
   async getProductsByCategory(@Param('category') category: string) {
     const products =
-      await this.productsService.findProductsByCategory(category);
+      await this.brotherhoodService.findProductsByCategory(category);
     return products;
   }
 }

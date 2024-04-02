@@ -1,41 +1,41 @@
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { Product, ProductDocument } from './schema/products.schema';
-import { PaginationResponse } from './interfaces/pagination.interface';
+import { CreateBrotherhoodDto } from './dto/create-brotherhood.dto';
+import { UpdateBrotherhoodDto } from './dto/update-brotherhood.dto';
+import { Brotherhood, BrotherhoodDocument } from './schema/brotherhood.schema';
+import { EmailService } from '../email/email.service';
+import * as fs from 'fs';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import { EmailService } from '../email/email.service';
+import { PaginationResponse } from './interfaces/pagination.interface';
 
 @Injectable()
-export class ProductsService {
+export class BrotherhoodService {
   constructor(
-    @InjectModel(Product.name)
-    private readonly productModel: Model<ProductDocument>,
+    @InjectModel(Brotherhood.name)
+    private readonly brotherhoodModel: Model<BrotherhoodDocument>,
     private readonly emailService: EmailService,
   ) {}
 
   async create(
-    createProductDto: CreateProductDto,
+    createBrotherhoodDto: CreateBrotherhoodDto,
     files: Express.Multer.File[],
     user: any,
     response,
-  ): Promise<Product> {
+  ): Promise<Brotherhood> {
     try {
       let translation = null;
 
-      if (createProductDto.translation) {
+      if (createBrotherhoodDto.translation) {
         translation = {
           translationNameProduct:
-            createProductDto.translation.translationNameProduct,
+            createBrotherhoodDto.translation.translationName,
           translationDescriptionProduct:
-            createProductDto.translation.translationDescriptionProduct,
+            createBrotherhoodDto.translation.translationDescription,
         };
       }
 
-      const newProduct = new this.productModel({
-        ...createProductDto,
+      const newBrotherhood = new this.brotherhoodModel({
+        ...createBrotherhoodDto,
         ...(translation && { translation }),
         status: 'revision',
         createdBy: user.name + ' ' + user.lastname,
@@ -43,32 +43,32 @@ export class ProductsService {
 
       if (files && files.length > 0) {
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
-        newProduct.urlImageProduct = urlImageProduct;
+        newBrotherhood.urlImageBrotherhood = urlImageProduct;
       } else {
-        const defaultImagePath = 'uploads/products/default-product-image.jpg';
+        const defaultImagePath =
+          'uploads/brotherhood/default-product-image.jpg';
         if (fs.existsSync(defaultImagePath)) {
-          newProduct.urlImageProduct = defaultImagePath;
+          newBrotherhood.urlImageBrotherhood = defaultImagePath;
         }
       }
 
       if (files && files.length > 1) {
-        const galleryImages = files
+        const galleryImagesBrotherhood = files
           .slice(1)
           .map((file) => file.path.replace(/\\/g, '/'));
-        newProduct.galleryImages = galleryImages;
+        newBrotherhood.galleryImagesBrotherhood = galleryImagesBrotherhood;
       }
 
-      const createdProduct = await newProduct.save();
+      const createdBrotherhood = await newBrotherhood.save();
 
-      const productId = createdProduct._id;
+      const brotherhoodId = createdBrotherhood._id;
 
-      await this.emailService.sendProductRequest(productId);
+      await this.emailService.sendProductRequest(brotherhoodId);
 
       const responseObj = {
         status: HttpStatus.OK,
-        data: createdProduct,
+        data: createdBrotherhood,
       };
-
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       response
@@ -77,11 +77,12 @@ export class ProductsService {
       throw error;
     }
   }
+
   async findAll(
     page?: number,
     limit?: number,
     category?: string,
-  ): Promise<{ status: number; data: PaginationResponse<Product> }> {
+  ): Promise<{ status: number; data: PaginationResponse<Brotherhood> }> {
     try {
       page = page && parseInt(page.toString(), 10);
       limit = limit && parseInt(limit.toString(), 10);
@@ -109,12 +110,12 @@ export class ProductsService {
         andQueryArray.push({ category: category });
       }
 
-      let query = this.productModel.find({
+      let query = this.brotherhoodModel.find({
         $and: andQueryArray,
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
-      const total = await this.productModel.countDocuments({
+      const total = await this.brotherhoodModel.countDocuments({
         $and: andQueryArray,
         $or: [{ delete_at: null }, { delete_date: null }],
       });
@@ -144,7 +145,10 @@ export class ProductsService {
 
       const data = await query.exec();
 
-      const response: { status: number; data: PaginationResponse<Product> } = {
+      const response: {
+        status: number;
+        data: PaginationResponse<Brotherhood>;
+      } = {
         status: HttpStatus.OK,
         data: {
           paginationData: {
@@ -162,12 +166,15 @@ export class ProductsService {
       throw error;
     }
   }
-  async findOne(id: string): Promise<{ status: number; product: Product }> {
+
+  async findOne(
+    id: string,
+  ): Promise<{ status: number; brotherhood: Brotherhood }> {
     try {
-      const product = await this.productModel.findById(id).exec();
+      const brotherhood = await this.brotherhoodModel.findById(id).exec();
       return {
         status: HttpStatus.OK,
-        product: product,
+        brotherhood: brotherhood,
       };
     } catch (error) {
       // Manejo del error
@@ -178,31 +185,38 @@ export class ProductsService {
       throw new HttpException(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   async update(
     id: string,
-    updateProductDto: UpdateProductDto,
+    updateBrotherhoodDto: UpdateBrotherhoodDto,
     user: any,
     response,
-  ): Promise<Product> {
+  ): Promise<Brotherhood> {
     try {
       const emailUser = user.email;
-      const updatedProduct = await this.productModel
-        .findByIdAndUpdate(id, updateProductDto, { new: true })
+      const updatedBrotherhood = await this.brotherhoodModel
+        .findByIdAndUpdate(id, updateBrotherhoodDto, { new: true })
         .exec();
 
-      if (!updatedProduct) {
+      if (!updatedBrotherhood) {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      if (updateProductDto.status === 'aprobado') {
-        await this.emailService.sendApprovalEmail(emailUser, updatedProduct);
-      } else if (updateProductDto.status === 'rechazado') {
-        await this.emailService.sendRejectionEmail(emailUser, updatedProduct);
+      if (updatedBrotherhood.status === 'aprobado') {
+        await this.emailService.sendApprovalEmailBrotherhood(
+          emailUser,
+          updatedBrotherhood,
+        );
+      } else if (updatedBrotherhood.status === 'rechazado') {
+        await this.emailService.sendRejectionEmailBrotherhood(
+          emailUser,
+          updatedBrotherhood,
+        );
       }
 
       const responseObj = {
         status: HttpStatus.OK,
-        data: updatedProduct,
+        data: updatedBrotherhood,
       };
 
       return response.status(HttpStatus.CREATED).json(responseObj);
@@ -211,24 +225,23 @@ export class ProductsService {
     }
   }
 
-  async remove(id: string): Promise<Product> {
+  async remove(id: string): Promise<Brotherhood> {
     try {
-      const product = await this.productModel.findById(id).exec();
+      const brotherhood = await this.brotherhoodModel.findById(id).exec();
 
-      if (product) {
-        product.delete_at = new Date().toISOString();
-        product.delete_date = new Date();
-        await product.save();
+      if (brotherhood) {
+        brotherhood.delete_at = new Date().toISOString();
+        brotherhood.delete_date = new Date();
+        await brotherhood.save();
       }
-
-      return product;
+      return brotherhood;
     } catch (error) {
       throw error;
     }
   }
 
-  async findProductsByCategory(category: string): Promise<Product[]> {
-    const products = await this.productModel.find({ category }).exec();
-    return products;
+  async findProductsByCategory(category: string): Promise<Brotherhood[]> {
+    const brotherhood = await this.brotherhoodModel.find({ category }).exec();
+    return brotherhood;
   }
 }
