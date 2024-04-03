@@ -65,7 +65,7 @@ export class ProductsService {
       await this.emailService.sendProductRequest(productId);
 
       const responseObj = {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         data: createdProduct,
       };
 
@@ -81,7 +81,7 @@ export class ProductsService {
     page?: number,
     limit?: number,
     category?: string,
-  ): Promise<{ statusCode: number; data: PaginationResponse<Product> }> {
+  ): Promise<{ status: number; data: PaginationResponse<Product> }> {
     try {
       page = page && parseInt(page.toString(), 10);
       limit = limit && parseInt(limit.toString(), 10);
@@ -144,11 +144,8 @@ export class ProductsService {
 
       const data = await query.exec();
 
-      const response: {
-        statusCode: number;
-        data: PaginationResponse<Product>;
-      } = {
-        statusCode: HttpStatus.OK,
+      const response: { status: number; data: PaginationResponse<Product> } = {
+        status: HttpStatus.OK,
         data: {
           paginationData: {
             page: page || 1,
@@ -165,11 +162,11 @@ export class ProductsService {
       throw error;
     }
   }
-  async findOne(id: string): Promise<{ statusCode: number; product: Product }> {
+  async findOne(id: string): Promise<{ status: number; product: Product }> {
     try {
       const product = await this.productModel.findById(id).exec();
       return {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         product: product,
       };
     } catch (error) {
@@ -204,7 +201,7 @@ export class ProductsService {
       }
 
       const responseObj = {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         data: updatedProduct,
       };
 

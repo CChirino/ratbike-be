@@ -109,6 +109,8 @@ export class AuthService {
         name: findUser.name,
         lastname: findUser.lastname,
         email: findUser.email,
+        urlProfileImage: findUser.urlProfileImage,
+        role: findUser.role,
       },
       token,
     };

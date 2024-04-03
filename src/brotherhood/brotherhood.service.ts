@@ -66,7 +66,7 @@ export class BrotherhoodService {
       await this.emailService.sendProductRequest(brotherhoodId);
 
       const responseObj = {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         data: createdBrotherhood,
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
@@ -82,7 +82,7 @@ export class BrotherhoodService {
     page?: number,
     limit?: number,
     category?: string,
-  ): Promise<{ statusCode: number; data: PaginationResponse<Brotherhood> }> {
+  ): Promise<{ status: number; data: PaginationResponse<Brotherhood> }> {
     try {
       page = page && parseInt(page.toString(), 10);
       limit = limit && parseInt(limit.toString(), 10);
@@ -146,10 +146,10 @@ export class BrotherhoodService {
       const data = await query.exec();
 
       const response: {
-        statusCode: number;
+        status: number;
         data: PaginationResponse<Brotherhood>;
       } = {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         data: {
           paginationData: {
             page: page || 1,
@@ -169,11 +169,11 @@ export class BrotherhoodService {
 
   async findOne(
     id: string,
-  ): Promise<{ statusCode: number; brotherhood: Brotherhood }> {
+  ): Promise<{ status: number; brotherhood: Brotherhood }> {
     try {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
       return {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         brotherhood: brotherhood,
       };
     } catch (error) {
@@ -215,7 +215,7 @@ export class BrotherhoodService {
       }
 
       const responseObj = {
-        statusCode: HttpStatus.OK,
+        status: HttpStatus.OK,
         data: updatedBrotherhood,
       };
 
