@@ -1,14 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 
 export type CategoryArticleDocument = CategoryArticle & Document;
 
 @Schema()
 export class CategoryArticle {
-  @Prop()
-  nameCategoryArticle: string;
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  translation: {
+    translationNameCategoryArticle: Record<string, any>;
+  };
 
-  @Prop()
-  descriptionCategoryArticle: string;
+  @Prop({ default: undefined })
+  urlImageCategoryArticles: string;
 
   @Prop({ default: null, required: false })
   delete_at: string;
@@ -17,5 +20,5 @@ export class CategoryArticle {
   delete_date: Date;
 }
 
-export const CategoryProductSchema =
+export const CategoryArticleSchema =
   SchemaFactory.createForClass(CategoryArticle);
