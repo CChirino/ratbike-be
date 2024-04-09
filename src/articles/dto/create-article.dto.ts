@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
 
 export class CreateArticleDto {
+  [x: string]: any;
   @IsNotEmpty()
   title: string;
   subtitle: string;
@@ -8,5 +9,14 @@ export class CreateArticleDto {
   category: string;
   @IsOptional()
   urlImageArticle: string;
-  static urlImageArticle: string;
+  galleryImagesArticles: string;
+  @IsOptional()
+  @IsObject()
+  translationTitle: Record<string, any>;
+  @IsOptional()
+  @IsObject()
+  translationSubtitle: Record<string, any>;
+  @IsOptional()
+  @IsObject()
+  translationDescription: Record<string, any>;
 }
