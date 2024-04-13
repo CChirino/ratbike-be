@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 export type ArticleDocument = Article & Document;
@@ -15,8 +14,11 @@ export class Article {
   @Prop()
   description: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Category' })
-  category: Types.ObjectId;
+  @Prop()
+  category: string;
+
+  @Prop()
+  link: string;
 
   @Prop({ default: undefined })
   urlImageArticle: string;

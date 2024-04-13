@@ -7,6 +7,7 @@ export class CreateArticleDto {
   subtitle: string;
   description: string;
   category: string;
+  link: string;
   @IsOptional()
   urlImageArticle: string;
   galleryImagesArticles: string;
