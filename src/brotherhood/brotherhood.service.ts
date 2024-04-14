@@ -26,11 +26,13 @@ export class BrotherhoodService {
       let translation = null;
 
       if (createBrotherhoodDto.translation) {
+        let parsedTranslation = JSON.parse(createBrotherhoodDto.translation);
+
         translation = {
           translationNameProduct:
-            createBrotherhoodDto.translation.translationName,
+            parsedTranslation.translationName,
           translationDescriptionProduct:
-            createBrotherhoodDto.translation.translationDescription,
+            parsedTranslation.translationDescription,
         };
       }
 

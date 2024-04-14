@@ -39,7 +39,7 @@ export class Product {
     translationDescriptionProduct: Record<string, any>;
   };
 
-  @Prop({ default: 'revision', enum: ['revision', 'aprobado', 'rechazado'] })
+  @Prop({ default: 'aprobado', enum: ['revision', 'aprobado', 'rechazado'] })
   status: string;
 
   @Prop()

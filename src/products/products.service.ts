@@ -26,11 +26,13 @@ export class ProductsService {
       let translation = null;
 
       if (createProductDto.translation) {
+        let parsedTranslation = JSON.parse(createProductDto.translation);
+
         translation = {
           translationNameProduct:
-            createProductDto.translation.translationNameProduct,
+            parsedTranslation.translationNameProduct,
           translationDescriptionProduct:
-            createProductDto.translation.translationDescriptionProduct,
+            parsedTranslation.translationDescriptionProduct,
         };
       }
 

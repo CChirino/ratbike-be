@@ -22,11 +22,13 @@ export class ArticlesService {
       let translation = null;
 
       if (createArticleDto.translation) {
+        let parsedTranslation = JSON.parse(createArticleDto.translation);
+
         translation = {
-          translationTitle: createArticleDto.translation.translationTitle,
-          translationSubtitle: createArticleDto.translation.translationSubtitle,
+          translationTitle: parsedTranslation.translationTitle,
+          translationSubtitle: parsedTranslation.translationSubtitle,
           translationDescription:
-            createArticleDto.translation.translationDescription,
+            parsedTranslation.translationDescription,
         };
       }
       const newArticle = new this.articleModel({
