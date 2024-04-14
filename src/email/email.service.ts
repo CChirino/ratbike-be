@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Product } from 'src/products/schema/products.schema';
 import { Brotherhood } from 'src/brotherhood/schema/brotherhood.schema';
+import { Wall } from 'src/wall/schema/wall.schema';
 
 @Injectable()
 export class EmailService {
@@ -153,6 +154,47 @@ export class EmailService {
           <body>
           <h1>Lamentamos informarte</h1>
             <p>Tu producto ${BrotherhoodName} ha sido rechazado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+  async sendApprovalEmailWall(email: string, wall: Wall): Promise<void> {
+    const wallName = wall.titleWall;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Post-it Wall Aprobado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Post it Aprobado</title>
+          </head>
+          <body>
+            <h1>¡Felicidades!</h1>
+            <p>Tu producto ${wallName} ha sido aprobado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendRejectionEmailWall(email: string, wall: Wall): Promise<void> {
+    const wallName = wall.titleWall;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Brotherhood Rechazado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Producto Rechazado</title>
+          </head>
+          <body>
+          <h1>Lamentamos informarte</h1>
+            <p>Tu producto ${wallName} ha sido rechazado.</p>
           </body>
         </html>
       `,

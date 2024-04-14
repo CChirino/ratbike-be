@@ -15,6 +15,7 @@ import { CategoriesProductsModule } from './categories-products/categories-produ
 import { CategoriesArticlesModule } from './categories-articles/categories-articles.module';
 import { BrotherhoodModule } from './brotherhood/brotherhood.module';
 import { CategoriesBrotherhoodModule } from './categories-brotherhood/categories-brotherhood.module';
+import { WallModule } from './wall/wall.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -47,6 +48,7 @@ import { CategoriesBrotherhoodModule } from './categories-brotherhood/categories
     CategoriesArticlesModule,
     BrotherhoodModule,
     CategoriesBrotherhoodModule,
+    WallModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],
