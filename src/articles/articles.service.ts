@@ -98,12 +98,12 @@ export class ArticlesService {
       }
 
       let query = this.articleModel.find({
-        $and: andQueryArray,
+        ...(andQueryArray.length && {$and: andQueryArray,}),
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
       const total = await this.articleModel.countDocuments({
-        $and: andQueryArray,
+        ...(andQueryArray.length && {$and: andQueryArray,}),
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
