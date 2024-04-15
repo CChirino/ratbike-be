@@ -38,6 +38,15 @@ export class Article {
 
   @Prop({ type: Date, required: false, default: null })
   delete_date: Date;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: 0 })
+  views: number;
+
+  @Prop()
+  createdBy: string;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

@@ -11,6 +11,7 @@ import {
   Res,
   UseGuards,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -18,6 +19,7 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @ApiTags('articles')
 @Controller('articles')
@@ -31,8 +33,10 @@ export class ArticlesController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createArticleDto: CreateArticleDto,
     @Res() response,
+    @Req() request: Request,
   ) {
-    return this.articlesService.create(createArticleDto, files, response);
+    const user = request.user;
+    return this.articlesService.create(createArticleDto, files, response, user);
   }
 
   @Get()
@@ -73,5 +77,19 @@ export class ArticlesController {
     const articles =
       await this.articlesService.findArticlesByCategory(category);
     return articles;
+  }
+
+  @Get('most-read')
+  @UseGuards(AuthGuard('jwt'))
+  async getMostReadArticles() {
+    const mostReadArticles = await this.articlesService.getMostReadArticles();
+    return mostReadArticles;
+  }
+
+  @Get('latest')
+  @UseGuards(AuthGuard('jwt'))
+  async getLatestArticles() {
+    const latestArticles = await this.articlesService.getLatestArticles();
+    return latestArticles;
   }
 }

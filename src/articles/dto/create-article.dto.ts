@@ -3,6 +3,7 @@ import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
 export class CreateArticleDto {
   [x: string]: any;
   @IsNotEmpty()
+  createdAt: Date;
   title: string;
   subtitle: string;
   description: string;

@@ -17,23 +17,24 @@ export class ArticlesService {
     createArticleDto: CreateArticleDto,
     files: Express.Multer.File[],
     response,
+    user: any,
   ): Promise<Article> {
     try {
       let translation = null;
 
       if (createArticleDto.translation) {
-        let parsedTranslation = JSON.parse(createArticleDto.translation);
+        const parsedTranslation = JSON.parse(createArticleDto.translation);
 
         translation = {
           translationTitle: parsedTranslation.translationTitle,
           translationSubtitle: parsedTranslation.translationSubtitle,
-          translationDescription:
-            parsedTranslation.translationDescription,
+          translationDescription: parsedTranslation.translationDescription,
         };
       }
       const newArticle = new this.articleModel({
         ...createArticleDto,
         ...(translation && { translation }),
+        createdBy: user.name + ' ' + user.lastname,
       });
 
       if (files && files.length > 0) {
@@ -100,12 +101,12 @@ export class ArticlesService {
       }
 
       let query = this.articleModel.find({
-        ...(andQueryArray.length && {$and: andQueryArray,}),
+        ...(andQueryArray.length && { $and: andQueryArray }),
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
       const total = await this.articleModel.countDocuments({
-        ...(andQueryArray.length && {$and: andQueryArray,}),
+        ...(andQueryArray.length && { $and: andQueryArray }),
         $or: [{ delete_at: null }, { delete_date: null }],
       });
 
@@ -158,6 +159,7 @@ export class ArticlesService {
   async findOne(id: string): Promise<{ status: number; article: Article }> {
     try {
       const article = await this.articleModel.findById(id).exec();
+      await this.incrementViews(id);
       return {
         status: HttpStatus.OK,
         article: article,
@@ -214,5 +216,46 @@ export class ArticlesService {
   async findArticlesByCategory(category: string): Promise<Article[]> {
     const article = await this.articleModel.find({ category }).exec();
     return article;
+  }
+
+  async getMostReadArticles(): Promise<Article[]> {
+    try {
+      const mostReadArticles = await this.articleModel
+        .find()
+        .sort({ views: -1 }) // Ordenar por views en orden descendente
+        .limit(10) // Obtener los 10 artículos más leídos
+        .exec();
+
+      return mostReadArticles;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getLatestArticles(): Promise<Article[]> {
+    try {
+      const latestArticles = await this.articleModel
+        .find()
+        .sort({ createdAt: -1 }) // Ordenar por createdAt en orden descendente
+        .limit(10) // Obtener los 10 artículos más recientes
+        .exec();
+
+      return latestArticles;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async incrementViews(articleId: string): Promise<Article> {
+    try {
+      const article = await this.articleModel.findById(articleId);
+      if (!article) {
+        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+      }
+      article.views += 1;
+      return article.save();
+    } catch (error) {
+      throw error;
+    }
   }
 }

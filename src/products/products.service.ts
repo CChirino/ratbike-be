@@ -26,11 +26,10 @@ export class ProductsService {
       let translation = null;
 
       if (createProductDto.translation) {
-        let parsedTranslation = JSON.parse(createProductDto.translation);
+        const parsedTranslation = JSON.parse(createProductDto.translation);
 
         translation = {
-          translationNameProduct:
-            parsedTranslation.translationNameProduct,
+          translationNameProduct: parsedTranslation.translationNameProduct,
           translationDescriptionProduct:
             parsedTranslation.translationDescriptionProduct,
         };
