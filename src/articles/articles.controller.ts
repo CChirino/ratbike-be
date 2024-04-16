@@ -49,6 +49,20 @@ export class ArticlesController {
     return this.articlesService.findAll(page, limit, category);
   }
 
+  @Get('most-read')
+  @UseGuards(AuthGuard('jwt'))
+  async getMostReadArticles() {
+    const mostReadArticles = await this.articlesService.getMostReadArticles();
+    return mostReadArticles;
+  }
+
+  @Get('latest')
+  @UseGuards(AuthGuard('jwt'))
+  async getLatestArticles() {
+    const latestArticles = await this.articlesService.getLatestArticles();
+    return latestArticles;
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
@@ -79,17 +93,4 @@ export class ArticlesController {
     return articles;
   }
 
-  @Get('most-read')
-  @UseGuards(AuthGuard('jwt'))
-  async getMostReadArticles() {
-    const mostReadArticles = await this.articlesService.getMostReadArticles();
-    return mostReadArticles;
-  }
-
-  @Get('latest')
-  @UseGuards(AuthGuard('jwt'))
-  async getLatestArticles() {
-    const latestArticles = await this.articlesService.getLatestArticles();
-    return latestArticles;
-  }
 }
