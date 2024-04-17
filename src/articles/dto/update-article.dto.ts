@@ -9,7 +9,7 @@ export class UpdateArticleDto extends PartialType(CreateArticleDto) {
   description: string;
   category: string;
   link: string;
-  autor: string;
+  author: string;
   @IsOptional()
   urlImageArticle: string;
   galleryImagesArticles: string;

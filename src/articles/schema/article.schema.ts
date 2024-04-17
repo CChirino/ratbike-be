@@ -49,7 +49,7 @@ export class Article {
   createdBy: string;
 
   @Prop()
-  autor: string;
+  author: string;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);
