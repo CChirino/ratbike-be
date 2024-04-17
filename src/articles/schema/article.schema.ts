@@ -47,6 +47,9 @@ export class Article {
 
   @Prop()
   createdBy: string;
+
+  @Prop()
+  autor: string;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);
