@@ -9,7 +9,7 @@ export class CreateArticleDto {
   description: string;
   category: string;
   link: string;
-  autor: string;
+  author: string;
   @IsOptional()
   urlImageArticle: string;
   galleryImagesArticles: string;
