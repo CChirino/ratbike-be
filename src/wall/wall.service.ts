@@ -61,7 +61,7 @@ export class WallService {
 
       const wallId = createdWall._id;
 
-      await this.emailService.sendProductRequest(wallId);
+      await this.emailService.sendPostRequest(wallId);
 
       const responseObj = {
         status: HttpStatus.OK,
@@ -79,7 +79,7 @@ export class WallService {
   async findAll(
     page?: number,
     limit?: number,
-    category?: string,
+    skills?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -104,8 +104,8 @@ export class WallService {
 
       const andQueryArray: any = [{ status: 'aprobado' }];
 
-      if (!!category) {
-        andQueryArray.push({ category: category });
+      if (!!skills) {
+        andQueryArray.push({ skills: skills });
       }
 
       let query = this.wallModel.find({
@@ -143,10 +143,7 @@ export class WallService {
 
       const data = await query.exec();
 
-      const response: {
-        status: number;
-        data: PaginationResponse<Wall>;
-      } = {
+      const response: { status: number; data: PaginationResponse<Wall> } = {
         status: HttpStatus.OK,
         data: {
           paginationData: {
@@ -198,11 +195,11 @@ export class WallService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      // if (updatedWall.status === 'aprobado') {
-      //   await this.emailService.sendApprovalEmailWall(emailUser, updateWallDto);
-      // } else if (updatedWall.status === 'rechazado') {
-      //   await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
-      // }
+      if (updatedWall.status === 'aprobado') {
+        await this.emailService.sendApprovalEmailWall(emailUser, updatedWall);
+      } else if (updatedWall.status === 'rechazado') {
+        await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
+      }
 
       const responseObj = {
         status: HttpStatus.OK,

@@ -200,4 +200,25 @@ export class EmailService {
       `,
     });
   }
+
+  async sendPostRequest(wallId: string): Promise<void> {
+    await this.mailerService.sendMail({
+      to: 'christopherchirinosj@gmail.com',
+      subject: 'Post-it en Revision - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Post-it en Revision </title>
+          </head>
+          <body>
+          <h1>Post-it En revision </h1>
+          <p>Se ha creado un Post-it nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
+          <a href="http://localhost:3000/products/${wallId}">Actualizar producto</a>
+          </body>
+        </html>
+      `,
+    });
+  }
 }

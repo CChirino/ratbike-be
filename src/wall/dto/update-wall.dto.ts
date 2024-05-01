@@ -46,4 +46,7 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
     translationTitleWall: Record<string, any>;
     translationDescriptionWall: Record<string, any>;
   };
+
+  @IsNotEmpty()
+  skills: string;
 }

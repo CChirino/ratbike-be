@@ -13,6 +13,11 @@ export class CreateWallDto {
   createdBy: string;
   urlImageWall: string;
   galleryImagesWall: string;
+  @IsNotEmpty()
+  startHourWall: string;
+  endHourWall: string;
+  startDateWall: Date;
+  endDateWall: Date;
   @IsOptional()
   @IsObject()
   translationTitleWall: Record<string, any>;

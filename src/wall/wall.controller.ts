@@ -44,9 +44,9 @@ export class WallController {
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
-    @Query('category') category?: string,
+    @Query('skills') skills?: string,
   ) {
-    return this.wallService.findAll(page, limit, category);
+    return this.wallService.findAll(page, limit, skills);
   }
 
   @Get(':id')

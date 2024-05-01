@@ -13,7 +13,7 @@ export class Wall {
   descriptionWall: string;
 
   @Prop()
-  category: string;
+  skills: string;
 
   @Prop({ type: Date, required: false, default: null })
   startDateWall: Date;
@@ -47,6 +47,12 @@ export class Wall {
 
   @Prop({ default: 'revision', enum: ['revision', 'aprobado', 'rechazado'] })
   status: string;
+
+  @Prop()
+  startHourWall: string;
+
+  @Prop()
+  endHourWall: string;
 
   @Prop()
   rejectedReason: string;
