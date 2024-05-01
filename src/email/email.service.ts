@@ -173,7 +173,7 @@ export class EmailService {
           </head>
           <body>
             <h1>¡Felicidades!</h1>
-            <p>Tu producto ${wallName} ha sido aprobado.</p>
+            <p>Tu Post-it ${wallName} ha sido aprobado.</p>
           </body>
         </html>
       `,
@@ -190,11 +190,11 @@ export class EmailService {
         <html>
           <head>
             <meta charset="utf-8">
-            <title>Producto Rechazado</title>
+            <title>Post-it Rechazado</title>
           </head>
           <body>
           <h1>Lamentamos informarte</h1>
-            <p>Tu producto ${wallName} ha sido rechazado.</p>
+            <p>Tu Post-it ${wallName} ha sido rechazado.</p>
           </body>
         </html>
       `,
