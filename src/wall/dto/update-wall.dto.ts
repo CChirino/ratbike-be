@@ -18,14 +18,14 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
   @IsNotEmpty()
   status: string;
 
-  @IsOptional()
-  urlImageWall: string;
-
   @IsNotEmpty()
   galleryImagesWall: string;
 
   @IsNotEmpty()
   rejectedReason: string;
+
+  @IsNotEmpty()
+  skillWall: string;
 
   @IsNotEmpty()
   locationWall: string;
@@ -46,7 +46,4 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
     translationTitleWall: Record<string, any>;
     translationDescriptionWall: Record<string, any>;
   };
-
-  @IsNotEmpty()
-  skills: string;
 }

@@ -9,15 +9,28 @@ export class CreateWallDto {
   category: string;
   @IsNotEmpty()
   link: string;
+  @IsNotEmpty()
   status: string;
+  @IsNotEmpty()
   createdBy: string;
-  urlImageWall: string;
+  @IsNotEmpty()
   galleryImagesWall: string;
   @IsNotEmpty()
   startHourWall: string;
+  @IsNotEmpty()
   endHourWall: string;
+  @IsNotEmpty()
   startDateWall: Date;
+  @IsNotEmpty()
   endDateWall: Date;
+  @IsNotEmpty()
+  locationWall: string;
+  @IsNotEmpty()
+  startHour: string;
+  @IsNotEmpty()
+  endHour: string;
+  @IsNotEmpty()
+  skillWall: string;
   @IsOptional()
   @IsObject()
   translationTitleWall: Record<string, any>;

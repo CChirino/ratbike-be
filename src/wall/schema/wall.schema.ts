@@ -13,7 +13,7 @@ export class Wall {
   descriptionWall: string;
 
   @Prop()
-  skills: string;
+  skillWall: string;
 
   @Prop({ type: Date, required: false, default: null })
   startDateWall: Date;
@@ -49,10 +49,10 @@ export class Wall {
   status: string;
 
   @Prop()
-  startHourWall: string;
+  startHour: string;
 
   @Prop()
-  endHourWall: string;
+  endHour: string;
 
   @Prop()
   rejectedReason: string;
