@@ -226,4 +226,107 @@ export class WallService {
       throw error;
     }
   }
+
+  async findRevision(
+    page?: number,
+    limit?: number,
+    skills?: string,
+  ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
+    try {
+      page = page && parseInt(page.toString(), 10);
+      limit = limit && parseInt(limit.toString(), 10);
+
+      if (page && (isNaN(page) || page < 1)) {
+        throw new HttpException(
+          'El parámetro "page" debe ser un número entero positivo.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (limit && (isNaN(limit) || limit < 1)) {
+        throw new HttpException(
+          'El parámetro "limit" debe ser un número entero positivo.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
+      const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
+
+      const andQueryArray: any = [{ status: 'revision' }];
+
+      if (!!skills) {
+        andQueryArray.push({ skills: skills });
+      }
+
+      let query = this.wallModel.find({
+        $and: andQueryArray,
+        $or: [{ delete_at: null }, { delete_date: null }],
+      });
+
+      const total = await this.wallModel.countDocuments({
+        $and: andQueryArray,
+        $or: [{ delete_at: null }, { delete_date: null }],
+      });
+
+      const totalPages = Math.ceil(total / actualLimit);
+
+      if (totalPages === 0) {
+        throw new HttpException(
+          'No se encontraron resultados.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (page && (page < 1 || page > totalPages)) {
+        throw new HttpException(
+          'Página fuera de rango.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (page) {
+        const skipCount = (page - 1) * actualLimit;
+        query = query.skip(skipCount).limit(actualLimit);
+      } else {
+        query = query.limit(actualLimit);
+      }
+
+      const data = await query.exec();
+
+      const response: { status: number; data: PaginationResponse<Wall> } = {
+        status: HttpStatus.OK,
+        data: {
+          paginationData: {
+            page: page || 1,
+            limit: actualLimit,
+            total,
+            totalPages,
+          },
+          data,
+        },
+      };
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getWallsByCountry(
+    user: any,
+    response,
+  ): Promise<{ status: number; data: Wall[] }> {
+    try {
+      const country = user.country;
+      const walls = await this.wallModel.find({ locationWall: country }).exec();
+      const responseData = {
+        status: HttpStatus.OK,
+        data: walls,
+      };
+      return responseData;
+    } catch (error) {
+      response.status(500).json({ error: 'Error interno del servidor' });
+      // Puedes personalizar el mensaje de error según tus necesidades
+    }
+  }
 }
