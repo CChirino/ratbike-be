@@ -30,6 +30,8 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
   @IsNotEmpty()
   locationWall: string;
   @IsNotEmpty()
+  cityWall: string;
+  @IsNotEmpty()
   startDateWall: Date;
   @IsNotEmpty()
   endDateWall: Date;

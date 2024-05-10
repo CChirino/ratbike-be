@@ -35,6 +35,8 @@ export class WallService {
 
       const newWall = new this.wallModel({
         ...createWallDto,
+        startDateWall: new Date(createWallDto.startDateWall),
+        endDateWall: new Date(createWallDto.endDateWall),
         ...(translation && { translation }),
         status: 'revision',
         createdBy: user.name + ' ' + user.lastname,
