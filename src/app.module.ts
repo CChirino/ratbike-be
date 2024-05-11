@@ -56,6 +56,6 @@ import { WallService } from './wall/wall.service';
   ],
   controllers: [AppController],
   providers: [AppService, EmailService, CronJobService],
-  exports: [CronJobService, WallService, EmailService],
+  exports: [CronJobService, EmailService],
 })
 export class AppModule {}

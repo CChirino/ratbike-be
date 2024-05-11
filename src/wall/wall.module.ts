@@ -31,5 +31,6 @@ import { EmailModule } from '../email/email.module';
   ],
   controllers: [WallController],
   providers: [WallService],
+  exports: [WallService],
 })
 export class WallModule {}

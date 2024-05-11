@@ -326,20 +326,20 @@ export class WallService {
       };
 
       if (search) {
+        const searchRegex = new RegExp(search, 'i');
         query['$or'] = [
-          {
-            'translation.translationTitleWall.en': {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            'translation.translationDescriptionWall.en': {
-              $regex: search,
-              $options: 'i',
-            },
-          },
+          { 'translation.translationTitleWall.en': searchRegex },
+          { 'translation.translationDescriptionWall.en': searchRegex },
         ];
+        const languages = ['es', 'de', 'it', 'pt', 'fr'];
+        languages.forEach((lang) => {
+          query['$or'].push({
+            [`translation.translationTitleWall.${lang}`]: searchRegex,
+          });
+          query['$or'].push({
+            [`translation.translationDescriptionWall.${lang}`]: searchRegex,
+          });
+        });
       }
 
       if (skills && skills.length > 0) {
