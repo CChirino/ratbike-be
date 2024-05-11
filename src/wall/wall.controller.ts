@@ -45,8 +45,11 @@ export class WallController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('skills') skills?: string,
+    @Query('search') search?: string,
+    @Query('countries') countries?: string,
   ) {
-    return this.wallService.findAll(page, limit, skills);
+    console.log({ skills, countries });
+    return this.wallService.findAll(page, limit, search, skills, countries);
   }
 
   @Get(':id')
@@ -85,7 +88,6 @@ export class WallController {
 
   @Get('country')
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(AnyFilesInterceptor())
   getWallsByCountry(@Res() response, @Req() request: Request) {
     const user = request.user;
     return this.wallService.getWallsByCountry(user, response);

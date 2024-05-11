@@ -75,11 +75,12 @@ export class WallService {
       throw error;
     }
   }
-
   async findAll(
     page?: number,
     limit?: number,
+    search?: string,
     skills?: string,
+    countries?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -99,64 +100,18 @@ export class WallService {
         );
       }
 
-      const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
-      const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
+      const skillsArray = skills ? skills.split(',') : [];
+      const countriesArray = countries ? countries.split(',') : [];
 
-      const andQueryArray: any = [{ status: 'aprobado' }];
+      console.log({ skills, skillsArray }, 999);
 
-      if (!!skills) {
-        andQueryArray.push({ skills: skills });
-      }
-
-      let query = this.wallModel.find({
-        $and: andQueryArray,
-        $or: [{ delete_at: null }, { delete_date: null }],
-      });
-
-      const total = await this.wallModel.countDocuments({
-        $and: andQueryArray,
-        $or: [{ delete_at: null }, { delete_date: null }],
-      });
-
-      const totalPages = Math.ceil(total / actualLimit);
-
-      if (totalPages === 0) {
-        throw new HttpException(
-          'No se encontraron resultados.',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      if (page && (page < 1 || page > totalPages)) {
-        throw new HttpException(
-          'Página fuera de rango.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      if (page) {
-        const skipCount = (page - 1) * actualLimit;
-        query = query.skip(skipCount).limit(actualLimit);
-      } else {
-        query = query.limit(actualLimit);
-      }
-
-      const data = await query.exec();
-
-      const response: { status: number; data: PaginationResponse<Wall> } = {
-        status: HttpStatus.OK,
-        data: {
-          paginationData: {
-            page: page || 1,
-            limit: actualLimit,
-            total,
-            totalPages,
-          },
-          data,
-        },
-      };
-
-      return response;
+      return this.findAllWithFilters(
+        page,
+        limit,
+        search,
+        skillsArray,
+        countriesArray,
+      );
     } catch (error) {
       throw error;
     }
@@ -327,6 +282,119 @@ export class WallService {
     } catch (error) {
       response.status(500).json({ error: 'Error interno del servidor' });
       // Puedes personalizar el mensaje de error según tus necesidades
+    }
+  }
+
+  async getWallByTranslation(
+    translationTitle: string,
+    translationDescription: string,
+  ): Promise<WallDocument[]> {
+    try {
+      const query = {};
+      const languages = ['en', 'es', 'de', 'it', 'pt', 'fr'];
+
+      languages.forEach((language) => {
+        query[`translation.translationTitleWall.${language}`] = {
+          $eq: translationTitle,
+        };
+        query[`translation.translationDescriptionWall.${language}`] = {
+          $eq: translationDescription,
+        };
+      });
+
+      const walls = await this.wallModel.find(query).exec();
+      return walls;
+    } catch (error) {
+      throw new Error('No se pudo obtener respuesta.');
+    }
+  }
+
+  async findAllWithFilters(
+    page?: number,
+    limit?: number,
+    search?: string,
+    skills?: string[],
+    countries?: string[],
+  ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
+    try {
+      const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
+      const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
+
+      const query: any = {
+        status: 'aprobado',
+        $or: [{ delete_at: null }, { delete_date: null }],
+      };
+
+      if (search) {
+        query['$or'] = [
+          {
+            'translation.translationTitleWall.en': {
+              $regex: search,
+              $options: 'i',
+            },
+          },
+          {
+            'translation.translationDescriptionWall.en': {
+              $regex: search,
+              $options: 'i',
+            },
+          },
+        ];
+      }
+
+      if (skills && skills.length > 0) {
+        query.skillWall = { $in: skills };
+      }
+
+      if (countries && countries.length > 0) {
+        query.locationWall = { $in: countries };
+      }
+
+      const total = await this.wallModel.countDocuments(query);
+      const totalPages = Math.ceil(total / actualLimit);
+
+      if (totalPages === 0) {
+        throw new HttpException(
+          'No se encontraron resultados.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (page && (page < 1 || page > totalPages)) {
+        throw new HttpException(
+          'Página fuera de rango.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      let data: WallDocument[];
+      if (page) {
+        const skipCount = (page - 1) * actualLimit;
+        data = await this.wallModel
+          .find(query)
+          .skip(skipCount)
+          .limit(actualLimit)
+          .exec();
+      } else {
+        data = await this.wallModel.find(query).limit(actualLimit).exec();
+      }
+
+      const response: { status: number; data: PaginationResponse<Wall> } = {
+        status: HttpStatus.OK,
+        data: {
+          paginationData: {
+            page: page || 1,
+            limit: actualLimit,
+            total,
+            totalPages,
+          },
+          data,
+        },
+      };
+
+      return response;
+    } catch (error) {
+      throw error;
     }
   }
 }
