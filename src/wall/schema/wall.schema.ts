@@ -37,6 +37,9 @@ export class Wall {
   locationWall: string;
 
   @Prop()
+  cityWall: string;
+
+  @Prop()
   createdBy: string;
 
   @Prop({ type: mongoose.Schema.Types.Mixed })

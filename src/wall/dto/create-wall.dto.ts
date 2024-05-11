@@ -26,6 +26,8 @@ export class CreateWallDto {
   @IsNotEmpty()
   locationWall: string;
   @IsNotEmpty()
+  cityWall: string;
+  @IsNotEmpty()
   startHour: string;
   @IsNotEmpty()
   endHour: string;
