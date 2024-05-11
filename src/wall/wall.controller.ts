@@ -72,4 +72,22 @@ export class WallController {
   remove(@Param('id') id: string) {
     return this.wallService.remove(id);
   }
+
+  @Get('revision')
+  @UseGuards(AuthGuard('jwt'))
+  findRevision(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('skills') skills?: string,
+  ) {
+    return this.wallService.findRevision(page, limit, skills);
+  }
+
+  @Get('country')
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(AnyFilesInterceptor())
+  getWallsByCountry(@Res() response, @Req() request: Request) {
+    const user = request.user;
+    return this.wallService.getWallsByCountry(user, response);
+  }
 }
