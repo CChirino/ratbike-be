@@ -105,8 +105,6 @@ export class WallService {
       const skillsArray = skills ? skills.split(',') : [];
       const countriesArray = countries ? countries.split(',') : [];
 
-      console.log({ skills, skillsArray }, 999);
-
       return this.findAllWithFilters(
         page,
         limit,

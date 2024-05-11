@@ -14,7 +14,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     // Por ejemplo, obtener el token de la solicitud
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.replace('Bearer ', '');
-    console.log(token);
 
     // Validar el token si es necesario
     if (token) {

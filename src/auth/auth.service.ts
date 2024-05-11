@@ -78,7 +78,6 @@ export class AuthService {
       );
       response.status(HttpStatus.OK).json(data);
     } catch (error) {
-      console.log(error);
       if (error.keyValue && error.keyValue.email && error.code === 11000) {
         throw new HttpException('EMAIL_ALREADY_TAKEN', 409);
       }
