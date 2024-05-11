@@ -397,4 +397,22 @@ export class WallService {
       throw error;
     }
   }
+  async findExpiredWalls(): Promise<WallDocument[]> {
+    const expirationDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // Hace 30 días
+    return this.wallModel
+      .find({
+        status: 'aprobado',
+        endDateWall: { $lt: expirationDate },
+      })
+      .exec();
+  }
+
+  async updateWallStatus(
+    wallId: string,
+    newStatus: string,
+  ): Promise<WallDocument> {
+    return this.wallModel
+      .findByIdAndUpdate(wallId, { status: newStatus }, { new: true })
+      .exec();
+  }
 }

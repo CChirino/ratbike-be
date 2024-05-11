@@ -17,6 +17,8 @@ import { BrotherhoodModule } from './brotherhood/brotherhood.module';
 import { CategoriesBrotherhoodModule } from './categories-brotherhood/categories-brotherhood.module';
 import { WallModule } from './wall/wall.module';
 import { SkillsModule } from './skills/skills.module';
+import { CronJobService } from './cron-job/cron-job.service';
+import { WallService } from './wall/wall.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -53,6 +55,7 @@ import { SkillsModule } from './skills/skills.module';
     SkillsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService],
+  providers: [AppService, EmailService, CronJobService],
+  exports: [CronJobService, WallService, EmailService],
 })
 export class AppModule {}

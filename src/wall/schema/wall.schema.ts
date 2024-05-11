@@ -48,7 +48,10 @@ export class Wall {
     translationDescriptionWall: Record<string, any>;
   };
 
-  @Prop({ default: 'revision', enum: ['revision', 'aprobado', 'rechazado'] })
+  @Prop({
+    default: 'revision',
+    enum: ['revision', 'aprobado', 'rechazado', 'desactualizado'],
+  })
   status: string;
 
   @Prop()

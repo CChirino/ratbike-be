@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Product } from 'src/products/schema/products.schema';
 import { Brotherhood } from 'src/brotherhood/schema/brotherhood.schema';
 import { Wall } from 'src/wall/schema/wall.schema';
-
+import { WallDocument } from 'src/wall/schema/wall.schema';
 @Injectable()
 export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
+
+  private readonly logger = new Logger(EmailService.name);
 
   async sendRegistrationConfirmation(email: string, name: string) {
     await this.mailerService.sendMail({
@@ -220,5 +222,16 @@ export class EmailService {
         </html>
       `,
     });
+  }
+
+  async sendExpiredWallNotification(wall: WallDocument): Promise<void> {
+    try {
+      // Lógica para enviar el correo electrónico
+      this.logger.log(
+        `Enviando notificación de muro vencido: ${wall.titleWall}`,
+      );
+    } catch (error) {
+      this.logger.error('Error al enviar notificación de muro vencido', error);
+    }
   }
 }

@@ -110,7 +110,7 @@ export class AuthService {
         email: findUser.email,
         urlProfileImage: findUser.urlProfileImage,
         role: findUser.role,
-        country: findUser.country
+        country: findUser.country,
       },
       token,
     };
