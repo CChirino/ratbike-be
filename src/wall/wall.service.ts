@@ -83,6 +83,7 @@ export class WallService {
     search?: string,
     skills?: string,
     countries?: string,
+    wallStatus: string = 'aprobado'
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -111,6 +112,7 @@ export class WallService {
         search,
         skillsArray,
         countriesArray,
+        wallStatus
       );
     } catch (error) {
       throw error;
@@ -315,13 +317,14 @@ export class WallService {
     search?: string,
     skills?: string[],
     countries?: string[],
+    wallStatus: string = 'aprobado'
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
       const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
 
       const query: any = {
-        status: 'aprobado',
+        status: wallStatus,
         $or: [{ delete_at: null }, { delete_date: null }],
       };
 
