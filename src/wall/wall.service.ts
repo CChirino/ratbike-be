@@ -83,7 +83,7 @@ export class WallService {
     search?: string,
     skills?: string,
     countries?: string,
-    wallStatus: string = 'aprobado'
+    wallStatus: string = 'aprobado',
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -112,7 +112,7 @@ export class WallService {
         search,
         skillsArray,
         countriesArray,
-        wallStatus
+        wallStatus,
       );
     } catch (error) {
       throw error;
@@ -145,7 +145,14 @@ export class WallService {
     try {
       const emailUser = user.email;
       const updatedWall = await this.wallModel
-        .findByIdAndUpdate(id, updateWallDto, { new: true })
+        .findByIdAndUpdate(
+          id,
+          {
+            ...updateWallDto,
+            update_at: new Date(), // Actualizar el campo update_at
+          },
+          { new: true },
+        )
         .exec();
 
       if (!updatedWall) {
@@ -317,7 +324,7 @@ export class WallService {
     search?: string,
     skills?: string[],
     countries?: string[],
-    wallStatus: string = 'aprobado'
+    wallStatus: string = 'aprobado',
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit

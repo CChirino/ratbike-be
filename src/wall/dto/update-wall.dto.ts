@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateWallDto } from './create-wall.dto';
-import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject, IsDate } from 'class-validator';
 
 export class UpdateWallDto extends PartialType(CreateWallDto) {
   @IsNotEmpty()
@@ -48,4 +48,8 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
     translationTitleWall: Record<string, any>;
     translationDescriptionWall: Record<string, any>;
   };
+
+  @IsOptional()
+  @IsDate()
+  update_at?: Date;
 }

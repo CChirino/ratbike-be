@@ -53,7 +53,7 @@ export class EmailService {
 
   async sendProductRequest(productId: string): Promise<void> {
     await this.mailerService.sendMail({
-      to: 'christopherchirinosj@gmail.com',
+      to: 'angeldchz@gmail.com',
       subject: 'Producto en Revision - Rat Bikes',
       html: `
         <!DOCTYPE html>
@@ -205,7 +205,7 @@ export class EmailService {
 
   async sendPostRequest(wallId: string): Promise<void> {
     await this.mailerService.sendMail({
-      to: 'christopherchirinosj@gmail.com',
+      to: 'angeldchz@gmail.com',
       subject: 'Post-it en Revision - Rat Bikes',
       html: `
         <!DOCTYPE html>
@@ -217,7 +217,7 @@ export class EmailService {
           <body>
           <h1>Post-it En revision </h1>
           <p>Se ha creado un Post-it nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
-          <a href="http://localhost:3000/products/${wallId}">Actualizar producto</a>
+          <a href="http://localhost:3000/wall/${wallId}">Actualizar Post-it</a>
           </body>
         </html>
       `,

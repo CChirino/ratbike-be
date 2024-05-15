@@ -33,6 +33,9 @@ export class Wall {
   @Prop({ type: Date, required: false, default: null })
   delete_date: Date;
 
+  @Prop({ type: Date, required: false, default: null })
+  update_at: Date;
+
   @Prop()
   locationWall: string;
 
