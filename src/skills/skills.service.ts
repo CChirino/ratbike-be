@@ -61,7 +61,7 @@ export class SkillsService {
 
       const skillId = createdSkill._id;
 
-      await this.emailService.sendPostRequestSkill(skillId);
+      // await this.emailService.sendPostRequestSkill(skillId);
 
       const responseObj = {
         status: HttpStatus.OK,
