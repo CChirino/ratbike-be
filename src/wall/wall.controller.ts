@@ -49,7 +49,14 @@ export class WallController {
     @Query('countries') countries?: string,
     @Query('wallstatus') wallStatus?: string,
   ) {
-    return this.wallService.findAll(page, limit, search, skills, countries, wallStatus);
+    return this.wallService.findAll(
+      page,
+      limit,
+      search,
+      skills,
+      countries,
+      wallStatus,
+    );
   }
 
   @Get(':id')

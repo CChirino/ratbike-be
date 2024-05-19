@@ -6,13 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFiles,
+  Res,
   UseGuards,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { SkillsService } from './skills.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('skills')
 @Controller('skills')
@@ -21,14 +28,33 @@ export class SkillsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() createSkillDto: CreateSkillDto) {
-    return this.skillsService.create(createSkillDto);
+  @UseInterceptors(AnyFilesInterceptor())
+  create(
+    @Body() createSkillDto: CreateSkillDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Res() response,
+    @Req() request: Request,
+  ) {
+    const user = request.user;
+    return this.skillsService.create(createSkillDto, files, user, response);
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  findAll() {
-    return this.skillsService.findAll();
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('search') search?: string,
+    @Query('countries') countries?: string,
+    @Query('wallstatus') wallStatus?: string,
+  ) {
+    return this.skillsService.findAll(
+      page,
+      limit,
+      search,
+      countries,
+      wallStatus,
+    );
   }
 
   @Get(':id')
@@ -39,8 +65,14 @@ export class SkillsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  update(@Param('id') id: string, @Body() updateSkillDto: UpdateSkillDto) {
-    return this.skillsService.update(id, updateSkillDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateSkillDto: UpdateSkillDto,
+    @Req() request: Request,
+    @Res() response,
+  ) {
+    const user = request.user;
+    return this.skillsService.update(id, updateSkillDto, user, response);
   }
 
   @Delete(':id')

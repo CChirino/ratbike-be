@@ -4,6 +4,7 @@ import { Product } from 'src/products/schema/products.schema';
 import { Brotherhood } from 'src/brotherhood/schema/brotherhood.schema';
 import { Wall } from 'src/wall/schema/wall.schema';
 import { WallDocument } from 'src/wall/schema/wall.schema';
+import { Skill } from 'src/skills/schema/skills.schema';
 @Injectable()
 export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
@@ -186,7 +187,7 @@ export class EmailService {
     const wallName = wall.titleWall;
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Brotherhood Rechazado - Rat Bikes',
+      subject: 'Post-it Wall Rechazado - Rat Bikes',
       html: `
         <!DOCTYPE html>
         <html>
@@ -233,5 +234,68 @@ export class EmailService {
     } catch (error) {
       this.logger.error('Error al enviar notificación de muro vencido', error);
     }
+  }
+
+  async sendApprovalEmailSkill(email: string, skill: Skill): Promise<void> {
+    const skillName = skill.titleSkill;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Skill - Wall Aprobado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title> Skill Aprobado</title>
+          </head>
+          <body>
+            <h1>¡Felicidades!</h1>
+            <p>Tu Skill ${skillName} ha sido aprobado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendRejectionEmailSkill(email: string, skill: Skill): Promise<void> {
+    const skillName = skill.titleSkill;
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Skill - Wall Rechazado - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Skill Rechazado</title>
+          </head>
+          <body>
+          <h1>Lamentamos informarte</h1>
+            <p>Tu Skill ${skillName} ha sido rechazado.</p>
+          </body>
+        </html>
+      `,
+    });
+  }
+
+  async sendPostRequestSkill(skillId: string): Promise<void> {
+    await this.mailerService.sendMail({
+      to: 'angeldchz@gmail.com',
+      subject: 'Skill en Revision - Rat Bikes',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Skill en Revision </title>
+          </head>
+          <body>
+          <h1>Post-it En revision </h1>
+          <p>Se ha creado un Skill nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
+          <a href="http://localhost:3000/skills/${skillId}">Actualizar Skill</a>
+          </body>
+        </html>
+      `,
+    });
   }
 }
