@@ -65,6 +65,9 @@ export class Wall {
 
   @Prop()
   rejectedReason: string;
+
+  @Prop({ default: false })
+  isPaid: boolean;
 }
 
 export const WallSchema = SchemaFactory.createForClass(Wall);
