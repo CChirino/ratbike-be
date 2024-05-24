@@ -26,6 +26,8 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
 
   @IsNotEmpty()
   skillWall: string;
+  @IsNotEmpty()
+  type: string;
 
   @IsNotEmpty()
   locationWall: string;

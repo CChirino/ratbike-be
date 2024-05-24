@@ -84,6 +84,7 @@ export class WallService {
     skills?: string,
     countries?: string,
     wallStatus: string = 'aprobado',
+    wallType?: string
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -113,6 +114,7 @@ export class WallService {
         skillsArray,
         countriesArray,
         wallStatus,
+        wallType
       );
     } catch (error) {
       throw error;
@@ -325,6 +327,7 @@ export class WallService {
     skills?: string[],
     countries?: string[],
     wallStatus: string = 'aprobado',
+    wallType?: string
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -358,6 +361,10 @@ export class WallService {
 
       if (countries && countries.length > 0) {
         query.locationWall = { $in: countries };
+      }
+
+      if(wallType){
+        query.type = {$in: wallType}
       }
 
       const total = await this.wallModel.countDocuments(query);
