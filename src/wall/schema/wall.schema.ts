@@ -24,6 +24,9 @@ export class Wall {
   @Prop({ default: undefined })
   urlImageWall: string;
 
+  @Prop()
+  type: 'product' | 'skill';
+
   @Prop({ type: [String], default: [] })
   galleryImagesWall: string[];
 
