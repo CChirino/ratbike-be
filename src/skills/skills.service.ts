@@ -4,14 +4,12 @@ import { Skill, SkillDocument } from './schema/skills.schema';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
-import { EmailService } from '../email/email.service';
 import * as fs from 'fs';
 import { PaginationResponse } from './interfaces/pagination.interface';
 @Injectable()
 export class SkillsService {
   constructor(
     @InjectModel(Skill.name) private skillModel: Model<SkillDocument>,
-    private readonly emailService: EmailService,
   ) {}
 
   async create(
@@ -238,15 +236,6 @@ export class SkillsService {
 
       if (!updatedSkill) {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
-      }
-
-      if (updatedSkill.status === 'aprobado') {
-        await this.emailService.sendApprovalEmailSkill(emailUser, updatedSkill);
-      } else if (updatedSkill.status === 'rechazado') {
-        await this.emailService.sendRejectionEmailSkill(
-          emailUser,
-          updatedSkill,
-        );
       }
 
       const responseObj = {
