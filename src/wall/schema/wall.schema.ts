@@ -15,12 +15,6 @@ export class Wall {
   @Prop()
   skillWall: string;
 
-  @Prop({ type: Date, required: false, default: null })
-  startDateWall: Date;
-
-  @Prop({ type: Date, required: false, default: null })
-  endDateWall: Date;
-
   @Prop({ default: undefined })
   urlImageWall: string;
 
@@ -59,12 +53,6 @@ export class Wall {
     enum: ['revision', 'aprobado', 'rechazado', 'desactualizado'],
   })
   status: string;
-
-  @Prop()
-  startHour: string;
-
-  @Prop()
-  endHour: string;
 
   @Prop()
   rejectedReason: string;

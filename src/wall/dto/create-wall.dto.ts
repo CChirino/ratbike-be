@@ -16,10 +16,6 @@ export class CreateWallDto {
   @IsNotEmpty()
   galleryImagesWall: string;
   @IsNotEmpty()
-  startHourWall: string;
-  @IsNotEmpty()
-  endHourWall: string;
-  @IsNotEmpty()
   startDateWall: Date;
   @IsNotEmpty()
   endDateWall: Date;
@@ -29,10 +25,6 @@ export class CreateWallDto {
   type: string;
   @IsNotEmpty()
   cityWall: string;
-  @IsNotEmpty()
-  startHour: string;
-  @IsNotEmpty()
-  endHour: string;
   @IsNotEmpty()
   skillWall: string;
   @IsOptional()

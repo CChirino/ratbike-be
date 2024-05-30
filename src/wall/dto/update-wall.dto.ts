@@ -33,10 +33,6 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
   locationWall: string;
   @IsNotEmpty()
   cityWall: string;
-  @IsNotEmpty()
-  startDateWall: Date;
-  @IsNotEmpty()
-  endDateWall: Date;
 
   @IsOptional()
   delete_at?: string;

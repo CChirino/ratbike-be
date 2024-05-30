@@ -49,6 +49,7 @@ export class WallController {
     @Query('countries') countries?: string,
     @Query('wallstatus') wallStatus?: string,
     @Query('type') wallType?: string,
+    @Query('modality') wallModality?: string,
   ) {
     return this.wallService.findAll(
       page,
@@ -57,7 +58,8 @@ export class WallController {
       skills,
       countries,
       wallStatus,
-      wallType
+      wallType,
+      wallModality
     );
   }
 

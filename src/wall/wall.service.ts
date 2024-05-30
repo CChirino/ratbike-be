@@ -84,7 +84,8 @@ export class WallService {
     skills?: string,
     countries?: string,
     wallStatus: string = 'aprobado',
-    wallType?: string
+    wallType?: string,
+    wallModality?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -114,7 +115,8 @@ export class WallService {
         skillsArray,
         countriesArray,
         wallStatus,
-        wallType
+        wallType,
+        wallModality
       );
     } catch (error) {
       throw error;
@@ -327,7 +329,8 @@ export class WallService {
     skills?: string[],
     countries?: string[],
     wallStatus: string = 'aprobado',
-    wallType?: string
+    wallType?: string,
+    wallModality?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -359,9 +362,24 @@ export class WallService {
         query.skillWall = { $in: skills };
       }
 
-      if (countries && countries.length > 0) {
-        query.locationWall = { $in: countries };
+      //if modality is insitu and there are no countries selected, just remove remote results, otherwise, remove remote results and just fetch results from the selected countries
+      //if modality is remote, ignore countries, just get the wall items which locationWall are 'remote'
+      //if there is no modality selected it means that there are no restriction in modality, therefore, show remote locations and if there are countries, show those which coincide with selected countries, if there are no countries
+      //    is like not having any query at all regarding the location
+      if (wallModality === 'insitu'){
+        if (countries && countries.length > 0) {
+          query.locationWall = { $in: countries, $nin: ["remote"] };
+        }else{
+          query.locationWall = { $nin: ["remote"] };
+        }
+      }else if(wallModality === "remote"){
+        query.locationWall = { $in: ["remote"] };
+      }else{
+        if (countries && countries.length > 0) {
+          query.locationWall = { $in: [...countries, "remote"]};
+        }
       }
+
 
       if(wallType){
         query.type = {$in: wallType}
