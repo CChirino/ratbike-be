@@ -358,9 +358,7 @@ export class WallService {
         });
       }
 
-      if (skills && skills.length > 0) {
-        query.skillWall = { $in: skills };
-      }
+      
 
       //if modality is insitu and there are no countries selected, just remove remote results, otherwise, remove remote results and just fetch results from the selected countries
       //if modality is remote, ignore countries, just get the wall items which locationWall are 'remote'
@@ -380,9 +378,22 @@ export class WallService {
         }
       }
 
-
-      if(wallType){
+      //if the type is product, we don't need to filter by skills type
+      //if the type is skill, we need to filter by type and if there are skills we need to filter by type skill and the selected skills
+      // if the product type doesn't exist means we wan't every type of products, however if there are skills selected needs to show products but also skills from the selected skill categories
+      //    that's the reason of that undefined, it means, if the field doesn't exist (which would be a product because the skillWall field doesn't exists for products) or if the skill is among the selected skill category by the user
+      if(wallType === 'product'){
         query.type = {$in: wallType}
+      }else if(wallType === 'skill'){
+        query.type = {$in: wallType}
+        if (skills && skills.length > 0) {
+          query.skillWall = { $in: skills };
+        }
+      }else{
+        if (skills && skills.length > 0) {
+          query.skillWall = { $in: [...skills, undefined]}
+        }
+       
       }
 
       const total = await this.wallModel.countDocuments(query);
