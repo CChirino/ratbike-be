@@ -8,50 +8,41 @@ import {
   MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
+import { UseGuards } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Server, Socket } from 'socket.io';
-import * as jwt from 'jsonwebtoken';
+import { WsJwtAuthGuard } from './ws-jwt-auth.guard';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: '*', // Ajusta esto para permitir el CORS desde tu frontend
   },
 })
 export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private connectedUsers: Map<string, string> = new Map();
 
+  constructor(private readonly jwtService: JwtService) {}
+
+  @UseGuards(WsJwtAuthGuard)
   async handleConnection(client: Socket) {
-    const token = client.handshake.query.token as string;
-    if (token) {
-      try {
-        const payload = jwt.verify(token, 'your-jwt-secret') as {
-          userId: string;
-        };
-        this.connectedUsers.set(payload.userId, client.id);
-        this.server.emit('users', Array.from(this.connectedUsers.keys()));
-      } catch (e) {
-        client.disconnect();
-      }
-    } else {
-      client.disconnect();
+    const user = client.handshake.query.user;
+    if (user) {
+      this.connectedUsers.set(user.userId, client.id);
+      this.server.emit('users', Array.from(this.connectedUsers.keys()));
     }
   }
 
+  @UseGuards(WsJwtAuthGuard)
   handleDisconnect(client: Socket) {
-    const token = client.handshake.query.token as string;
-    if (token) {
-      try {
-        const payload = jwt.verify(token, 'your-jwt-secret') as {
-          userId: string;
-        };
-        this.connectedUsers.delete(payload.userId);
-        this.server.emit('users', Array.from(this.connectedUsers.keys()));
-      } catch (e) {
-        // Do nothing
-      }
+    const user = client.handshake.query.user;
+    if (user) {
+      this.connectedUsers.delete(user.userId);
+      this.server.emit('users', Array.from(this.connectedUsers.keys()));
     }
   }
 
+  @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('getUsers')
   handleGetUsers(@ConnectedSocket() client: Socket): void {
     client.emit('users', Array.from(this.connectedUsers.keys()));

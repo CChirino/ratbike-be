@@ -20,6 +20,8 @@ import { SkillsModule } from './skills/skills.module';
 import { CronJobService } from './cron-job/cron-job.service';
 import { WallService } from './wall/wall.service';
 import { WsGateway } from './ws.gateway';
+import { WsJwtAuthGuard } from './ws-jwt-auth.guard';
+import { JwtStrategy } from './auth/jwt.strategy';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -56,7 +58,14 @@ import { WsGateway } from './ws.gateway';
     SkillsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService, CronJobService, WsGateway],
+  providers: [
+    AppService,
+    EmailService,
+    CronJobService,
+    WsGateway,
+    WsJwtAuthGuard,
+    JwtStrategy,
+  ],
   exports: [CronJobService, EmailService],
 })
 export class AppModule {}
