@@ -19,6 +19,7 @@ import { WallModule } from './wall/wall.module';
 import { SkillsModule } from './skills/skills.module';
 import { CronJobService } from './cron-job/cron-job.service';
 import { WallService } from './wall/wall.service';
+import { WsGateway } from './ws.gateway';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -55,7 +56,7 @@ import { WallService } from './wall/wall.service';
     SkillsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService, CronJobService],
+  providers: [AppService, EmailService, CronJobService, WsGateway],
   exports: [CronJobService, EmailService],
 })
 export class AppModule {}
