@@ -18,7 +18,6 @@ import { CategoriesBrotherhoodModule } from './categories-brotherhood/categories
 import { WallModule } from './wall/wall.module';
 import { SkillsModule } from './skills/skills.module';
 import { CronJobService } from './cron-job/cron-job.service';
-import { WsGateway } from './ws.gateway';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { WebsocketModule } from './websockets/websocket.module';
 @Module({
@@ -58,13 +57,7 @@ import { WebsocketModule } from './websockets/websocket.module';
     WebsocketModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    EmailService,
-    CronJobService,
-    WsGateway,
-    JwtStrategy, // Asegúrate de que JwtStrategy esté registrado
-  ],
+  providers: [AppService, EmailService, CronJobService, JwtStrategy],
   exports: [CronJobService, EmailService],
 })
 export class AppModule {}
