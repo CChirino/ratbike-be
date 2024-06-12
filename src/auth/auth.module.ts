@@ -33,7 +33,7 @@ dotenv.config();
         destination: './uploads/profile', // Directorio donde se guardarán las imágenes
         filename: (req, file, callback) => {
           const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-          const extension = file.mimetype.split('/')[1].replace("+xml", ""); // Obtener la extensión del archivo
+          const extension = file.mimetype.split('/')[1].replace('+xml', ''); // Obtener la extensión del archivo
           callback(null, `${uniqueSuffix}.${extension}`);
         },
       }),
@@ -41,6 +41,7 @@ dotenv.config();
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
+  exports: [JwtModule, PassportModule], // Exportar JwtModule y PassportModule
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
