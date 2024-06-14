@@ -59,7 +59,7 @@ export class WallController {
       countries,
       wallStatus,
       wallType,
-      wallModality
+      wallModality,
     );
   }
 

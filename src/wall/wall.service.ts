@@ -116,7 +116,7 @@ export class WallService {
         countriesArray,
         wallStatus,
         wallType,
-        wallModality
+        wallModality,
       );
     } catch (error) {
       throw error;
@@ -358,23 +358,21 @@ export class WallService {
         });
       }
 
-      
-
       //if modality is insitu and there are no countries selected, just remove remote results, otherwise, remove remote results and just fetch results from the selected countries
       //if modality is remote, ignore countries, just get the wall items which locationWall are 'remote'
       //if there is no modality selected it means that there are no restriction in modality, therefore, show remote locations and if there are countries, show those which coincide with selected countries, if there are no countries
       //    is like not having any query at all regarding the location
-      if (wallModality === 'insitu'){
+      if (wallModality === 'insitu') {
         if (countries && countries.length > 0) {
-          query.locationWall = { $in: countries, $nin: ["remote"] };
-        }else{
-          query.locationWall = { $nin: ["remote"] };
+          query.locationWall = { $in: countries, $nin: ['remote'] };
+        } else {
+          query.locationWall = { $nin: ['remote'] };
         }
-      }else if(wallModality === "remote"){
-        query.locationWall = { $in: ["remote"] };
-      }else{
+      } else if (wallModality === 'remote') {
+        query.locationWall = { $in: ['remote'] };
+      } else {
         if (countries && countries.length > 0) {
-          query.locationWall = { $in: [...countries, "remote"]};
+          query.locationWall = { $in: [...countries, 'remote'] };
         }
       }
 
@@ -382,18 +380,17 @@ export class WallService {
       //if the type is skill, we need to filter by type and if there are skills we need to filter by type skill and the selected skills
       // if the product type doesn't exist means we wan't every type of products, however if there are skills selected needs to show products but also skills from the selected skill categories
       //    that's the reason of that undefined, it means, if the field doesn't exist (which would be a product because the skillWall field doesn't exists for products) or if the skill is among the selected skill category by the user
-      if(wallType === 'product'){
-        query.type = {$in: wallType}
-      }else if(wallType === 'skill'){
-        query.type = {$in: wallType}
+      if (wallType === 'product') {
+        query.type = { $in: wallType };
+      } else if (wallType === 'skill') {
+        query.type = { $in: wallType };
         if (skills && skills.length > 0) {
           query.skillWall = { $in: skills };
         }
-      }else{
+      } else {
         if (skills && skills.length > 0) {
-          query.skillWall = { $in: [...skills, undefined]}
+          query.skillWall = { $in: [...skills, undefined] };
         }
-       
       }
 
       const total = await this.wallModel.countDocuments(query);

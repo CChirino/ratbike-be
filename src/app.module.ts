@@ -20,6 +20,7 @@ import { SkillsModule } from './skills/skills.module';
 import { CronJobService } from './cron-job/cron-job.service';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { WebsocketModule } from './websockets/websocket.module';
+import { EventsModule } from './events/events.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -55,6 +56,7 @@ import { WebsocketModule } from './websockets/websocket.module';
     WallModule,
     SkillsModule,
     WebsocketModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService, CronJobService, JwtStrategy],
