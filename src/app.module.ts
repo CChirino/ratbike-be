@@ -21,6 +21,10 @@ import { CronJobService } from './cron-job/cron-job.service';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { WebsocketModule } from './websockets/websocket.module';
 import { EventsModule } from './events/events.module';
+import { RolesGuard } from './guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { Reflector } from '@nestjs/core';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -59,7 +63,17 @@ import { EventsModule } from './events/events.module';
     EventsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EmailService, CronJobService, JwtStrategy],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+    AppService,
+    EmailService,
+    CronJobService,
+    JwtStrategy,
+    Reflector,
+  ],
   exports: [CronJobService, EmailService],
 })
 export class AppModule {}

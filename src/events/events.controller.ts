@@ -15,8 +15,11 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('events')
+@UseGuards(RolesGuard)
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
@@ -39,6 +42,7 @@ export class EventsController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);
   }
