@@ -8,9 +8,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 @Injectable()
 export class EventsService {
   constructor(@InjectModel(Event.name) private eventModel: Model<Event>) {}
+
   async findAll(): Promise<Event[]> {
     try {
-      return await this.eventModel.find().exec();
+      return await this.eventModel
+        .find({ delete_at: null, delete_date: null })
+        .exec();
     } catch (error) {
       throw new HttpException(
         'Error fetching events',
@@ -37,15 +40,25 @@ export class EventsService {
     }
   }
 
-  async create(createEventDto: CreateEventDto): Promise<Event> {
+  async create(
+    createEventDto: CreateEventDto,
+    user: any,
+    response,
+  ): Promise<Event> {
     try {
       const createdEvent = new this.eventModel({
         ...createEventDto,
         delete_at: null,
         delete_date: null,
         update_at: null,
+        createdBy: user.name + ' ' + user.lastname,
       });
-      return await createdEvent.save();
+      await createdEvent.save(); // Asegúrate de guardar el documento en la base de datos
+      const responseObj = {
+        status: HttpStatus.OK,
+        data: createdEvent,
+      };
+      return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       throw new HttpException(
         'Error creating event',

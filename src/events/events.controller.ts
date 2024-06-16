@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller('events')
 export class EventsController {
@@ -19,8 +22,13 @@ export class EventsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() createEventDto: CreateEventDto) {
-    return this.eventsService.create(createEventDto);
+  create(
+    @Body() createEventDto: CreateEventDto,
+    @Res() response,
+    @Req() request: Request,
+  ) {
+    const user = request.user;
+    return this.eventsService.create(createEventDto, user, response);
   }
 
   @Get()

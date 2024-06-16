@@ -32,6 +32,9 @@ export class Event extends Document {
 
   @Prop({ type: Date, required: false, default: null })
   update_at: Date;
+
+  @Prop()
+  createdBy: string;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

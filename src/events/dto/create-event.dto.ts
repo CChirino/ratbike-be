@@ -35,6 +35,9 @@ export class CreateEventDto {
   @IsString({ each: true })
   coordinates: string[];
 
+  @IsNotEmpty()
+  createdBy: string;
+
   @IsOptional()
   @IsString()
   delete_at?: string;
