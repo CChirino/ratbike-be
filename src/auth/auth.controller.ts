@@ -7,6 +7,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
@@ -14,13 +15,17 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('auth')
 @Controller('auth')
+@UseGuards(RolesGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @Roles('public', 'admin', 'moderador', 'user')
   @UseInterceptors(FileInterceptor('urlProfileImage')) // Nombre del campo de archivo en la solicitud
   async register(
     @UploadedFile() file: Express.Multer.File,
@@ -30,11 +35,13 @@ export class AuthController {
     return await this.authService.register(userObject, file, response);
   }
   @Post('login')
+  @Roles('public', 'admin', 'moderador', 'user')
   loginUser(@Body() userObjectLogin: LoginAuthDto, @Res() response) {
     return this.authService.login(userObjectLogin, response);
   }
 
   @Post('refresh-token')
+  @Roles('public', 'admin', 'moderador', 'user')
   refreshToken(@Body() refreshTokenDto: RefreshTokenDto, @Response() res: any) {
     const newAccessToken = this.authService.refreshToken(
       refreshTokenDto.refreshToken,
@@ -51,11 +58,13 @@ export class AuthController {
   }
 
   @Post('reset-password')
+  @Roles('public', 'admin', 'moderador', 'user')
   async requestPasswordReset(@Body('email') email: string): Promise<void> {
     await this.authService.sendPasswordResetEmail(email);
   }
 
   @Patch('reset-password')
+  @Roles('public', 'admin', 'moderador', 'user')
   async resetPassword(
     @Body('email') email: string,
     @Body('newPassword') newPassword: string,

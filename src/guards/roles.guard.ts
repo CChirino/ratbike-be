@@ -15,23 +15,36 @@ export class RolesGuard extends AuthGuard('jwt') implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const canActivate = await super.canActivate(context);
-    if (!canActivate) {
-      return false;
+    let isAuthenticated: boolean;
+    try {
+      isAuthenticated = (await super.canActivate(context)) as boolean;
+    } catch (err) {
+      isAuthenticated = false;
     }
 
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    // Si no hay roles definidos, significa que el endpoint está accesible para todos
     if (!roles) {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
-    const user = request.user;
-
-    if (!roles.includes(user.role)) {
-      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    // Permitir acceso a rutas públicas si el usuario no está autenticado
+    if (!isAuthenticated) {
+      if (roles.includes('public')) {
+        return true;
+      } else {
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      }
     }
 
-    return true;
+    // Verificar si el usuario tiene uno de los roles permitidos
+    if (user && roles.includes(user.role)) {
+      return true;
+    }
+
+    throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
   }
 }
