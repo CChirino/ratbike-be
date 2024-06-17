@@ -7,11 +7,14 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schema/user.schema';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('users')
 @Controller('users')
@@ -38,7 +41,12 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
-  update(@Param('id') id: string, @Body() user: User) {
+  @UseInterceptors(AnyFilesInterceptor())
+  update(
+    @Param('id') id: string,
+    @Body() user: User,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
     return this.userService.update(id, user);
   }
 
