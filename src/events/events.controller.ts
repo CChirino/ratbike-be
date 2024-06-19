@@ -25,6 +25,7 @@ export class EventsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   create(
     @Body() createEventDto: CreateEventDto,
     @Res() response,
@@ -36,6 +37,7 @@ export class EventsController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findAll() {
     return this.eventsService.findAll();
   }
@@ -49,12 +51,14 @@ export class EventsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventsService.update(id, updateEventDto);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   remove(@Param('id') id: string) {
     return this.eventsService.remove(id);
   }

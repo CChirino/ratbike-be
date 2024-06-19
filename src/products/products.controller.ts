@@ -20,15 +20,19 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @ApiTags('products')
 @Controller('products')
+@UseGuards(RolesGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
+  @Roles('admin', 'moderador', 'user')
   async create(
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
@@ -46,6 +50,7 @@ export class ProductsController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -56,12 +61,14 @@ export class ProductsController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -74,11 +81,13 @@ export class ProductsController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   remove(@Param('id') id: string) {
     return this.productsService.remove(id);
   }
 
   @Get(':category')
+  @Roles('admin', 'moderador', 'user')
   async getProductsByCategory(@Param('category') category: string) {
     const products =
       await this.productsService.findProductsByCategory(category);

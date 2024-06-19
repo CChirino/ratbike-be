@@ -20,15 +20,19 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('brotherhood')
 @Controller('brotherhood')
+@UseGuards(RolesGuard)
 export class BrotherhoodController {
   constructor(private readonly brotherhoodService: BrotherhoodService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
+  @Roles('admin', 'moderador', 'user')
   create(
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
@@ -46,6 +50,7 @@ export class BrotherhoodController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -56,12 +61,14 @@ export class BrotherhoodController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.brotherhoodService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   update(
     @Param('id') id: string,
     @Body() updateBrotherhoodDto: UpdateBrotherhoodDto,
@@ -79,11 +86,13 @@ export class BrotherhoodController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   remove(@Param('id') id: string) {
     return this.brotherhoodService.remove(id);
   }
 
   @Get(':category')
+  @Roles('admin', 'moderador', 'user')
   @UseGuards(AuthGuard('jwt'))
   async getProductsByCategory(@Param('category') category: string) {
     const products =

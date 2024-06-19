@@ -20,14 +20,18 @@ import { ApiTags } from '@nestjs/swagger';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/guards/roles.guard';
 
 @ApiTags('articles')
 @Controller('articles')
+@UseGuards(RolesGuard)
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   @UseInterceptors(AnyFilesInterceptor())
   create(
     @UploadedFiles() files: Express.Multer.File[],
@@ -41,6 +45,7 @@ export class ArticlesController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -50,6 +55,7 @@ export class ArticlesController {
   }
 
   @Get('most-read')
+  @Roles('admin', 'moderador', 'user')
   @UseGuards(AuthGuard('jwt'))
   async getMostReadArticles() {
     const mostReadArticles = await this.articlesService.getMostReadArticles();
@@ -57,6 +63,7 @@ export class ArticlesController {
   }
 
   @Get('latest')
+  @Roles('admin', 'moderador', 'user')
   @UseGuards(AuthGuard('jwt'))
   async getLatestArticles() {
     const latestArticles = await this.articlesService.getLatestArticles();
@@ -65,12 +72,14 @@ export class ArticlesController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.articlesService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   update(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
@@ -81,12 +90,14 @@ export class ArticlesController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   remove(@Param('id') id: string) {
     return this.articlesService.remove(id);
   }
 
   @Get(':category')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
   async getArticlesByCategory(@Param('category') category: string) {
     const articles =
       await this.articlesService.findArticlesByCategory(category);
