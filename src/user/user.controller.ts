@@ -52,9 +52,9 @@ export class UserController {
   update(
     @Param('id') id: string,
     @Body() user: User,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles() file: Express.Multer.File,
   ) {
-    return this.userService.update(id, user);
+    return this.userService.update(id, user, file);
   }
 
   @Delete(':id')

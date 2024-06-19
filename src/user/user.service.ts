@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -32,7 +33,16 @@ export class UserService {
     }
   }
 
-  async update(id: string, user: User): Promise<User> {
+  async update(id: string, user: User, file: Express.Multer.File): Promise<User> {
+
+    if(file && file[0]?.path){
+      const urlProfileImage = file[0].path.replace(/\\/g, '/');
+      user.urlProfileImage = urlProfileImage;
+    }
+    if(user.password && user.password.length){
+      user.password = await hash(user.password , 10)
+    }
+
     return this.userModel.findByIdAndUpdate(id, user, { new: true });
   }
 
