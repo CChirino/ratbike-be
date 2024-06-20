@@ -8,8 +8,9 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
+import { SessionsService } from 'src/sessions/sessions.service';
+import { response } from 'express';
 
 @Injectable()
 @WebSocketGateway({
@@ -23,20 +24,15 @@ export class WebsocketGateway
   @WebSocketServer()
   server: Server;
 
-  private connectedUsers = new Map<string, any>();
-
-  constructor(private jwtService: JwtService) {}
+  constructor(private sessionsService: SessionsService) {}
 
   handleConnection(client: Socket) {
     const token = client.handshake.query.token as string;
     if (token) {
       try {
-        const user = this.jwtService.verify(token);
-        this.connectedUsers.set(client.id, user);
-        console.log('New client connected', client.id, user);
-
+        console.log('New client connected');
         // Emit the number of connected users to all clients
-        this.emitConnectedUsersCount();
+        this.emitConnectedUsers();
       } catch (error) {
         console.log('Invalid token', token);
         client.disconnect();
@@ -49,10 +45,8 @@ export class WebsocketGateway
 
   handleDisconnect(client: Socket) {
     console.log('Client disconnected', client.id);
-    this.connectedUsers.delete(client.id);
-
     // Emit the number of connected users to all clients
-    this.emitConnectedUsersCount();
+    this.emitConnectedUsers();
   }
 
   @SubscribeMessage('mensaje')
@@ -62,19 +56,14 @@ export class WebsocketGateway
   }
 
   @SubscribeMessage('connectedUsers')
-  handleConnectedUsers(@ConnectedSocket() client: Socket) {
-    const users = Array.from(this.connectedUsers.values());
-    client.emit('connectedUsers', users);
+  async handleConnectedUsers(@ConnectedSocket() client: Socket) {
+    const connectedUsers = await this.sessionsService.findAll();
+    client.emit('connectedUsers', connectedUsers);
   }
 
-  @SubscribeMessage('connectedUsersCount')
-  handleConnectedUsersCount(@ConnectedSocket() client: Socket) {
-    const count = this.connectedUsers.size;
-    client.emit('connectedUsersCount', count);
-  }
+  private async emitConnectedUsers() {
+    const connectedUsers = await this.sessionsService.findAll();
 
-  private emitConnectedUsersCount() {
-    const count = this.connectedUsers.size;
-    this.server.emit('connectedUsersCount', count);
+    this.server.emit('connectedUsers', connectedUsers);
   }
 }

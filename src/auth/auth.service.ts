@@ -14,6 +14,9 @@ import { hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { EmailService } from '../email/email.service';
 import { RegistrationResponse } from './interfaces/registration-response.interface';
+import { SessionsService } from 'src/sessions/sessions.service';
+import { COUNTRIES_ISO_3166_1_GEOLOCATION } from 'src/constants';
+
 const fs = require('fs-extra');
 
 @Injectable()
@@ -21,6 +24,7 @@ export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     private jwtService: JwtService,
+    private sessionsService: SessionsService,
     private readonly emailService: EmailService,
   ) {}
 
@@ -114,6 +118,18 @@ export class AuthService {
       },
       token,
     };
+
+    await this.sessionsService.create({
+        userId: findUser._id,
+        name: findUser.name,
+        lastname: findUser.lastname,
+        email: findUser.email,
+        urlProfileImage: findUser.urlProfileImage,
+        //vocation
+        country: findUser.country,
+        latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
+        longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
+    })
 
     response.status(HttpStatus.OK).json(data);
   }

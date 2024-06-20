@@ -24,6 +24,7 @@ import { EventsModule } from './events/events.module';
 import { RolesGuard } from './guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { Reflector } from '@nestjs/core';
+import { SessionsModule } from './sessions/sessions.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { Reflector } from '@nestjs/core';
     SkillsModule,
     WebsocketModule,
     EventsModule,
+    SessionsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -72,7 +74,7 @@ import { Reflector } from '@nestjs/core';
     EmailService,
     CronJobService,
     JwtStrategy,
-    Reflector,
+    Reflector
   ],
   exports: [CronJobService, EmailService],
 })

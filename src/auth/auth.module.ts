@@ -11,6 +11,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { SessionsService } from 'src/sessions/sessions.service';
+import { SessionsModule } from 'src/sessions/sessions.module';
 
 dotenv.config();
 
@@ -28,6 +30,7 @@ dotenv.config();
       signOptions: { expiresIn: '24h' },
     }),
     EmailModule,
+    SessionsModule,
     MulterModule.register({
       storage: diskStorage({
         destination: './uploads/profile', // Directorio donde se guardarán las imágenes
