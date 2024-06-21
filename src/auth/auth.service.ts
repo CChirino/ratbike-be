@@ -120,16 +120,16 @@ export class AuthService {
     };
 
     await this.sessionsService.create({
-        userId: findUser._id,
-        name: findUser.name,
-        lastname: findUser.lastname,
-        email: findUser.email,
-        urlProfileImage: findUser.urlProfileImage,
-        //vocation
-        country: findUser.country,
-        latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
-        longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
-    })
+      userId: findUser._id,
+      name: findUser.name,
+      lastname: findUser.lastname,
+      email: findUser.email,
+      urlProfileImage: findUser.urlProfileImage,
+      //vocation
+      country: findUser.country,
+      latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
+      longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
+    });
 
     response.status(HttpStatus.OK).json(data);
   }
@@ -209,5 +209,9 @@ export class AuthService {
         'Failed to reset password: ' + error.message,
       );
     }
+  }
+
+  async logout(token: string): Promise<void> {
+    await this.sessionsService.invalidateToken(token);
   }
 }

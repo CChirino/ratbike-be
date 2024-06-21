@@ -1,12 +1,14 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException  } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as dotenv from 'dotenv';
+import { SessionsService } from 'src/sessions/sessions.service';
+
 dotenv.config();
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly sessionsService: SessionsService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -15,8 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    if (await this.sessionsService.isTokenInvalidated(payload.jti)) {
+      throw new UnauthorizedException('Token has been invalidated');
+    }
+
     return {
-      userId: payload.id,
+      userId: payload.sub,
       name: payload.name,
       lastname: payload.lastname,
       role: payload.role,

@@ -25,6 +25,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { Reflector } from '@nestjs/core';
 import { SessionsModule } from './sessions/sessions.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { SessionsModule } from './sessions/sessions.module';
     WebsocketModule,
     EventsModule,
     SessionsModule,
+    ContactsModule,
   ],
   controllers: [AppController],
   providers: [

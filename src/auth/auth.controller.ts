@@ -8,6 +8,8 @@ import {
   UseInterceptors,
   Patch,
   UseGuards,
+  BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
@@ -17,6 +19,7 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -70,5 +73,22 @@ export class AuthController {
     @Body('newPassword') newPassword: string,
   ): Promise<void> {
     await this.authService.resetPassword(email, newPassword);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post('logout')
+  async logout(@Req() req: any): Promise<void> {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      throw new BadRequestException('Authorization header is missing');
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      throw new BadRequestException('Bearer token is missing');
+    }
+
+    await this.authService.logout(token);
   }
 }
