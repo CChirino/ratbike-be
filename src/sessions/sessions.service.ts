@@ -5,33 +5,34 @@ import { Session, SessionDocument } from './schema/session.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-
 @Injectable()
 export class SessionsService {
+  private invalidatedTokens: Set<string> = new Set();
   constructor(
-    @InjectModel(Session.name) private readonly sessionModel: Model<SessionDocument>,
+    @InjectModel(Session.name)
+    private readonly sessionModel: Model<SessionDocument>,
   ) {}
 
   async create(createSessionDto: CreateSessionDto) {
-      return await this.sessionModel.create(createSessionDto);
+    return await this.sessionModel.create(createSessionDto);
   }
 
   async findAll() {
     try {
       const data = await this.sessionModel.find().exec();
-      
+
       const responseObj: {
         status: number;
         data: Session[];
-        } = {
-          status: HttpStatus.OK,
-          data,
-          };
-        console.log({data});
+      } = {
+        status: HttpStatus.OK,
+        data,
+      };
+      console.log({ data });
 
       return await data;
     } catch (error) {
-      console.log({error})
+      console.log({ error });
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -65,9 +66,9 @@ export class SessionsService {
     }
   }
 
-  async remove(id: string ) {
+  async remove(id: string) {
     try {
-      await this.sessionModel.findOneAndDelete({id}).exec();
+      await this.sessionModel.findOneAndDelete({ id }).exec();
 
       return {
         status: HttpStatus.OK,
@@ -76,5 +77,12 @@ export class SessionsService {
       throw error;
     }
   }
-}
 
+  async invalidateToken(token: string): Promise<void> {
+    this.invalidatedTokens.add(token);
+  }
+
+  async isTokenInvalidated(token: string): Promise<boolean> {
+    return this.invalidatedTokens.has(token);
+  }
+}

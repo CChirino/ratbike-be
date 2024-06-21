@@ -8,7 +8,7 @@ export type SessionDocument = Session & Document;
 export class Session {
   @Prop()
   userId: string;
-  @Prop({ default: uuid()})
+  @Prop({ default: uuid() })
   sessionId: string;
   @Prop()
   latitude: string;
@@ -31,5 +31,4 @@ export class Session {
   createdAt: Date;
 }
 
-export const sessionSchema =
-  SchemaFactory.createForClass(Session);
+export const sessionSchema = SchemaFactory.createForClass(Session);
