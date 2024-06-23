@@ -45,7 +45,7 @@ export class ArticlesController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -72,7 +72,7 @@ export class ArticlesController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.articlesService.findOne(id);
   }
@@ -103,5 +103,4 @@ export class ArticlesController {
       await this.articlesService.findArticlesByCategory(category);
     return articles;
   }
-
 }

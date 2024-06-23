@@ -37,7 +37,7 @@ export class EventsController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   findAll() {
     return this.eventsService.findAll();
   }

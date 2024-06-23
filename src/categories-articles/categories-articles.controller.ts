@@ -46,7 +46,7 @@ export class CategoriesArticlesController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   findAll() {
     return this.categoriesArticlesService.findAll();
   }

@@ -45,7 +45,7 @@ export class WallController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -70,7 +70,7 @@ export class WallController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.wallService.findOne(id);
   }
