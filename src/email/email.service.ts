@@ -298,4 +298,32 @@ export class EmailService {
       `,
     });
   }
+
+  async sendMailContact(mailOptions: {
+    to: string;
+    subject: string;
+    text: string;
+  }) {
+    try {
+      await this.mailerService.sendMail({
+        to: mailOptions.to,
+        subject: 'Contacto - Rat Bikes',
+        html: `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>${mailOptions.subject}</title>
+            </head>
+            <body>
+              <p>${mailOptions.text}</p>
+            </body>
+          </html>
+        `,
+      });
+      this.logger.log(`Email sent to ${mailOptions.to}`);
+    } catch (error) {
+      this.logger.error('Error sending email', error);
+    }
+  }
 }
