@@ -28,7 +28,6 @@ export class SessionsService {
         status: HttpStatus.OK,
         data,
       };
-      console.log({ data });
 
       return await data;
     } catch (error) {

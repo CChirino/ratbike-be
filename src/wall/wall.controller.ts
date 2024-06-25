@@ -55,6 +55,7 @@ export class WallController {
     @Query('wallstatus') wallStatus?: string,
     @Query('type') wallType?: string,
     @Query('modality') wallModality?: string,
+    @Query('userid') ownerId?: string
   ) {
     return this.wallService.findAll(
       page,
@@ -65,6 +66,7 @@ export class WallController {
       wallStatus,
       wallType,
       wallModality,
+      ownerId
     );
   }
 
@@ -90,7 +92,7 @@ export class WallController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador')
+  @Roles('user', 'admin', 'moderador')
   remove(@Param('id') id: string) {
     return this.wallService.remove(id);
   }

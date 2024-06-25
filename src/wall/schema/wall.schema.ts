@@ -7,6 +7,9 @@ export type WallDocument = Wall & Document;
 @Schema({ toJSON: { virtuals: true } })
 export class Wall {
   @Prop()
+  ownerId: string;
+  
+  @Prop()
   titleWall: string;
 
   @Prop()

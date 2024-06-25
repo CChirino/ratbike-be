@@ -86,6 +86,7 @@ export class WallService {
     wallStatus: string = 'aprobado',
     wallType?: string,
     wallModality?: string,
+    ownerId?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -117,6 +118,7 @@ export class WallService {
         wallStatus,
         wallType,
         wallModality,
+        ownerId,
       );
     } catch (error) {
       throw error;
@@ -331,6 +333,7 @@ export class WallService {
     wallStatus: string = 'aprobado',
     wallType?: string,
     wallModality?: string,
+    ownerId?: string
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -391,6 +394,10 @@ export class WallService {
         if (skills && skills.length > 0) {
           query.skillWall = { $in: [...skills, undefined] };
         }
+      }
+
+      if(ownerId){
+        query.ownerId = { $in: [ownerId] };
       }
 
       const total = await this.wallModel.countDocuments(query);

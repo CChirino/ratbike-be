@@ -1,6 +1,8 @@
-import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject, isNotEmpty } from 'class-validator';
 export class CreateWallDto {
   [x: string]: any;
+  @IsNotEmpty()
+  ownerId: string;
   @IsNotEmpty()
   titleWall: string;
   @IsNotEmpty()
