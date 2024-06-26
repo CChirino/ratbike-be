@@ -92,7 +92,7 @@ export class WallController {
   @Patch('update-all/:id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador', 'user')
-  @UseInterceptors(FilesInterceptor('files', 10))
+  @UseInterceptors(AnyFilesInterceptor())
   updateAll(
     @Param('id') id: string,
     @Body() updateWallDto: UpdateWallDto,

@@ -45,18 +45,17 @@ export class WallService {
       if (files && files.length > 0) {
         const urlImageWall = files[0].path.replace(/\\/g, '/');
         newWall.urlImageWall = urlImageWall;
+        if (files.length > 1) {
+          const galleryImagesWall = files.map((file) =>
+            file.path.replace(/\\/g, '/'),
+          );
+          newWall.galleryImagesWall = galleryImagesWall;
+        }
       } else {
         const defaultImagePath = 'uploads/wall/default-product-image.jpg';
         if (fs.existsSync(defaultImagePath)) {
           newWall.urlImageWall = defaultImagePath;
         }
-      }
-
-      if (files && files.length > 1) {
-        const galleryImagesWall = files
-          .slice(1)
-          .map((file) => file.path.replace(/\\/g, '/'));
-        newWall.galleryImagesWall = galleryImagesWall;
       }
 
       const createdWall = await newWall.save();
@@ -194,6 +193,7 @@ export class WallService {
 
       const updateData: any = {
         ...updateWallDto,
+        status: 'revision',
         update_at: new Date(),
       };
 
@@ -201,20 +201,26 @@ export class WallService {
         const urlImageWall = files[0].path.replace(/\\/g, '/');
         updateData.urlImageWall = urlImageWall;
         updateData.galleryImagesWall = [
-          ...updateWallDto.filesToKeep.split(','),
+          ...(updateWallDto.filesToKeep.length
+            ? updateWallDto.filesToKeep.split(',')
+            : []),
         ];
         if (files.length > 1) {
-          const galleryImagesWall = files
-            .slice(1)
-            .map((file) => file.path.replace(/\\/g, '/'));
+          const galleryImagesWall = files.map((file) =>
+            file.path.replace(/\\/g, '/'),
+          );
           updateData.galleryImagesWall = [
             ...galleryImagesWall,
-            ...updateWallDto.filesToKeep.split(','),
+            ...(updateWallDto.filesToKeep.length
+              ? updateWallDto.filesToKeep.split(',')
+              : []),
           ];
         }
       } else {
         updateData.galleryImagesWall = [
-          ...updateWallDto.filesToKeep.split(','),
+          ...(updateWallDto.filesToKeep.length
+            ? updateWallDto.filesToKeep.split(',')
+            : []),
         ];
       }
 
@@ -226,11 +232,12 @@ export class WallService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      if (updatedWall.status === 'aprobado') {
-        await this.emailService.sendApprovalEmailWall(emailUser, updatedWall);
-      } else if (updatedWall.status === 'rechazado') {
-        await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
-      }
+      //TODO: enviar correo a gustavo diciendo que cambio y enviar mail para decirle que su post-it esta en revision hasta que lo revise gustavo
+      // if (updatedWall.status === 'aprobado') {
+      //   await this.emailService.sendApprovalEmailWall(emailUser, updatedWall);
+      // } else if (updatedWall.status === 'rechazado') {
+      //   await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
+      // }
 
       const responseObj = {
         status: HttpStatus.OK,
@@ -397,13 +404,6 @@ export class WallService {
     ownerId?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
-      if (!ownerId) {
-        throw new HttpException(
-          'ownerId es obligatorio.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
       const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
 
@@ -413,9 +413,13 @@ export class WallService {
       const query: any = {
         status: wallStatus,
         $or: [{ delete_at: null }, { delete_date: null }],
-        createdAt: { $gte: oneMonthAgo },
-        ownerId: { $in: [ownerId] },
       };
+
+      if (ownerId) {
+        query.ownerId = { $in: [ownerId] };
+      } else {
+        query.updatedAt = { $gte: oneMonthAgo };
+      }
 
       if (search) {
         const searchRegex = new RegExp(search, 'i');
