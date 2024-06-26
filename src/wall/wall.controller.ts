@@ -56,7 +56,7 @@ export class WallController {
     @Query('type') wallType?: string,
     @Query('modality') wallModality?: string,
     @Query('userid') ownerId?: string,
-    @Query('showupdatedonly') showUpdatedOnly?: boolean,
+    @Query('showupdatedonly') showUpdatedOnly?: any,
   ) {
     return this.wallService.findAll(
       page,

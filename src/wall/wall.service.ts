@@ -404,7 +404,7 @@ export class WallService {
     wallType?: string,
     wallModality?: string,
     ownerId?: string,
-    showUpdatedOnly: boolean = true,
+    showUpdatedOnly: any = 'true',
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -419,11 +419,26 @@ export class WallService {
 
       if (ownerId) {
         query.ownerId = { $in: [ownerId] };
-      } else {
-        if(!showUpdatedOnly){
-          query.updatedAt = { $gte: oneMonthAgo };
+        query.status = {$in: ['revision', 'aprobado', 'desaprobado']};
+      }else{
+        if(showUpdatedOnly === 'true'){ //se que parece una burrada, pero el queryparam llega como string, por eso toca hacer esto
+          query.update_at = { $gte: oneMonthAgo };
         }
         query.status = {$in: [wallStatus]};
+      }
+
+      // if (ownerId) {
+      //   query.ownerId = { $in: [ownerId] };
+      // } else {
+      //   if(!showUpdatedOnly){ //si está en false debería
+      //     query.update_at = { $gte: oneMonthAgo };
+      //   }
+      //   query.status = {$in: [wallStatus]};
+      // }
+
+      if(wallStatus === 'desactualizado'){
+        query.update_at = { $not: {$gte: oneMonthAgo} };
+        query.status = {$in: ['revision', 'aprobado', 'desaprobado']};
       }
 
       if (search) {
