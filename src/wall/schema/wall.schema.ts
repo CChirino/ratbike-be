@@ -4,11 +4,11 @@ import { Document } from 'mongoose';
 
 export type WallDocument = Wall & Document;
 
-@Schema({ toJSON: { virtuals: true } })
+@Schema({ toJSON: { virtuals: true }, timestamps: true })
 export class Wall {
   @Prop()
   ownerId: string;
-  
+
   @Prop()
   titleWall: string;
 

@@ -22,6 +22,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('wall')
 @Controller('wall')
@@ -44,7 +45,6 @@ export class WallController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
@@ -55,7 +55,7 @@ export class WallController {
     @Query('wallstatus') wallStatus?: string,
     @Query('type') wallType?: string,
     @Query('modality') wallModality?: string,
-    @Query('userid') ownerId?: string
+    @Query('userid') ownerId?: string,
   ) {
     return this.wallService.findAll(
       page,
@@ -66,12 +66,11 @@ export class WallController {
       wallStatus,
       wallType,
       wallModality,
-      ownerId
+      ownerId,
     );
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.wallService.findOne(id);
@@ -88,6 +87,21 @@ export class WallController {
   ) {
     const user = request.user;
     return this.wallService.update(id, updateWallDto, user, response);
+  }
+
+  @Patch('update-all/:id')
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador', 'user')
+  @UseInterceptors(FilesInterceptor('files', 10))
+  updateAll(
+    @Param('id') id: string,
+    @Body() updateWallDto: UpdateWallDto,
+    @Req() request: Request,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Res() response,
+  ) {
+    const user = request.user;
+    return this.wallService.updateAll(id, updateWallDto, files, user, response);
   }
 
   @Delete(':id')

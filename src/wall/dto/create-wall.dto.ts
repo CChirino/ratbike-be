@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsObject, isNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsObject } from 'class-validator';
 export class CreateWallDto {
   [x: string]: any;
   @IsNotEmpty()
@@ -35,4 +35,6 @@ export class CreateWallDto {
   @IsOptional()
   @IsObject()
   translationDescriptionWall: Record<string, any>;
+  @IsOptional()
+  filesToKeep: string;
 }

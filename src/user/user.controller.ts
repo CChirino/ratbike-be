@@ -32,7 +32,6 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll() {
     return this.userService.findAll();

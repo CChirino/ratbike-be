@@ -182,6 +182,67 @@ export class WallService {
     }
   }
 
+  async updateAll(
+    id: string,
+    updateWallDto: UpdateWallDto,
+    files: Express.Multer.File[],
+    user: any,
+    response,
+  ): Promise<Wall> {
+    try {
+      const emailUser = user.email;
+
+      const updateData: any = {
+        ...updateWallDto,
+        update_at: new Date(),
+      };
+
+      if (files && files.length > 0) {
+        const urlImageWall = files[0].path.replace(/\\/g, '/');
+        updateData.urlImageWall = urlImageWall;
+        updateData.galleryImagesWall = [
+          ...updateWallDto.filesToKeep.split(','),
+        ];
+        if (files.length > 1) {
+          const galleryImagesWall = files
+            .slice(1)
+            .map((file) => file.path.replace(/\\/g, '/'));
+          updateData.galleryImagesWall = [
+            ...galleryImagesWall,
+            ...updateWallDto.filesToKeep.split(','),
+          ];
+        }
+      } else {
+        updateData.galleryImagesWall = [
+          ...updateWallDto.filesToKeep.split(','),
+        ];
+      }
+
+      const updatedWall = await this.wallModel
+        .findByIdAndUpdate(id, updateData, { new: true })
+        .exec();
+
+      if (!updatedWall) {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (updatedWall.status === 'aprobado') {
+        await this.emailService.sendApprovalEmailWall(emailUser, updatedWall);
+      } else if (updatedWall.status === 'rechazado') {
+        await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
+      }
+
+      const responseObj = {
+        status: HttpStatus.OK,
+        data: updatedWall,
+      };
+
+      return response.status(HttpStatus.OK).json(responseObj);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async remove(id: string): Promise<Wall> {
     try {
       const wall = await this.wallModel.findById(id).exec();
@@ -333,15 +394,27 @@ export class WallService {
     wallStatus: string = 'aprobado',
     wallType?: string,
     wallModality?: string,
-    ownerId?: string
+    ownerId?: string,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
+      if (!ownerId) {
+        throw new HttpException(
+          'ownerId es obligatorio.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
       const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
+
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
       const query: any = {
         status: wallStatus,
         $or: [{ delete_at: null }, { delete_date: null }],
+        createdAt: { $gte: oneMonthAgo },
+        ownerId: { $in: [ownerId] },
       };
 
       if (search) {
@@ -361,10 +434,6 @@ export class WallService {
         });
       }
 
-      //if modality is insitu and there are no countries selected, just remove remote results, otherwise, remove remote results and just fetch results from the selected countries
-      //if modality is remote, ignore countries, just get the wall items which locationWall are 'remote'
-      //if there is no modality selected it means that there are no restriction in modality, therefore, show remote locations and if there are countries, show those which coincide with selected countries, if there are no countries
-      //    is like not having any query at all regarding the location
       if (wallModality === 'insitu') {
         if (countries && countries.length > 0) {
           query.locationWall = { $in: countries, $nin: ['remote'] };
@@ -379,10 +448,6 @@ export class WallService {
         }
       }
 
-      //if the type is product, we don't need to filter by skills type
-      //if the type is skill, we need to filter by type and if there are skills we need to filter by type skill and the selected skills
-      // if the product type doesn't exist means we wan't every type of products, however if there are skills selected needs to show products but also skills from the selected skill categories
-      //    that's the reason of that undefined, it means, if the field doesn't exist (which would be a product because the skillWall field doesn't exists for products) or if the skill is among the selected skill category by the user
       if (wallType === 'product') {
         query.type = { $in: wallType };
       } else if (wallType === 'skill') {
@@ -394,10 +459,6 @@ export class WallService {
         if (skills && skills.length > 0) {
           query.skillWall = { $in: [...skills, undefined] };
         }
-      }
-
-      if(ownerId){
-        query.ownerId = { $in: [ownerId] };
       }
 
       const total = await this.wallModel.countDocuments(query);
@@ -416,7 +477,6 @@ export class WallService {
           HttpStatus.BAD_REQUEST,
         );
       }
-
       let data: WallDocument[];
       if (page) {
         const skipCount = (page - 1) * actualLimit;
@@ -428,7 +488,6 @@ export class WallService {
       } else {
         data = await this.wallModel.find(query).limit(actualLimit).exec();
       }
-
       const response: { status: number; data: PaginationResponse<Wall> } = {
         status: HttpStatus.OK,
         data: {
@@ -441,7 +500,6 @@ export class WallService {
           data,
         },
       };
-
       return response;
     } catch (error) {
       throw error;

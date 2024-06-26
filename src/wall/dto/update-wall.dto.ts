@@ -50,4 +50,7 @@ export class UpdateWallDto extends PartialType(CreateWallDto) {
   @IsOptional()
   @IsDate()
   update_at?: Date;
+
+  @IsOptional()
+  filesToKeep: string;
 }

@@ -44,7 +44,6 @@ export class ArticlesController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
@@ -71,7 +70,6 @@ export class ArticlesController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.articlesService.findOne(id);

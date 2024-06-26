@@ -49,7 +49,6 @@ export class BrotherhoodController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Query('page') page?: number,
@@ -60,7 +59,6 @@ export class BrotherhoodController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.brotherhoodService.findOne(id);
