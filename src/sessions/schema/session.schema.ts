@@ -21,7 +21,7 @@ export class Session {
   @Prop()
   apellido: string;
   @Prop()
-  vocacion: string;
+  vocation: string;
   @Prop()
   ciudad: string;
   @Prop()

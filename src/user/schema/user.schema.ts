@@ -46,6 +46,9 @@ export class User {
 
   @Prop({ default: null })
   resetPasswordExpires: Date;
+
+  @Prop({ default: null })
+  vocation: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -125,7 +125,7 @@ export class AuthService {
       lastname: findUser.lastname,
       email: findUser.email,
       urlProfileImage: findUser.urlProfileImage,
-      //vocation
+      vocation: findUser.vocation,
       country: findUser.country,
       latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
       longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
