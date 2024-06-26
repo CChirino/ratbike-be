@@ -86,6 +86,7 @@ export class WallService {
     wallType?: string,
     wallModality?: string,
     ownerId?: string,
+    showUpdatedOnly?: boolean
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -118,6 +119,7 @@ export class WallService {
         wallType,
         wallModality,
         ownerId,
+        showUpdatedOnly
       );
     } catch (error) {
       throw error;
@@ -402,6 +404,7 @@ export class WallService {
     wallType?: string,
     wallModality?: string,
     ownerId?: string,
+    showUpdatedOnly: boolean = true,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -411,14 +414,16 @@ export class WallService {
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
       const query: any = {
-        status: wallStatus,
         $or: [{ delete_at: null }, { delete_date: null }],
       };
 
       if (ownerId) {
         query.ownerId = { $in: [ownerId] };
       } else {
-        query.updatedAt = { $gte: oneMonthAgo };
+        if(!showUpdatedOnly){
+          query.updatedAt = { $gte: oneMonthAgo };
+        }
+        query.status = {$in: [wallStatus]};
       }
 
       if (search) {
