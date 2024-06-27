@@ -127,6 +127,7 @@ export class AuthService {
       urlProfileImage: findUser.urlProfileImage,
       vocation: findUser.vocation,
       country: findUser.country,
+      city: findUser.city,
       latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
       longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
     });

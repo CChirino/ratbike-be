@@ -17,13 +17,13 @@ export class Session {
   @Prop()
   country: string;
   @Prop()
-  nombre: string;
+  name: string;
   @Prop()
-  apellido: string;
+  lastname: string;
   @Prop({ default: null })
   vocation: string;
-  @Prop()
-  ciudad: string;
+  @Prop({default: null})
+  city: string;
   @Prop()
   email: string;
   @Prop()

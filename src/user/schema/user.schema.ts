@@ -26,6 +26,9 @@ export class User {
   @Prop({ default: undefined })
   urlProfileImage: string;
 
+  @Prop({ default: null })
+  city: string;
+
   @Prop()
   questionSecurity: string;
 

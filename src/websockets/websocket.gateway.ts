@@ -53,7 +53,6 @@ export class WebsocketGateway
 
   @SubscribeMessage('mensaje')
   handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-    console.log(data);
     this.server.emit('mensaje', data);
   }
 
