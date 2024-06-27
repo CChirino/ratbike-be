@@ -20,7 +20,7 @@ export class Session {
   nombre: string;
   @Prop()
   apellido: string;
-  @Prop()
+  @Prop({ default: null })
   vocation: string;
   @Prop()
   ciudad: string;
