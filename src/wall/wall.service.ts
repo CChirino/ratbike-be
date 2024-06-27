@@ -86,7 +86,7 @@ export class WallService {
     wallType?: string,
     wallModality?: string,
     ownerId?: string,
-    showUpdatedOnly?: boolean
+    showUpdatedOnly?: boolean,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -119,7 +119,7 @@ export class WallService {
         wallType,
         wallModality,
         ownerId,
-        showUpdatedOnly
+        showUpdatedOnly,
       );
     } catch (error) {
       throw error;
@@ -191,8 +191,6 @@ export class WallService {
     response,
   ): Promise<Wall> {
     try {
-      const emailUser = user.email;
-
       const updateData: any = {
         ...updateWallDto,
         status: 'revision',
@@ -234,12 +232,9 @@ export class WallService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      //TODO: enviar correo a gustavo diciendo que cambio y enviar mail para decirle que su post-it esta en revision hasta que lo revise gustavo
-      // if (updatedWall.status === 'aprobado') {
-      //   await this.emailService.sendApprovalEmailWall(emailUser, updatedWall);
-      // } else if (updatedWall.status === 'rechazado') {
-      //   await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
-      // }
+      const wallId = updatedWall._id;
+
+      await this.emailService.sendPostRequestUpdate(wallId);
 
       const responseObj = {
         status: HttpStatus.OK,
@@ -419,12 +414,13 @@ export class WallService {
 
       if (ownerId) {
         query.ownerId = { $in: [ownerId] };
-        query.status = {$in: ['revision', 'aprobado', 'desaprobado']};
-      }else{
-        if(showUpdatedOnly === 'true'){ //se que parece una burrada, pero el queryparam llega como string, por eso toca hacer esto
+        query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
+      } else {
+        if (showUpdatedOnly === 'true') {
+          //se que parece una burrada, pero el queryparam llega como string, por eso toca hacer esto
           query.update_at = { $gte: oneMonthAgo };
         }
-        query.status = {$in: [wallStatus]};
+        query.status = { $in: [wallStatus] };
       }
 
       // if (ownerId) {
@@ -436,9 +432,9 @@ export class WallService {
       //   query.status = {$in: [wallStatus]};
       // }
 
-      if(wallStatus === 'desactualizado'){
-        query.update_at = { $not: {$gte: oneMonthAgo} };
-        query.status = {$in: ['revision', 'aprobado', 'desaprobado']};
+      if (wallStatus === 'desactualizado') {
+        query.update_at = { $not: { $gte: oneMonthAgo } };
+        query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
       }
 
       if (search) {

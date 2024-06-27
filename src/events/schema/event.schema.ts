@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 @Schema()
 export class Event extends Document {
   @Prop({ required: true })
-  nombrePresentador: string;
+  hostName: string;
 
   @Prop({ type: Object })
   translation: {
@@ -21,8 +21,11 @@ export class Event extends Document {
     cityLocation: string;
   }[];
 
-  @Prop({ type: [String], required: true })
-  coordinates: string[];
+  @Prop({ type: Number, required: true })
+  latitude: number;
+
+  @Prop({ type: Number, required: true })
+  longitude: number;
 
   @Prop({ default: null, required: false })
   delete_at: string;

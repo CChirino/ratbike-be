@@ -11,7 +11,7 @@ import {
 export class CreateEventDto {
   @IsNotEmpty()
   @IsString()
-  nombrePresentador: string;
+  hostName: string;
 
   @IsObject()
   @IsNotEmpty()
@@ -30,10 +30,11 @@ export class CreateEventDto {
     cityLocation: string;
   }[];
 
-  @IsArray()
-  @ArrayNotEmpty()
-  @IsString({ each: true })
-  coordinates: string[];
+  @IsNotEmpty()
+  latitude: number;
+
+  @IsNotEmpty()
+  longitude: number;
 
   @IsNotEmpty()
   createdBy: string;
