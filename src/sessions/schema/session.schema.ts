@@ -26,7 +26,8 @@ export class Session {
   ciudad: string;
   @Prop()
   email: string;
-
+  @Prop()
+  urlProfileImage: string;
   @Prop({ default: Date.now })
   createdAt: Date;
 }
