@@ -16,6 +16,8 @@ import { response } from 'express';
 @WebSocketGateway({
   cors: {
     origin: '*',
+    methods: '*',
+    allowRequest: '*'
   },
 })
 export class WebsocketGateway
