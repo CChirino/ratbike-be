@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { EmailService } from './email/email.service';
@@ -26,10 +26,19 @@ import { APP_GUARD } from '@nestjs/core';
 import { Reflector } from '@nestjs/core';
 import { SessionsModule } from './sessions/sessions.module';
 import { ContactsModule } from './contacts/contacts.module';
+import * as path from 'path';
+import {
+  I18nModule,
+  AcceptLanguageResolver,
+  QueryResolver,
+  HeaderResolver,
+} from 'nestjs-i18n';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true, // Hace que el ConfigModule esté disponible globalmente
+    }),
     AuthModule,
     MongooseModule.forRoot(process.env.MONGODB_URI),
     UserModule,
@@ -51,6 +60,21 @@ import { ContactsModule } from './contacts/contacts.module';
           strict: true,
         },
       },
+    }),
+    I18nModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        fallbackLanguage: configService.getOrThrow('FALLBACK_LANGUAGE'),
+        loaderOptions: {
+          path: path.join(__dirname, '../i18n/'), // Ajusta esta ruta según sea necesario
+          watch: true,
+        },
+      }),
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+        new HeaderResolver(['x-lang']),
+      ],
+      inject: [ConfigService],
     }),
     EmailModule,
     ProductsModule,
@@ -76,7 +100,7 @@ import { ContactsModule } from './contacts/contacts.module';
     EmailService,
     CronJobService,
     JwtStrategy,
-    Reflector
+    Reflector,
   ],
   exports: [CronJobService, EmailService],
 })

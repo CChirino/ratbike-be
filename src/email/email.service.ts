@@ -5,223 +5,197 @@ import { Brotherhood } from 'src/brotherhood/schema/brotherhood.schema';
 import { Wall } from 'src/wall/schema/wall.schema';
 import { WallDocument } from 'src/wall/schema/wall.schema';
 import { Skill } from 'src/skills/schema/skills.schema';
+import { I18nService } from 'nestjs-i18n';
+
 @Injectable()
 export class EmailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly i18n: I18nService,
+  ) {}
 
   private readonly logger = new Logger(EmailService.name);
 
-  async sendRegistrationConfirmation(email: string, name: string) {
+  private async getTranslation(
+    key: string,
+    lang: string,
+    variables: Record<string, any> = {},
+  ) {
+    const translation = {
+      subject: await this.i18n.translate(`${key}.subject`, {
+        lang,
+        args: variables,
+      }),
+      html: await this.i18n.translate(`${key}.html`, {
+        lang,
+        args: variables,
+      }),
+    };
+    return translation;
+  }
+
+  async sendRegistrationConfirmation(
+    email: string,
+    name: string,
+    lang: string = 'es',
+  ) {
+    const translation = await this.getTranslation(
+      'registration_confirmation',
+      lang,
+      { name },
+    );
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Confirmación de registro - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Confirmación de registro</title>
-          </head>
-          <body>
-            <h1>Bienvenido, ${name}!</h1>
-            <p>Gracias por registrarte en nuestro sitio. Tu registro ha sido confirmado correctamente.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
+    });
+  }
+  async sendPasswordResetRequest(
+    email: string,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('password_reset', lang);
+    await this.mailerService.sendMail({
+      to: email,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendPasswordResetRequest(email: string): Promise<void> {
-    await this.mailerService.sendMail({
-      to: email,
-      subject: 'Restablecimiento de contraseña - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Restablecimiento de contraseña</title>
-          </head>
-          <body>
-            <h1>Restablecer contraseña</h1>
-            <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva contraseña:</p>
-            <a href=http://localhost:3000/auth/reset-password/">Restablecer contraseña</a>
-          </body>
-        </html>
-      `,
+  async sendProductRequest(
+    productId: string,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('product_request', lang, {
+      productId,
     });
-  }
-
-  async sendProductRequest(productId: string): Promise<void> {
     await this.mailerService.sendMail({
       to: 'angeldchz@gmail.com',
-      subject: 'Producto en Revision - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Producto en Revision </title>
-          </head>
-          <body>
-          <h1>Aprobar Producto</h1>
-          <p>Se ha creado un producto nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
-          <a href="http://localhost:3000/products/${productId}">Actualizar producto</a>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendApprovalEmail(email: string, product: Product): Promise<void> {
-    const productName = product.nameProduct;
+  async sendApprovalEmail(
+    email: string,
+    product: Product,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('product_approval', lang, {
+      productName: product.nameProduct,
+    });
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Producto Aprobado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Producto Aprobado</title>
-          </head>
-          <body>
-            <h1>¡Felicidades!</h1>
-            <p>Tu producto ${productName} ha sido aprobado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendRejectionEmail(email: string, product: Product): Promise<void> {
-    const productName = product.nameProduct;
+  async sendRejectionEmail(
+    email: string,
+    product: Product,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('product_rejection', lang, {
+      productName: product.nameProduct,
+    });
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Producto Rechazado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Producto Rechazado</title>
-          </head>
-          <body>
-          <h1>Lamentamos informarte</h1>
-            <p>Tu producto ${productName} ha sido rechazado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
   async sendApprovalEmailBrotherhood(
     email: string,
     brotherhood: Brotherhood,
+    lang: string = 'es',
   ): Promise<void> {
-    const BrotherhoodName = brotherhood.nameBrotherhood;
+    const translation = await this.getTranslation(
+      'brotherhood_approval',
+      lang,
+      {
+        brotherhoodName: brotherhood.nameBrotherhood,
+      },
+    );
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Brotherhood Aprobado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Producto Aprobado</title>
-          </head>
-          <body>
-            <h1>¡Felicidades!</h1>
-            <p>Tu producto ${BrotherhoodName} ha sido aprobado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
   async sendRejectionEmailBrotherhood(
     email: string,
     brotherhood: Brotherhood,
+    lang: string = 'es',
   ): Promise<void> {
-    const BrotherhoodName = brotherhood.nameBrotherhood;
+    const translation = await this.getTranslation(
+      'brotherhood_rejection',
+      lang,
+      {
+        brotherhoodName: brotherhood.nameBrotherhood,
+      },
+    );
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Brotherhood Rechazado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Producto Rechazado</title>
-          </head>
-          <body>
-          <h1>Lamentamos informarte</h1>
-            <p>Tu producto ${BrotherhoodName} ha sido rechazado.</p>
-          </body>
-        </html>
-      `,
-    });
-  }
-  async sendApprovalEmailWall(email: string, wall: Wall): Promise<void> {
-    const wallName = wall.titleWall;
-    await this.mailerService.sendMail({
-      to: email,
-      subject: 'Post-it Wall Aprobado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Post it Aprobado</title>
-          </head>
-          <body>
-            <h1>¡Felicidades!</h1>
-            <p>Tu Post-it ${wallName} ha sido aprobado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendRejectionEmailWall(email: string, wall: Wall): Promise<void> {
-    const wallName = wall.titleWall;
+  async sendApprovalEmailWall(
+    email: string,
+    wall: Wall,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('wall_approval', lang, {
+      wallName: wall.titleWall,
+    });
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Post-it Wall Rechazado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Post-it Rechazado</title>
-          </head>
-          <body>
-          <h1>Lamentamos informarte</h1>
-            <p>Tu Post-it ${wallName} ha sido rechazado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendPostRequest(wallId: string): Promise<void> {
+  async sendRejectionEmailWall(
+    email: string,
+    wall: Wall,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('wall_rejection', lang, {
+      wallName: wall.titleWall,
+    });
+    await this.mailerService.sendMail({
+      to: email,
+      subject: translation.subject,
+      html: translation.html,
+    });
+  }
+
+  async sendPostRequest(wallId: string, lang: string = 'es'): Promise<void> {
+    const translation = await this.getTranslation('post_request', lang, {
+      wallId,
+    });
     await this.mailerService.sendMail({
       to: 'angeldchz@gmail.com',
-      subject: 'Post-it en Revision - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Post-it en Revision </title>
-          </head>
-          <body>
-          <h1>Post-it En revision </h1>
-          <p>Se ha creado un Post-it nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
-          <a href="http://localhost:3000/wall/${wallId}">Actualizar Post-it</a>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
+    });
+  }
+
+  async sendPostRequestUpdate(
+    wallId: string,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('post_request_update', lang, {
+      wallId,
+    });
+    await this.mailerService.sendMail({
+      to: 'angeldchz@gmail.com',
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
@@ -236,90 +210,62 @@ export class EmailService {
     }
   }
 
-  async sendApprovalEmailSkill(email: string, skill: Skill): Promise<void> {
-    const skillName = skill.titleSkill;
+  async sendApprovalEmailSkill(
+    email: string,
+    skill: Skill,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('skill_approval', lang, {
+      skillName: skill.titleSkill,
+    });
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Skill - Wall Aprobado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title> Skill Aprobado</title>
-          </head>
-          <body>
-            <h1>¡Felicidades!</h1>
-            <p>Tu Skill ${skillName} ha sido aprobado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendRejectionEmailSkill(email: string, skill: Skill): Promise<void> {
-    const skillName = skill.titleSkill;
+  async sendRejectionEmailSkill(
+    email: string,
+    skill: Skill,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('skill_rejection', lang, {
+      skillName: skill.titleSkill,
+    });
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Skill - Wall Rechazado - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Skill Rechazado</title>
-          </head>
-          <body>
-          <h1>Lamentamos informarte</h1>
-            <p>Tu Skill ${skillName} ha sido rechazado.</p>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendPostRequestSkill(skillId: string): Promise<void> {
+  async sendPostRequestSkill(
+    skillId: string,
+    lang: string = 'es',
+  ): Promise<void> {
+    const translation = await this.getTranslation('skill_request', lang, {
+      skillId,
+    });
     await this.mailerService.sendMail({
       to: 'angeldchz@gmail.com',
-      subject: 'Skill en Revision - Rat Bikes',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <title>Skill en Revision </title>
-          </head>
-          <body>
-          <h1>Post-it En revision </h1>
-          <p>Se ha creado un Skill nuevo, el cual requiere aprobacion y modificaciones en respecto al idioma.</p>
-          <a href="http://localhost:3000/skills/${skillId}">Actualizar Skill</a>
-          </body>
-        </html>
-      `,
+      subject: translation.subject,
+      html: translation.html,
     });
   }
 
-  async sendMailContact(mailOptions: {
-    to: string;
-    subject: string;
-    text: string;
-  }) {
+  async sendMailContact(
+    mailOptions: { to: string; subject: string; text: string },
+    lang: string = 'es',
+  ) {
+    const translation = await this.getTranslation('contact', lang, {
+      text: mailOptions.text,
+    });
     try {
       await this.mailerService.sendMail({
         to: mailOptions.to,
-        subject: 'Contacto - Rat Bikes',
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <title>${mailOptions.subject}</title>
-            </head>
-            <body>
-              <p>${mailOptions.text}</p>
-            </body>
-          </html>
-        `,
+        subject: translation.subject,
+        html: translation.html,
       });
       this.logger.log(`Email sent to ${mailOptions.to}`);
     } catch (error) {
