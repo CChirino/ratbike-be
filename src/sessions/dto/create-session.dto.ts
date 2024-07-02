@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional, isNotEmpty } from 'class-validator';
 
 export class CreateSessionDto {
   @IsNotEmpty()
@@ -19,4 +19,6 @@ export class CreateSessionDto {
   email: string;
   @IsNotEmpty()
   urlProfileImage: string;
+  @IsOptional()
+  city: string;
 }
