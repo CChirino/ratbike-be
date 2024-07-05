@@ -25,25 +25,6 @@ async function bootstrap() {
     allowedHeaders:
       'Origin, X-Requested-With, Content-Type, Accept, Authorization',
   });
-
-  // Middleware para manejar las solicitudes preflight (opciones)
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://ratwave.com');
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH',
-    );
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-    );
-    if (req.method === 'OPTIONS') {
-      res.sendStatus(204);
-    } else {
-      next();
-    }
-  });
-
   // Middleware para manejar JSON y URL encoding
   app.use(json({ limit: '20mb' }));
   app.use(urlencoded({ extended: true, limit: '20mb' }));
