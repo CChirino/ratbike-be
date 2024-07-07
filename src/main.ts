@@ -23,7 +23,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
     allowedHeaders:
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+      'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length, User-Agent, Accept-Encoding, Connection, Host',
   });
 
   // Middleware para manejar JSON y URL encoding
