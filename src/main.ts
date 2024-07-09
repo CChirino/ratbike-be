@@ -34,7 +34,7 @@ async function bootstrap() {
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
 
   // Iniciar la aplicación
-  await app.listen(3000);
+  await app.listen(4000);
 }
 
 bootstrap();
