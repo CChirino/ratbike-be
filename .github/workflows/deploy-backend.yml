@@ -21,6 +21,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Get Git Tag
+        id: get_tag
+        run: echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+
       - name: Build the project
         run: npm run build
 
@@ -39,3 +43,4 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "rm -rf /var/www/api.ratwave.com/dist/*"
           scp -P $SERVER_PORT -r dist/* $SERVER_USER@$SERVER_HOST:/var/www/api.ratwave.com/dist
           ssh -o StrictHostKeyChecking=no -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "pm2 restart api-ratwave"
+          ssh -o StrictHostKeyChecking=no -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "echo 'Deploying version $TAG'"
