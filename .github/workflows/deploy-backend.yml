@@ -23,19 +23,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Create Git Tag
-        id: create_tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
-          NEW_TAG=$(echo $TAG | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          git config --global user.critijo@gmail.com "github-actions[bot]@users.noreply.github.com"
-          git config --global user.cchirino "github-actions[bot]"
-          git tag $NEW_TAG
-          git push https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/CChirino/ratbike-be.git $NEW_TAG
-          echo "TAG=$NEW_TAG" >> $GITHUB_ENV
-
       - name: Build the project
         run: npm run build
 
@@ -45,7 +32,6 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
-          TAG: ${{ env.TAG }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
@@ -55,4 +41,3 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "rm -rf /var/www/api.ratwave.com/dist/*"
           scp -P $SERVER_PORT -r dist/* $SERVER_USER@$SERVER_HOST:/var/www/api.ratwave.com/dist
           ssh -o StrictHostKeyChecking=no -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "pm2 restart api-ratwave"
-          ssh -o StrictHostKeyChecking=no -p $SERVER_PORT $SERVER_USER@$SERVER_HOST "echo 'Deploying version $TAG'"
