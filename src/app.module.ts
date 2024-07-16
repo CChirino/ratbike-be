@@ -62,10 +62,10 @@ import {
       },
     }),
     I18nModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        fallbackLanguage: configService.getOrThrow('FALLBACK_LANGUAGE'),
+      useFactory: () => ({
+        fallbackLanguage: 'es',
         loaderOptions: {
-          path: path.join(__dirname, '../i18n/'), // Ajusta esta ruta según sea necesario
+          path: path.join(__dirname, '../i18n/'),
           watch: true,
         },
       }),
