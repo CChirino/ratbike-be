@@ -39,6 +39,13 @@ import {
     ConfigModule.forRoot({
       isGlobal: true, // Hace que el ConfigModule esté disponible globalmente
     }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'es',
+      loaderOptions: {
+        path: path.join(__dirname, '../i18n/'),
+        watch: true,
+      },
+    }),
     AuthModule,
     MongooseModule.forRoot(process.env.MONGODB_URI),
     UserModule,
@@ -60,21 +67,6 @@ import {
           strict: true,
         },
       },
-    }),
-    I18nModule.forRootAsync({
-      useFactory: () => ({
-        fallbackLanguage: 'es',
-        loaderOptions: {
-          path: path.join(__dirname, '../i18n/'),
-          watch: true,
-        },
-      }),
-      resolvers: [
-        { use: QueryResolver, options: ['lang'] },
-        AcceptLanguageResolver,
-        new HeaderResolver(['x-lang']),
-      ],
-      inject: [ConfigService],
     }),
     EmailModule,
     ProductsModule,

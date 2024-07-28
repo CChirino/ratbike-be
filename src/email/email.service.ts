@@ -21,17 +21,26 @@ export class EmailService {
     lang: string,
     variables: Record<string, any> = {},
   ) {
-    const translation = {
-      subject: await this.i18n.translate(`${key}.subject`, {
+    try {
+      const subject = await this.i18n.translate(`${key}.subject`, {
         lang,
         args: variables,
-      }),
-      html: await this.i18n.translate(`${key}.html`, {
+      });
+      const html = await this.i18n.translate(`${key}.html`, {
         lang,
         args: variables,
-      }),
-    };
-    return translation;
+      });
+
+      this.logger.log(`Translation for ${key}: ${subject}, ${html}`);
+
+      return {
+        subject,
+        html,
+      };
+    } catch (error) {
+      this.logger.error(`Error getting translation for ${key}`, error);
+      throw error;
+    }
   }
 
   async sendRegistrationConfirmation(

@@ -1,0 +1,62 @@
+{
+  "registration_confirmation": {
+    "subject": "Confirmación de registro - Rat Bikes",
+    "html": "<h1>Bienvenido, {name}!</h1><p>Gracias por registrarte en nuestro sitio. Tu registro ha sido confirmado correctamente.</p>"
+  },
+  "password_reset": {
+    "subject": "Restablecimiento de contraseña - Rat Bikes",
+    "html": "<h1>Restablecer contraseña</h1><p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva contraseña:</p><a href='http://localhost:3000/auth/reset-password/'>Restablecer contraseña</a>"
+  },
+  "product_request": {
+    "subject": "Producto en Revisión - Rat Bikes",
+    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un producto nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/products/{{productId}}'>Actualizar producto</a>"
+  },
+  "product_approval": {
+    "subject": "Producto Aprobado - Rat Bikes",
+    "html": "<h1>¡Felicidades!</h1><p>Tu producto {productName} ha sido aprobado.</p>"
+  },
+  "product_rejection": {
+    "subject": "Producto Rechazado - Rat Bikes",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu producto {productName} ha sido rechazado.</p>"
+  },
+  "brotherhood_approval": {
+    "subject": "Brotherhood Aprobado - Rat Bikes",
+    "html": "<h1>¡Felicidades!</h1><p>Tu brotherhood {brotherhoodName} ha sido aprobado.</p>"
+  },
+  "brotherhood_rejection": {
+    "subject": "Brotherhood Rechazado - Rat Bikes",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu brotherhood {brotherhoodName} ha sido rechazado.</p>"
+  },
+  "wall_approval": {
+    "subject": "Post-it Wall Aprobado - Rat Bikes",
+    "html": "<h1>¡Felicidades!</h1><p>Tu Post-it {wallName} ha sido aprobado.</p>"
+  },
+  "wall_rejection": {
+    "subject": "Post-it Wall Rechazado - Rat Bikes",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu Post-it {wallName} ha sido rechazado.</p>"
+  },
+  "post_request": {
+    "subject": "Post-it en Revisión - Rat Bikes",
+    "html": "<h1>Post-it En revisión</h1><p>Se ha creado un Post-it nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/wall/{{wallId}}'>Actualizar Post-it</a>"
+  },
+  "post_request_update": {
+    "subject": "Post-it en Revisión - Rat Bikes (Actualización)",
+    "html": "<h1>Post-it En revisión</h1><p>Se ha actualizado un Post-it, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/wall/{{wallId}}'>Actualizar Post-it</a>"
+  },
+  "skill_approval": {
+    "subject": "Skill Aprobado - Rat Bikes",
+    "html": "<h1>¡Felicidades!</h1><p>Tu skill {skillName} ha sido aprobado.</p>"
+  },
+  "skill_rejection": {
+    "subject": "Skill Rechazado - Rat Bikes",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu skill {skillName} ha sido rechazado.</p>"
+  },
+  "skill_request": {
+    "subject": "Skill en Revisión - Rat Bikes",
+    "html": "<h1>Skill En revisión</h1><p>Se ha creado un Skill nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/skills/{{skillId}}'>Actualizar Skill</a>"
+  },
+  "contact": {
+    "subject": "Contacto - Rat Bikes",
+    "html": "<p>{text}</p>"
+  }
+}

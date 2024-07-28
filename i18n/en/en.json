@@ -1,0 +1,63 @@
+{
+    "registration_confirmation": {
+      "subject": "Registration Confirmation - Rat Bikes",
+      "html": "<h1>Welcome, {name}!</h1><p>Thank you for registering on our site. Your registration has been successfully confirmed.</p>"
+    },
+    "password_reset": {
+      "subject": "Password Reset - Rat Bikes",
+      "html": "<h1>Reset Password</h1><p>You have requested to reset your password. Click the following link to create a new password:</p><a href='http://localhost:3000/auth/reset-password/'>Reset Password</a>"
+    },
+    "product_request": {
+      "subject": "Product Under Review - Rat Bikes",
+      "html": "<h1>Approve Product</h1><p>A new product has been created, which requires approval and modifications regarding the language.</p><a href='http://localhost:3000/products/{{productId}}'>Update Product</a>"
+    },
+    "product_approval": {
+      "subject": "Product Approved - Rat Bikes",
+      "html": "<h1>Congratulations!</h1><p>Your product {productName} has been approved.</p>"
+    },
+    "product_rejection": {
+      "subject": "Product Rejected - Rat Bikes",
+      "html": "<h1>We are sorry to inform you</h1><p>Your product {productName} has been rejected.</p>"
+    },
+    "brotherhood_approval": {
+      "subject": "Brotherhood Approved - Rat Bikes",
+      "html": "<h1>Congratulations!</h1><p>Your brotherhood {brotherhoodName} has been approved.</p>"
+    },
+    "brotherhood_rejection": {
+      "subject": "Brotherhood Rejected - Rat Bikes",
+      "html": "<h1>We are sorry to inform you</h1><p>Your brotherhood {brotherhoodName} has been rejected.</p>"
+    },
+    "wall_approval": {
+      "subject": "Wall Post Approved - Rat Bikes",
+      "html": "<h1>Congratulations!</h1><p>Your wall post {wallName} has been approved.</p>"
+    },
+    "wall_rejection": {
+      "subject": "Wall Post Rejected - Rat Bikes",
+      "html": "<h1>We are sorry to inform you</h1><p>Your wall post {wallName} has been rejected.</p>"
+    },
+    "post_request": {
+      "subject": "Wall Post Under Review - Rat Bikes",
+      "html": "<h1>Wall Post Under Review</h1><p>A new wall post has been created, which requires approval and modifications regarding the language.</p><a href='http://localhost:3000/wall/{{wallId}}'>Update Wall Post</a>"
+    },
+    "post_request_update": {
+      "subject": "Wall Post Under Review - Rat Bikes (Update)",
+      "html": "<h1>Wall Post Under Review</h1><p>A wall post has been updated, which requires approval and modifications regarding the language.</p><a href='http://localhost:3000/wall/{{wallId}}'>Update Wall Post-it</a>"
+    },
+    "skill_approval": {
+      "subject": "Skill Approved - Rat Bikes",
+      "html": "<h1>Congratulations!</h1><p>Your skill {skillName} has been approved.</p>"
+    },
+    "skill_rejection": {
+      "subject": "Skill Rejected - Rat Bikes",
+      "html": "<h1>We are sorry to inform you</h1><p>Your skill {skillName} has been rejected.</p>"
+    },
+    "skill_request": {
+      "subject": "Skill Under Review - Rat Bikes",
+      "html": "<h1>Skill Under Review</h1><p>A new skill has been created, which requires approval and modifications regarding the language.</p><a href='http://localhost:3000/skills/{{skillId}}'>Update Skill</a>"
+    },
+    "contact": {
+      "subject": "Contact - Rat Bikes",
+      "html": "<p>{text}</p>"
+    }
+  }
+  
