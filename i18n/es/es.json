@@ -5,11 +5,11 @@
   },
   "password_reset": {
     "subject": "Restablecimiento de contraseña - Rat Bikes",
-    "html": "<h1>Restablecer contraseña</h1><p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva contraseña:</p><a href='http://localhost:3000/auth/reset-password/'>Restablecer contraseña</a>"
+    "html": "<h1>Restablecer contraseña</h1><p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva contraseña:</p><a href='{url}/auth/reset-password/'>Restablecer contraseña</a>"
   },
   "product_request": {
     "subject": "Producto en Revisión - Rat Bikes",
-    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un producto nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/products/{{productId}}'>Actualizar producto</a>"
+    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un producto nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/products/{{productId}}'>Actualizar producto</a>"
   },
   "product_approval": {
     "subject": "Producto Aprobado - Rat Bikes",
@@ -37,11 +37,11 @@
   },
   "post_request": {
     "subject": "Post-it en Revisión - Rat Bikes",
-    "html": "<h1>Post-it En revisión</h1><p>Se ha creado un Post-it nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/wall/{{wallId}}'>Actualizar Post-it</a>"
+    "html": "<h1>Post-it En revisión</h1><p>Se ha creado un Post-it nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/wall/{{wallId}}'>Actualizar Post-it</a>"
   },
   "post_request_update": {
     "subject": "Post-it en Revisión - Rat Bikes (Actualización)",
-    "html": "<h1>Post-it En revisión</h1><p>Se ha actualizado un Post-it, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/wall/{{wallId}}'>Actualizar Post-it</a>"
+    "html": "<h1>Post-it En revisión</h1><p>Se ha actualizado un Post-it, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/wall/{{wallId}}'>Actualizar Post-it</a>"
   },
   "skill_approval": {
     "subject": "Skill Aprobado - Rat Bikes",
@@ -53,7 +53,7 @@
   },
   "skill_request": {
     "subject": "Skill en Revisión - Rat Bikes",
-    "html": "<h1>Skill En revisión</h1><p>Se ha creado un Skill nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='http://localhost:3000/skills/{{skillId}}'>Actualizar Skill</a>"
+    "html": "<h1>Skill En revisión</h1><p>Se ha creado un Skill nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/skills/{{skillId}}'>Actualizar Skill</a>"
   },
   "contact": {
     "subject": "Contacto - Rat Bikes",

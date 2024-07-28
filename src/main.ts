@@ -4,6 +4,9 @@ import { AppModule } from './app.module';
 import { json, urlencoded } from 'express';
 import * as express from 'express';
 import { join } from 'path';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,14 +20,16 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // Configuración de CORS
-  app.enableCors({
-    origin: 'https://ratwave.com',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-    allowedHeaders:
-      'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length, User-Agent, Accept-Encoding, Connection, Host',
-  });
+  // Configuración de CORS solo en producción
+  if (process.env.NODE_ENV === 'production') {
+    app.enableCors({
+      origin: 'https://ratwave.com',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+      allowedHeaders:
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization, Content-Length, User-Agent, Accept-Encoding, Connection, Host',
+    });
+  }
 
   // Middleware para manejar JSON y URL encoding
   app.use(json({ limit: '20mb' }));

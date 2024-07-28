@@ -22,6 +22,15 @@ export class EmailService {
     variables: Record<string, any> = {},
   ) {
     try {
+      // Determinar la URL del frontend basada en el entorno
+      const frontendUrl =
+        process.env.NODE_ENV === 'production'
+          ? process.env.PROD_FRONTEND_URL
+          : process.env.DEV_FRONTEND_URL;
+
+      // Agregar la URL a las variables de traducción
+      variables.url = frontendUrl;
+
       const subject = await this.i18n.translate(`${key}.subject`, {
         lang,
         args: variables,
