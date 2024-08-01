@@ -33,6 +33,7 @@ import {
   QueryResolver,
   HeaderResolver,
 } from 'nestjs-i18n';
+import { SliderModule } from './slider/slider.module';
 
 @Module({
   imports: [
@@ -81,6 +82,7 @@ import {
     EventsModule,
     SessionsModule,
     ContactsModule,
+    SliderModule,
   ],
   controllers: [AppController],
   providers: [
