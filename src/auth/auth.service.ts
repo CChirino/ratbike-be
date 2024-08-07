@@ -180,11 +180,13 @@ export class AuthService {
 
   async sendPasswordResetEmail(
     email: string,
+    response
   ): Promise<{ status: number; message: string }> {
     try {
       const findUser = await this.userModel.findOne({ email });
+
       if (!findUser) {
-        throw new Error('User not found');
+        return response.status(HttpStatus.NOT_FOUND).json({ status: 404, message: 'User not found'});
       }
 
       // Generar un token aleatorio
@@ -204,9 +206,9 @@ export class AuthService {
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
       await this.emailService.sendPasswordResetRequest(email, resetUrl);
 
-      return { status: 200, message: 'Email sent successfully' };
+      return response.status(HttpStatus.OK).json({ status: 200, message: 'Email sent successfully'});
     } catch (error) {
-      return { status: 500, message: 'Failed to send email: ' + error.message };
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ status: 500, message: 'Failed to send email: ' + error.message});
     }
   }
 

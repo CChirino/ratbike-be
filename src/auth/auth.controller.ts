@@ -62,8 +62,8 @@ export class AuthController {
 
   @Post('reset-password')
   @Roles('public', 'admin', 'moderador', 'user')
-  async requestPasswordReset(@Body('email') email: string): Promise<void> {
-    await this.authService.sendPasswordResetEmail(email);
+  async requestPasswordReset(@Body('email') email: string, @Res() response): Promise<void> {
+    await this.authService.sendPasswordResetEmail(email, response);
   }
 
   @Patch('reset-password')
