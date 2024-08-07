@@ -3,8 +3,8 @@ import { SliderService } from './slider.service';
 import { SliderController } from './slider.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { Slider, SliderSchema } from './entities/slider.entity';
+import { diskStorage } from 'multer'; 
+import { Slider, SliderSchema } from './schema/slider.schema';
 
 @Module({
   imports: [

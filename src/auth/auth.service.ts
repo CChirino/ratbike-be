@@ -16,8 +16,8 @@ import { EmailService } from '../email/email.service';
 import { RegistrationResponse } from './interfaces/registration-response.interface';
 import { SessionsService } from 'src/sessions/sessions.service';
 import { COUNTRIES_ISO_3166_1_GEOLOCATION } from 'src/constants';
-
-const fs = require('fs-extra');
+import { randomBytes } from 'crypto';
+import * as fs from 'fs-extra';
 
 @Injectable()
 export class AuthService {
@@ -187,7 +187,22 @@ export class AuthService {
         throw new Error('User not found');
       }
 
-      await this.emailService.sendPasswordResetRequest(email);
+      // Generar un token aleatorio
+      const resetToken = randomBytes(32).toString('hex');
+      const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hora de validez
+
+      // Guardar el token y su expiración en la base de datos del usuario
+      findUser.resetPasswordToken = resetToken;
+      findUser.resetPasswordExpires = resetTokenExpiry;
+      await findUser.save();
+
+      const frontendUrl =
+        process.env.NODE_ENV === 'production'
+          ? process.env.PROD_FRONTEND_URL
+          : process.env.DEV_FRONTEND_URL;
+
+      const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
+      await this.emailService.sendPasswordResetRequest(email, resetUrl);
 
       return { status: 200, message: 'Email sent successfully' };
     } catch (error) {
@@ -195,17 +210,35 @@ export class AuthService {
     }
   }
 
-  async resetPassword(email: string, newPassword: string): Promise<void> {
+  async resetPassword(
+    email: string,
+    newPassword: string,
+    token: string,
+  ): Promise<void> {
     try {
+      // const email = req.body.email;
+      // Encontrar al usuario por el email
       const user = await this.userModel.findOne({ email });
+
       if (!user) {
         throw new NotFoundException('User not found');
       }
 
+      // Verificar la validez del token
+      if (user.resetPasswordToken != token) {
+        throw new NotFoundException('Invalid or expired token');
+      }
+
+      // Hash de la nueva contraseña
       const hashedPassword = await hash(newPassword, 10);
       user.password = hashedPassword;
+
+      // Limpiar el token de restablecimiento y la expiración
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
       await user.save();
     } catch (error) {
+      console.error('Error in resetPassword:', error);
       throw new BadRequestException(
         'Failed to reset password: ' + error.message,
       );

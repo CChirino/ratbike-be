@@ -70,9 +70,12 @@ export class EmailService {
   }
   async sendPasswordResetRequest(
     email: string,
+    resetUrl: string,
     lang: string = 'es',
   ): Promise<void> {
-    const translation = await this.getTranslation('password_reset', lang);
+    const translation = await this.getTranslation('password_reset', lang, {
+      resetUrl,
+    });
     await this.mailerService.sendMail({
       to: email,
       subject: translation.subject,
