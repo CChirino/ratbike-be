@@ -97,8 +97,8 @@ export class BrotherhoodController {
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador')
-  remove(@Param('id') id: string) {
-    return this.brotherhoodService.remove(id);
+  remove(@Param('id') id: string, @Res() response) {
+    return this.brotherhoodService.remove(id, response);
   }
 
   @Get(':category')
