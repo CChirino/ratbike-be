@@ -108,8 +108,8 @@ export class ArticlesController {
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador')
-  remove(@Param('id') id: string) {
-    return this.articlesService.remove(id);
+  remove(@Param('id') id: string, @Res() response) {
+    return this.articlesService.remove(id, response);
   }
 
   @Get(':category')

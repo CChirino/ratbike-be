@@ -228,16 +228,28 @@ export class ArticlesService {
     }
   }
 
-  async remove(id: string): Promise<Article> {
+  async remove(id: string, response): Promise<Article> {
     try {
       const article = await this.articleModel.findById(id).exec();
+
+      if (!article) {
+        // Si el producto no se encuentra, devolver una respuesta 404
+        return response.status(HttpStatus.NOT_FOUND).json({
+          status: HttpStatus.NOT_FOUND,
+          message: 'Product not found',
+        });
+      }
 
       if (article) {
         article.delete_at = new Date().toISOString();
         article.delete_date = new Date();
         await article.save();
       }
-      return article;
+      return response.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: 'Product marked for deletion',
+        data: article,
+      });
     } catch (error) {
       throw error;
     }

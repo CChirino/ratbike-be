@@ -88,8 +88,8 @@ export class ProductsController {
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador')
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(id);
+  remove(@Param('id') id: string, @Res() response) {
+    return this.productsService.remove(id, response);
   }
 
   @Get(':category')

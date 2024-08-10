@@ -249,19 +249,35 @@ export class ProductsService {
     }
   }
 
-  async remove(id: string): Promise<Product> {
+  async remove(id: string, response): Promise<any> {
     try {
       const product = await this.productModel.findById(id).exec();
 
-      if (product) {
-        product.delete_at = new Date().toISOString();
-        product.delete_date = new Date();
-        await product.save();
+      if (!product) {
+        // Si el producto no se encuentra, devolver una respuesta 404
+        return response.status(HttpStatus.NOT_FOUND).json({
+          status: HttpStatus.NOT_FOUND,
+          message: 'Product not found',
+        });
       }
 
-      return product;
+      // Marcar el producto para eliminación
+      product.delete_at = new Date().toISOString();
+      product.delete_date = new Date();
+      await product.save();
+
+      // Devolver una respuesta 200 con el estado del producto actualizado
+      return response.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        message: 'Product marked for deletion',
+        data: product,
+      });
     } catch (error) {
-      throw error;
+      // Manejo de errores
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      });
     }
   }
 
