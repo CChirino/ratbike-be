@@ -177,24 +177,42 @@ export class ArticlesService {
   async update(
     id: string,
     updateArticleDto: UpdateArticleDto,
-    response,
+    files: Express.Multer.File[],
   ): Promise<Article> {
     try {
+      const updateData: any = {
+        ...updateArticleDto,
+        update_at: new Date(),
+      };
+
+      const existingArticle = await this.articleModel.findById(id).exec();
+      if (!existingArticle) {
+        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (files && files.length > 0) {
+        const urlImageArticle = files[0].path.replace(/\\/g, '/');
+        updateData.urlImageArticle = urlImageArticle;
+      }
+
+      if (files && files.length > 1) {
+        const galleryImagesArticles = files
+          .slice(1)
+          .map((file) => file.path.replace(/\\/g, '/'));
+        updateData.galleryImagesArticles = galleryImagesArticles;
+      }
+
       const updatedArticle = await this.articleModel
-        .findByIdAndUpdate(id, updateArticleDto, { new: true })
+        .findByIdAndUpdate(id, updateData, { new: true })
         .exec();
 
       if (!updatedArticle) {
-        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
       }
-      const responseObj = {
-        status: HttpStatus.OK,
-        data: updatedArticle,
-      };
 
-      return response.status(HttpStatus.CREATED).json(responseObj);
+      return updatedArticle; // Solo devuelves el artículo actualizado
     } catch (error) {
-      throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

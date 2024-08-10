@@ -39,6 +39,9 @@ export class Article {
   @Prop({ type: Date, required: false, default: null })
   delete_date: Date;
 
+  @Prop({ type: Date, required: false, default: null })
+  update_at: Date;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 

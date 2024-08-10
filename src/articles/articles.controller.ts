@@ -12,7 +12,9 @@ import {
   UseGuards,
   Query,
   Req,
+  HttpStatus,
 } from '@nestjs/common';
+
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -78,12 +80,29 @@ export class ArticlesController {
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador', 'user')
-  update(
+  @UseInterceptors(AnyFilesInterceptor())
+  async update(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
+    @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
   ) {
-    return this.articlesService.update(id, updateArticleDto, response);
+    try {
+      const updatedArticle = await this.articlesService.update(
+        id,
+        updateArticleDto,
+        files,
+      );
+      return response.status(HttpStatus.OK).json({
+        status: HttpStatus.OK,
+        data: updatedArticle,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: error.message,
+      });
+    }
   }
 
   @Delete(':id')
