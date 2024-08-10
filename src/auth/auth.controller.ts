@@ -62,7 +62,10 @@ export class AuthController {
 
   @Post('reset-password')
   @Roles('public', 'admin', 'moderador', 'user')
-  async requestPasswordReset(@Body('email') email: string, @Res() response): Promise<void> {
+  async requestPasswordReset(
+    @Body('email') email: string,
+    @Res() response,
+  ): Promise<void> {
     await this.authService.sendPasswordResetEmail(email, response);
   }
 
@@ -73,14 +76,15 @@ export class AuthController {
     @Body('token') token: string,
     @Body('newPassword') newPassword: string,
   ): Promise<void> {
-    await this.authService.resetPassword(email, newPassword, token, );
+    await this.authService.resetPassword(email, newPassword, token);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
-  async logout(@Req() req: any): Promise<void> {
+  async logout(@Req() req: any, @Req() request: Request): Promise<void> {
     const authHeader = req.headers.authorization;
-
+    const user = request;
+    console.log(user);
     if (!authHeader) {
       throw new BadRequestException('Authorization header is missing');
     }

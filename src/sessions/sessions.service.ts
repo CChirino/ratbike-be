@@ -36,32 +36,34 @@ export class SessionsService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(userId: string): Promise<SessionDocument | null> {
     try {
-      const data = this.sessionModel.findById(id).exec();
-
-      return {
-        status: HttpStatus.OK,
-        data,
-      };
+      // Busca una sesión donde userId coincida
+      const session = await this.sessionModel.findOne({ userId }).exec();
+      console.log('Session found:', session); // Añadido para depuración
+      return session;
     } catch (error) {
+      console.error('Error finding session:', error);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async update(id: string, updateSessionDto: UpdateSessionDto) {
+  async update(
+    id: string,
+    updateSessionDto: UpdateSessionDto,
+  ): Promise<SessionDocument> {
     try {
       const updatedSession = await this.sessionModel
         .findByIdAndUpdate(id, updateSessionDto, { new: true })
         .exec();
 
       if (!updatedSession) {
-        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('Session not found', HttpStatus.NOT_FOUND);
       }
 
       return updatedSession;
     } catch (error) {
-      throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -78,7 +80,13 @@ export class SessionsService {
   }
 
   async invalidateToken(token: string): Promise<void> {
-    this.invalidatedTokens.add(token);
+    try {
+      await this.remove(token);
+      this.invalidatedTokens.add(token);
+    } catch (error) {
+      console.error('Error invalidando el token:', error);
+      throw error;
+    }
   }
 
   async isTokenInvalidated(token: string): Promise<boolean> {

@@ -18,6 +18,7 @@ import { SessionsService } from 'src/sessions/sessions.service';
 import { COUNTRIES_ISO_3166_1_GEOLOCATION } from 'src/constants';
 import { randomBytes } from 'crypto';
 import * as fs from 'fs-extra';
+import { uuid } from 'uuidv4';
 
 @Injectable()
 export class AuthService {
@@ -98,7 +99,7 @@ export class AuthService {
     if (!checkPassword) throw new HttpException('PASSWORD_INVALID', 403);
 
     const payload = {
-      id: findUser._id,
+      userId: findUser._id,
       name: findUser.name,
       lastname: findUser.lastname,
       email: findUser.email,
@@ -119,18 +120,38 @@ export class AuthService {
       token,
     };
 
-    await this.sessionsService.create({
-      userId: findUser._id,
-      name: findUser.name,
-      lastname: findUser.lastname,
-      email: findUser.email,
-      urlProfileImage: findUser.urlProfileImage,
-      vocation: findUser.vocation,
-      country: findUser.country,
-      city: findUser.city,
-      latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
-      longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
-    });
+    // Buscar la sesión activa del usuario
+    const existingSession = await this.sessionsService.findOne(findUser._id);
+
+    if (existingSession) {
+      // Actualizar la sesión existente si es válida
+      await this.sessionsService.update(existingSession._id.toString(), {
+        name: findUser.name,
+        lastname: findUser.lastname,
+        email: findUser.email,
+        urlProfileImage: findUser.urlProfileImage,
+        vocation: findUser.vocation,
+        country: findUser.country,
+        city: findUser.city,
+        latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
+        longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
+      });
+    } else {
+      // Crear una nueva sesión
+      await this.sessionsService.create({
+        userId: findUser._id,
+        sessionId: uuid(), // Generar un nuevo sessionId
+        name: findUser.name,
+        lastname: findUser.lastname,
+        email: findUser.email,
+        urlProfileImage: findUser.urlProfileImage,
+        vocation: findUser.vocation,
+        country: findUser.country,
+        city: findUser.city,
+        latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
+        longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
+      });
+    }
 
     response.status(HttpStatus.OK).json(data);
   }
@@ -180,13 +201,15 @@ export class AuthService {
 
   async sendPasswordResetEmail(
     email: string,
-    response
+    response,
   ): Promise<{ status: number; message: string }> {
     try {
       const findUser = await this.userModel.findOne({ email });
 
       if (!findUser) {
-        return response.status(HttpStatus.NOT_FOUND).json({ status: 404, message: 'User not found'});
+        return response
+          .status(HttpStatus.NOT_FOUND)
+          .json({ status: 404, message: 'User not found' });
       }
 
       // Generar un token aleatorio
@@ -206,9 +229,14 @@ export class AuthService {
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
       await this.emailService.sendPasswordResetRequest(email, resetUrl);
 
-      return response.status(HttpStatus.OK).json({ status: 200, message: 'Email sent successfully'});
+      return response
+        .status(HttpStatus.OK)
+        .json({ status: 200, message: 'Email sent successfully' });
     } catch (error) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ status: 500, message: 'Failed to send email: ' + error.message});
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        status: 500,
+        message: 'Failed to send email: ' + error.message,
+      });
     }
   }
 

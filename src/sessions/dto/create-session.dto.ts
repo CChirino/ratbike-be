@@ -1,8 +1,10 @@
-import { IsNotEmpty, IsOptional, isNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateSessionDto {
   @IsNotEmpty()
   userId: string;
+  @IsNotEmpty()
+  sessionId: string;
   @IsNotEmpty()
   latitude: string;
   @IsNotEmpty()

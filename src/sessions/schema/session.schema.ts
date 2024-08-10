@@ -22,7 +22,7 @@ export class Session {
   lastname: string;
   @Prop({ default: null })
   vocation: string;
-  @Prop({default: null})
+  @Prop({ default: null })
   city: string;
   @Prop()
   email: string;
@@ -32,4 +32,4 @@ export class Session {
   createdAt: Date;
 }
 
-export const sessionSchema = SchemaFactory.createForClass(Session);
+export const SessionSchema = SchemaFactory.createForClass(Session);
