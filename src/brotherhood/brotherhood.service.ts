@@ -262,18 +262,20 @@ export class BrotherhoodService {
     }
   }
 
-  async remove(id: string): Promise<Brotherhood> {
+  async remove(id: string, response): Promise<Brotherhood> {
     try {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
 
-      if (brotherhood) {
+      if(!brotherhood)  return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ status: 500, message: 'INTERNAL_SERVER_ERROR'});
+
+
         brotherhood.delete_at = new Date().toISOString();
         brotherhood.delete_date = new Date();
         await brotherhood.save();
-      }
-      return brotherhood;
+
+        return response.status(HttpStatus.NO_CONTENT).json({ status: 204, message: 'NO_CONTENT', data: brotherhood});
     } catch (error) {
-      throw error;
+     
     }
   }
 
