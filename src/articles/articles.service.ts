@@ -180,8 +180,20 @@ export class ArticlesService {
     files: Express.Multer.File[],
   ): Promise<Article> {
     try {
-      const updateData: any = {
+      let translation = null;
+      if (updateArticleDto.translation) {
+        const parsedTranslation = JSON.parse(updateArticleDto.translation);
+
+        translation = {
+          translationTitle: parsedTranslation.translationTitle,
+          translationSubtitle: parsedTranslation.translationSubtitle,
+          translationDescription: parsedTranslation.translationDescription,
+        };
+      }
+
+      let updateData: any = {
         ...updateArticleDto,
+        ...(translation && { translation }),
         update_at: new Date(),
       };
 
