@@ -40,7 +40,6 @@ export class SessionsService {
     try {
       // Busca una sesión donde userId coincida
       const session = await this.sessionModel.findOne({ userId }).exec();
-      console.log('Session found:', session); // Añadido para depuración
       return session;
     } catch (error) {
       console.error('Error finding session:', error);
@@ -69,19 +68,34 @@ export class SessionsService {
 
   async remove(id: string) {
     try {
-      await this.sessionModel.findOneAndDelete({ id }).exec();
+      const result = await this.sessionModel
+        .findOneAndDelete({ _id: id })
+        .exec();
+
+      if (result) {
+        console.log(`Successfully removed session with ID: ${id}`);
+      } else {
+        console.log(`No session found with ID: ${id}`);
+      }
 
       return {
         status: HttpStatus.OK,
       };
     } catch (error) {
+      console.error('Error removing session:', error);
       throw error;
     }
   }
 
-  async invalidateToken(token: string): Promise<void> {
+  async invalidateToken(token: string, user: any): Promise<void> {
     try {
-      await this.remove(token);
+      const session = await this.sessionModel
+        .findOne({ email: user.email })
+        .exec();
+      if (!session) {
+        throw new Error('Session not found for the provided email');
+      }
+      await this.remove(session._id.toString());
       this.invalidatedTokens.add(token);
     } catch (error) {
       console.error('Error invalidando el token:', error);

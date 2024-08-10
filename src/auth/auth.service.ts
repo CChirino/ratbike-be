@@ -275,7 +275,7 @@ export class AuthService {
     }
   }
 
-  async logout(token: string): Promise<void> {
-    await this.sessionsService.invalidateToken(token);
+  async logout(token: string, user: any): Promise<void> {
+    await this.sessionsService.invalidateToken(token, user);
   }
 }

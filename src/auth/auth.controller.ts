@@ -81,10 +81,9 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('logout')
-  async logout(@Req() req: any, @Req() request: Request): Promise<void> {
+  async logout(@Req() req: any): Promise<void> {
     const authHeader = req.headers.authorization;
-    const user = request;
-    console.log(user);
+    const user = req.user;
     if (!authHeader) {
       throw new BadRequestException('Authorization header is missing');
     }
@@ -94,6 +93,6 @@ export class AuthController {
       throw new BadRequestException('Bearer token is missing');
     }
 
-    await this.authService.logout(token);
+    await this.authService.logout(token, user);
   }
 }
