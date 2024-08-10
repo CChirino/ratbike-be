@@ -12,6 +12,7 @@ import {
   UseGuards,
   Req,
   Query,
+  HttpStatus,
 } from '@nestjs/common';
 import { BrotherhoodService } from './brotherhood.service';
 import { CreateBrotherhoodDto } from './dto/create-brotherhood.dto';
@@ -67,19 +68,30 @@ export class BrotherhoodController {
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador', 'user')
+  @UseInterceptors(AnyFilesInterceptor())
   update(
     @Param('id') id: string,
     @Body() updateBrotherhoodDto: UpdateBrotherhoodDto,
     @Req() request: Request,
     @Res() response,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const user = request.user;
-    return this.brotherhoodService.update(
-      id,
-      updateBrotherhoodDto,
-      user,
-      response,
-    );
+
+    this.brotherhoodService
+      .update(id, updateBrotherhoodDto, user, files)
+      .then((updatedArticle) => {
+        return response.status(HttpStatus.OK).json({
+          status: HttpStatus.OK,
+          data: updatedArticle,
+        });
+      })
+      .catch((error) => {
+        return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: error.message,
+        });
+      });
   }
 
   @Delete(':id')

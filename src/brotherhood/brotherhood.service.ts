@@ -26,11 +26,10 @@ export class BrotherhoodService {
       let translation = null;
 
       if (createBrotherhoodDto.translation) {
-        let parsedTranslation = JSON.parse(createBrotherhoodDto.translation);
+        const parsedTranslation = JSON.parse(createBrotherhoodDto.translation);
 
         translation = {
-          translationNameProduct:
-            parsedTranslation.translationName,
+          translationNameProduct: parsedTranslation.translationName,
           translationDescriptionProduct:
             parsedTranslation.translationDescription,
         };
@@ -192,18 +191,46 @@ export class BrotherhoodService {
     id: string,
     updateBrotherhoodDto: UpdateBrotherhoodDto,
     user: any,
-    response,
+    files: Express.Multer.File[],
   ): Promise<Brotherhood> {
     try {
       const emailUser = user.email;
+      const updateData: any = {
+        ...updateBrotherhoodDto,
+        update_at: new Date(),
+      };
+
+      // Buscar el objeto existente
+      const existingBrotherhood = await this.brotherhoodModel
+        .findById(id)
+        .exec();
+      if (!existingBrotherhood) {
+        throw new HttpException('Brotherhood not found', HttpStatus.NOT_FOUND);
+      }
+
+      // Manejar archivos si se proporcionan
+      if (files && files.length > 0) {
+        const urlImage = files[0].path.replace(/\\/g, '/');
+        updateData.urlImage = urlImage;
+      }
+
+      if (files && files.length > 1) {
+        const galleryImages = files
+          .slice(1)
+          .map((file) => file.path.replace(/\\/g, '/'));
+        updateData.galleryImages = galleryImages;
+      }
+
+      // Actualizar el objeto en la base de datos
       const updatedBrotherhood = await this.brotherhoodModel
-        .findByIdAndUpdate(id, updateBrotherhoodDto, { new: true })
+        .findByIdAndUpdate(id, updateData, { new: true })
         .exec();
 
       if (!updatedBrotherhood) {
-        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('Brotherhood not found', HttpStatus.NOT_FOUND);
       }
 
+      // Enviar correos electrónicos si el estado ha cambiado
       if (updatedBrotherhood.status === 'aprobado') {
         await this.emailService.sendApprovalEmailBrotherhood(
           emailUser,
@@ -216,12 +243,7 @@ export class BrotherhoodService {
         );
       }
 
-      const responseObj = {
-        status: HttpStatus.OK,
-        data: updatedBrotherhood,
-      };
-
-      return response.status(HttpStatus.CREATED).json(responseObj);
+      return updatedBrotherhood;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
