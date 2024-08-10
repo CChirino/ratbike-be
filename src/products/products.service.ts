@@ -184,29 +184,66 @@ export class ProductsService {
     updateProductDto: UpdateProductDto,
     user: any,
     response,
+    files: Express.Multer.File[],
   ): Promise<Product> {
     try {
       const emailUser = user.email;
+
+      // Manejar la traducción
+      let translation = null;
+      if (updateProductDto.translation) {
+        const parsedTranslation = JSON.parse(updateProductDto.translation);
+
+        translation = {
+          translationNameProduct: parsedTranslation.translationNameProduct,
+          translationDescriptionProduct:
+            parsedTranslation.translationDescriptionProduct,
+        };
+      }
+
+      // Preparar los datos para la actualización
+      const updateData: any = {
+        ...updateProductDto,
+        ...(translation && { translation }),
+        update_at: new Date(),
+      };
+
+      // Manejar archivos si se proporcionan
+      if (files && files.length > 0) {
+        const urlImageProduct = files[0].path.replace(/\\/g, '/');
+        updateData.urlImageProduct = urlImageProduct;
+      }
+
+      if (files && files.length > 1) {
+        const galleryImages = files
+          .slice(1)
+          .map((file) => file.path.replace(/\\/g, '/'));
+        updateData.galleryImages = galleryImages;
+      }
+
+      // Actualizar el objeto en la base de datos
       const updatedProduct = await this.productModel
-        .findByIdAndUpdate(id, updateProductDto, { new: true })
+        .findByIdAndUpdate(id, updateData, { new: true })
         .exec();
 
       if (!updatedProduct) {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
+      // Enviar correos electrónicos si el estado ha cambiado
       if (updateProductDto.status === 'aprobado') {
         await this.emailService.sendApprovalEmail(emailUser, updatedProduct);
       } else if (updateProductDto.status === 'rechazado') {
         await this.emailService.sendRejectionEmail(emailUser, updatedProduct);
       }
 
+      // Responder con el objeto actualizado
       const responseObj = {
         status: HttpStatus.OK,
         data: updatedProduct,
       };
 
-      return response.status(HttpStatus.CREATED).json(responseObj);
+      return response.status(HttpStatus.OK).json(responseObj);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

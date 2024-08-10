@@ -66,15 +66,23 @@ export class ProductsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(AnyFilesInterceptor())
   @Roles('admin', 'moderador', 'user')
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
     @Req() request: Request,
     @Res() response,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     const user = request.user;
-    return this.productsService.update(id, updateProductDto, user, response);
+    return this.productsService.update(
+      id,
+      updateProductDto,
+      user,
+      response,
+      files,
+    );
   }
 
   @Delete(':id')
