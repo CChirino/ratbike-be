@@ -195,7 +195,6 @@ export class BrotherhoodService {
   ): Promise<Brotherhood> {
     try {
       const emailUser = user.email;
-      
 
       let translation = null;
 
@@ -203,18 +202,16 @@ export class BrotherhoodService {
         const parsedTranslation = JSON.parse(updateBrotherhoodDto.translation);
 
         translation = {
-          translationNameProduct: parsedTranslation.translationNameProduct,
-          translationDescriptionProduct:
-            parsedTranslation.translationDescriptionProduct,
+          translationName: parsedTranslation.translationName,
+          translationDescription: parsedTranslation.translationDescription,
         };
       }
 
-      let updateData: any = {
+      const updateData: any = {
         ...updateBrotherhoodDto,
         ...(translation && { translation }),
         update_at: new Date(),
       };
-
 
       // Buscar el objeto existente
       const existingBrotherhood = await this.brotherhoodModel

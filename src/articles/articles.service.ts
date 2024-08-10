@@ -191,7 +191,7 @@ export class ArticlesService {
         };
       }
 
-      let updateData: any = {
+      const updateData: any = {
         ...updateArticleDto,
         ...(translation && { translation }),
         update_at: new Date(),
