@@ -212,13 +212,28 @@ export class ProductsService {
       if (files && files.length > 0) {
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
         updateData.urlImageProduct = urlImageProduct;
-      }
-
-      if (files && files.length > 1) {
-        const galleryImages = files
-          .slice(1)
-          .map((file) => file.path.replace(/\\/g, '/'));
-        updateData.galleryImages = galleryImages;
+        updateData.galleryImages = [
+          ...(updateProductDto.filesToKeep.length
+            ? updateProductDto.filesToKeep.split(',')
+            : []),
+        ];
+        if (files.length > 1) {
+          const galleryImages = files.map((file) =>
+            file.path.replace(/\\/g, '/'),
+          );
+          updateData.galleryImagesWall = [
+            ...galleryImages,
+            ...(updateProductDto.filesToKeep.length
+              ? updateProductDto.filesToKeep.split(',')
+              : []),
+          ];
+        }
+      } else {
+        updateData.galleryImages = [
+          ...(updateProductDto.filesToKeep.length
+            ? updateProductDto.filesToKeep.split(',')
+            : []),
+        ];
       }
 
       // Actualizar el objeto en la base de datos

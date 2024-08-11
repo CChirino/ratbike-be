@@ -205,13 +205,28 @@ export class ArticlesService {
       if (files && files.length > 0) {
         const urlImageArticle = files[0].path.replace(/\\/g, '/');
         updateData.urlImageArticle = urlImageArticle;
-      }
-
-      if (files && files.length > 1) {
-        const galleryImagesArticles = files
-          .slice(1)
-          .map((file) => file.path.replace(/\\/g, '/'));
-        updateData.galleryImagesArticles = galleryImagesArticles;
+        updateData.galleryImagesArticles = [
+          ...(updateArticleDto.filesToKeep.length
+            ? updateArticleDto.filesToKeep.split(',')
+            : []),
+        ];
+        if (files.length > 1) {
+          const galleryImagesArticles = files.map((file) =>
+            file.path.replace(/\\/g, '/'),
+          );
+          updateData.galleryImagesWall = [
+            ...galleryImagesArticles,
+            ...(updateArticleDto.filesToKeep.length
+              ? updateArticleDto.filesToKeep.split(',')
+              : []),
+          ];
+        }
+      } else {
+        updateData.galleryImagesArticles = [
+          ...(updateArticleDto.filesToKeep.length
+            ? updateArticleDto.filesToKeep.split(',')
+            : []),
+        ];
       }
 
       const updatedArticle = await this.articleModel

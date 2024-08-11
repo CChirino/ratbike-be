@@ -68,7 +68,7 @@ export class WallController {
       wallType,
       wallModality,
       ownerId,
-      showUpdatedOnly
+      showUpdatedOnly,
     );
   }
 

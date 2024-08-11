@@ -223,17 +223,31 @@ export class BrotherhoodService {
 
       // Manejar archivos si se proporcionan
       if (files && files.length > 0) {
-        const urlImage = files[0].path.replace(/\\/g, '/');
-        updateData.urlImage = urlImage;
+        const urlImageBrotherhood = files[0].path.replace(/\\/g, '/');
+        updateData.urlImageBrotherhood = urlImageBrotherhood;
+        updateData.galleryImagesBrotherhood = [
+          ...(updateBrotherhoodDto.filesToKeep.length
+            ? updateBrotherhoodDto.filesToKeep.split(',')
+            : []),
+        ];
+        if (files.length > 1) {
+          const galleryImagesBrotherhood = files.map((file) =>
+            file.path.replace(/\\/g, '/'),
+          );
+          updateData.galleryImagesBrotherhood = [
+            ...galleryImagesBrotherhood,
+            ...(updateBrotherhoodDto.filesToKeep.length
+              ? updateBrotherhoodDto.filesToKeep.split(',')
+              : []),
+          ];
+        }
+      } else {
+        updateData.galleryImagesBrotherhood = [
+          ...(updateBrotherhoodDto.filesToKeep.length
+            ? updateBrotherhoodDto.filesToKeep.split(',')
+            : []),
+        ];
       }
-
-      if (files && files.length > 1) {
-        const galleryImages = files
-          .slice(1)
-          .map((file) => file.path.replace(/\\/g, '/'));
-        updateData.galleryImages = galleryImages;
-      }
-
       // Actualizar el objeto en la base de datos
       const updatedBrotherhood = await this.brotherhoodModel
         .findByIdAndUpdate(id, updateData, { new: true })
@@ -266,17 +280,19 @@ export class BrotherhoodService {
     try {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
 
-      if(!brotherhood)  return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ status: 500, message: 'INTERNAL_SERVER_ERROR'});
+      if (!brotherhood)
+        return response
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ status: 500, message: 'INTERNAL_SERVER_ERROR' });
 
+      brotherhood.delete_at = new Date().toISOString();
+      brotherhood.delete_date = new Date();
+      await brotherhood.save();
 
-        brotherhood.delete_at = new Date().toISOString();
-        brotherhood.delete_date = new Date();
-        await brotherhood.save();
-
-        return response.status(HttpStatus.NO_CONTENT).json({ status: 204, message: 'NO_CONTENT', data: brotherhood});
-    } catch (error) {
-     
-    }
+      return response
+        .status(HttpStatus.NO_CONTENT)
+        .json({ status: 204, message: 'NO_CONTENT', data: brotherhood });
+    } catch (error) {}
   }
 
   async findProductsByCategory(category: string): Promise<Brotherhood[]> {
