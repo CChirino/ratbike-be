@@ -10,12 +10,14 @@ import {
   Req,
   UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SliderService } from './slider.service';
 import { CreateSliderDto } from './dto/create-slider.dto';
 import { UpdateSliderDto } from './dto/update-slider.dto';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('slider')
 export class SliderController {
@@ -23,6 +25,7 @@ export class SliderController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(AnyFilesInterceptor())
   create(
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createSliderDto: CreateSliderDto,

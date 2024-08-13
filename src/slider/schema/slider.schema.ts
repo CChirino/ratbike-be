@@ -5,10 +5,10 @@ export type SliderDocument = Slider & Document;
 
 @Schema()
 export class Slider {
-  @Prop({ required: true })
+  @Prop()
   name: string;
 
-  @Prop({ required: true })
+  @Prop()
   link: string;
 
   @Prop({ default: undefined })
