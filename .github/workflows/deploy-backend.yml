@@ -48,7 +48,7 @@ jobs:
             cd /var/www/api.ratwave.com
             rm -rf /var/www/api.ratwave.com/node_modules
             rm -rf /var/www/api.ratwave.com/dist
-            rm /var/www/api.ratwave.com/package.json
+            rm /var/www/api.ratwave.com/package-lock.json
             git pull origin main
             npm install
             npm run build
