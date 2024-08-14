@@ -42,7 +42,7 @@ export class Skill {
   };
 
   @Prop({
-    default: 'revision',
+    default: 'aprobado',
     enum: ['revision', 'aprobado', 'rechazado', 'desactualizado'],
   })
   status: string;

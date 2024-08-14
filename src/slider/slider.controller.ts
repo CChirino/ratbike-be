@@ -28,7 +28,7 @@ export class SliderController {
   @UseInterceptors(AnyFilesInterceptor())
   create(
     @UploadedFiles() files: Express.Multer.File[],
-    @Body() createSliderDto: CreateSliderDto,
+    @Body() createSliderDto: CreateSliderDto[],
     @Res() response,
     @Req() request: Request,
   ) {

@@ -34,7 +34,7 @@ export class SkillsService {
         startDateWall: new Date(createSkillDto.startDateSkill),
         endDateWall: new Date(createSkillDto.endDateSkill),
         ...(translation && { translation }),
-        status: 'revision',
+        status: 'aprobado',
         createdBy: user.name + ' ' + user.lastname,
       });
 

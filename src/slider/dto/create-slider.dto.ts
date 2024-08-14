@@ -1,14 +1,12 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsObject, IsOptional } from 'class-validator';
 
 export class CreateSliderDto {
-  @IsOptional()
+  [x: string]: any;
   name: string;
   @IsOptional()
   link: string;
-  @IsNotEmpty()
-  image1: string;
-  @IsNotEmpty()
-  image2: string;
-  @IsNotEmpty()
-  image3: string;
+  image: string;
+  @IsOptional()
+  @IsObject()
+  message: Record<string, any>;
 }

@@ -64,7 +64,7 @@ export class BrotherhoodService {
 
       const brotherhoodId = createdBrotherhood._id;
 
-      await this.emailService.sendProductRequest(brotherhoodId);
+      //await this.emailService.sendProductRequest(brotherhoodId);
 
       const responseObj = {
         status: HttpStatus.OK,
@@ -258,17 +258,17 @@ export class BrotherhoodService {
       }
 
       // Enviar correos electrónicos si el estado ha cambiado
-      if (updatedBrotherhood.status === 'aprobado') {
-        await this.emailService.sendApprovalEmailBrotherhood(
-          emailUser,
-          updatedBrotherhood,
-        );
-      } else if (updatedBrotherhood.status === 'rechazado') {
-        await this.emailService.sendRejectionEmailBrotherhood(
-          emailUser,
-          updatedBrotherhood,
-        );
-      }
+      // if (updatedBrotherhood.status === 'aprobado') {
+      //   await this.emailService.sendApprovalEmailBrotherhood(
+      //     emailUser,
+      //     updatedBrotherhood,
+      //   );
+      // } else if (updatedBrotherhood.status === 'rechazado') {
+      //   await this.emailService.sendRejectionEmailBrotherhood(
+      //     emailUser,
+      //     updatedBrotherhood,
+      //   );
+      // }
 
       return updatedBrotherhood;
     } catch (error) {

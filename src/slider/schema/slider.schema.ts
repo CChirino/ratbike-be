@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type SliderDocument = Slider & Document;
 
@@ -11,14 +11,13 @@ export class Slider {
   @Prop()
   link: string;
 
-  @Prop({ default: undefined })
-  image1: string;
-
-  @Prop({ default: undefined })
-  image2: string;
-
-  @Prop({ default: undefined })
-  image3: string;
+  @Prop({ type: [String], default: [] })
+  image: string[];
+  
+  @Prop({ type: mongoose.Schema.Types.Mixed })
+  translation: {
+    message: Record<string, any>;
+  };
 
   @Prop({ default: null, required: false })
   delete_at: string;

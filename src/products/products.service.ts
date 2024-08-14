@@ -38,7 +38,7 @@ export class ProductsService {
       const newProduct = new this.productModel({
         ...createProductDto,
         ...(translation && { translation }),
-        status: 'revision',
+        status: 'aprobado',
         createdBy: user.name + ' ' + user.lastname,
       });
 
@@ -63,7 +63,7 @@ export class ProductsService {
 
       const productId = createdProduct._id;
 
-      await this.emailService.sendProductRequest(productId);
+      //await this.emailService.sendProductRequest(productId);
 
       const responseObj = {
         status: HttpStatus.OK,
@@ -246,11 +246,11 @@ export class ProductsService {
       }
 
       // Enviar correos electrónicos si el estado ha cambiado
-      if (updateProductDto.status === 'aprobado') {
-        await this.emailService.sendApprovalEmail(emailUser, updatedProduct);
-      } else if (updateProductDto.status === 'rechazado') {
-        await this.emailService.sendRejectionEmail(emailUser, updatedProduct);
-      }
+      // if (updateProductDto.status === 'aprobado') {
+      //   await this.emailService.sendApprovalEmail(emailUser, updatedProduct);
+      // } else if (updateProductDto.status === 'rechazado') {
+      //   await this.emailService.sendRejectionEmail(emailUser, updatedProduct);
+      // }
 
       // Responder con el objeto actualizado
       const responseObj = {

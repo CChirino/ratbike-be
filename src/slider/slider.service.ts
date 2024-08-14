@@ -13,33 +13,40 @@ export class SliderService {
   ) {}
 
   async create(
-    createSliderDto: CreateSliderDto,
+    createSliderDtos: CreateSliderDto[],
     files: Express.Multer.File[],
     response,
     user: any,
   ): Promise<Slider> {
     try {
-      const newSlider = new this.sliderModel({
-        ...createSliderDto,
-        createdBy: `${user.name} ${user.lastname}`,
+      const documentsToUpload = createSliderDtos.map((createSliderDto: CreateSliderDto) => {
+        const newSlider = new this.sliderModel({
+          ...createSliderDto,
+          createdBy: `${user.name} ${user.lastname}`,
+        });
+  
+        let translation = null;
+  
+        if (createSliderDto.translation) {
+          const parsedTranslation = JSON.parse(createSliderDto.translation);
+          translation = {
+            message:
+              parsedTranslation.message,
+          };
+        }
+  
+        if (files && files.length > 0) {
+          const image = files.map((file) => file.path.replace(/\\/g, '/'));
+          newSlider.image = image;
+        }
+
+        return newSlider;
       });
 
-      // Asigna las rutas de las imágenes a los campos correspondientes
-      if (files && files.length > 0) {
-        newSlider.image1 = files[0]?.path.replace(/\\/g, '/') || null;
-      }
-
-      if (files && files.length > 1) {
-        newSlider.image2 = files[1]?.path.replace(/\\/g, '/') || null;
-      }
-
-      if (files && files.length > 2) {
-        newSlider.image3 = files[2]?.path.replace(/\\/g, '/') || null;
-      }
-      const createdSlider = await newSlider.save();
+      this.sliderModel.insertMany(documentsToUpload, {ordered: true})
+      
       const responseObj = {
-        status: HttpStatus.CREATED,
-        data: createdSlider,
+        status: HttpStatus.CREATED
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
