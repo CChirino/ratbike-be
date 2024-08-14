@@ -5,6 +5,7 @@ import { json, urlencoded } from 'express';
 import * as express from 'express';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
+import { AllExceptionsFilter } from './telegram/all-exceptions.filter';
 
 dotenv.config();
 
@@ -37,6 +38,8 @@ async function bootstrap() {
 
   // Middleware para servir archivos estáticos
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+
+  app.useGlobalFilters(app.get(AllExceptionsFilter));
 
   // Iniciar la aplicación
   await app.listen(4000);

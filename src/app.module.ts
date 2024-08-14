@@ -34,6 +34,8 @@ import {
   HeaderResolver,
 } from 'nestjs-i18n';
 import { SliderModule } from './slider/slider.module';
+import { TelegramService } from './telegram/telegram.service';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -83,6 +85,7 @@ import { SliderModule } from './slider/slider.module';
     SessionsModule,
     ContactsModule,
     SliderModule,
+    TelegramModule,
   ],
   controllers: [AppController],
   providers: [
@@ -95,6 +98,7 @@ import { SliderModule } from './slider/slider.module';
     CronJobService,
     JwtStrategy,
     Reflector,
+    TelegramService,
   ],
   exports: [CronJobService, EmailService],
 })
