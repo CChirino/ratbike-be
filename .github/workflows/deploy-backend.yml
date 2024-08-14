@@ -46,10 +46,10 @@ jobs:
             source ~/.bashrc
             nvm use v20.11.0 
             cd /var/www/api.ratwave.com
+            rm -rf /var/www/api.ratwave.com/node_modules
+            rm -rf /var/www/api.ratwave.com/dist
+            rm /var/www/api.ratwave.com/package.json
             git pull origin main
-            rm -rf /var/www/ratwave.com/dist
-            rm -rf /var/www/ratwave.com/node_modules
-            rm /var/www/ratwave.com/package-lock.json
             npm install
             npm run build
             pm2 restart api-ratwave
