@@ -48,14 +48,15 @@ export class SliderController {
     return this.sliderService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(AnyFilesInterceptor())
   update(
-    @Param('id') id: string,
     @Body() updateSliderDto: UpdateSliderDto,
+    @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
   ) {
-    return this.sliderService.update(id, updateSliderDto, response);
+    return this.sliderService.update(updateSliderDto, files, response);
   }
 
   @Delete(':id')

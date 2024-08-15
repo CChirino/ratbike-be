@@ -13,38 +13,41 @@ export class SliderService {
   ) {}
 
   async create(
-    createSliderDtos: CreateSliderDto[],
+    createSliderDtos: CreateSliderDto[] | any,
     files: Express.Multer.File[],
     response,
     user: any,
   ): Promise<Slider> {
     try {
-      const documentsToUpload = createSliderDtos.map((createSliderDto: CreateSliderDto) => {
-        const newSlider = new this.sliderModel({
-          ...createSliderDto,
-          createdBy: `${user.name} ${user.lastname}`,
-        });
-  
+      let documentsToUpload = [];
+      for (let index = 0; index < Number(createSliderDtos.elementsLength); index++) {
         let translation = null;
-  
-        if (createSliderDto.translation) {
-          const parsedTranslation = JSON.parse(createSliderDto.translation);
+
+        if (createSliderDtos.message[index]) {
+          const parsedTranslation = JSON.parse(createSliderDtos.message[index]);
           translation = {
             message:
-              parsedTranslation.message,
+              parsedTranslation,
           };
         }
-  
+
+        let newSlider = new this.sliderModel({
+          name: createSliderDtos.name[index],
+          link: createSliderDtos.link[index],
+          translation: translation
+        });
+
         if (files && files.length > 0) {
-          const image = files.map((file) => file.path.replace(/\\/g, '/'));
+          const image = files[index].path.replace(/\\/g, '/');
           newSlider.image = image;
         }
 
-        return newSlider;
-      });
+        documentsToUpload.push(newSlider);
+
+      }
 
       this.sliderModel.insertMany(documentsToUpload, {ordered: true})
-      
+
       const responseObj = {
         status: HttpStatus.CREATED
       };
@@ -91,25 +94,57 @@ export class SliderService {
   }
 
   async update(
-    id: string,
-    updateSliderDto: UpdateSliderDto,
+    updateSliderDtos: UpdateSliderDto[] | any,
+    files: Express.Multer.File[],
     response,
   ): Promise<Slider> {
     try {
-      const updatedSlider = await this.sliderModel
-        .findByIdAndUpdate(id, updateSliderDto, { new: true })
-        .exec();
+      let bulkOperations = [];
 
-      if (!updatedSlider) {
-        throw new HttpException('Slider not found', HttpStatus.NOT_FOUND);
+      for (let index = 0; index < Number(updateSliderDtos.elementsLength); index++) {
+        let translation = null;
+
+        if (updateSliderDtos.message[index]) {
+          const parsedTranslation = JSON.parse(updateSliderDtos.message[index]);
+          translation = {
+            message:
+              parsedTranslation,
+          };
+        }
+
+        let newSlider = new this.sliderModel({
+          _id: updateSliderDtos.identifier[index],
+          name: updateSliderDtos.name[index],
+          link: updateSliderDtos.link[index],
+          translation: translation
+        });
+
+        if (files && files.length > 0) {
+          const image = files[index].path.replace(/\\/g, '/');
+          newSlider.image = image;
+        }
+
+        bulkOperations.push({
+          updateOne: {
+            filter: { _id: updateSliderDtos.identifier[index] },
+            update: { $set: newSlider }, // Or use $inc, $push, etc. as needed
+          }
+        }
+        );
+
       }
 
+      await this.sliderModel.bulkWrite(bulkOperations, {ordered: true});
+
       const responseObj = {
-        status: HttpStatus.OK,
-        data: updatedSlider,
+        status: HttpStatus.CREATED
       };
-      return response.status(HttpStatus.OK).json(responseObj);
+      return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
+      console.log({error})
+      response
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
       throw error;
     }
   }
@@ -117,6 +152,7 @@ export class SliderService {
   async remove(id: string): Promise<void> {
     try {
       const slider = await this.sliderModel.findById(id).exec();
+
       if (!slider) {
         throw new HttpException('Slider not found', HttpStatus.NOT_FOUND);
       }
@@ -125,6 +161,7 @@ export class SliderService {
       slider.delete_date = new Date();
       await slider.save();
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         error.message || 'Error interno del servidor',
         HttpStatus.INTERNAL_SERVER_ERROR,

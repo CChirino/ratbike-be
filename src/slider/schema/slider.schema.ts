@@ -11,9 +11,9 @@ export class Slider {
   @Prop()
   link: string;
 
-  @Prop({ type: [String], default: [] })
-  image: string[];
-  
+  @Prop()
+  image: string;
+
   @Prop({ type: mongoose.Schema.Types.Mixed })
   translation: {
     message: Record<string, any>;
