@@ -18,6 +18,7 @@ import { UpdateSliderDto } from './dto/update-slider.dto';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('slider')
 export class SliderController {
@@ -38,12 +39,14 @@ export class SliderController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('public', 'admin', 'moderador', 'user')
   findAll() {
     return this.sliderService.findAll();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.sliderService.findOne(id);
   }
