@@ -56,12 +56,12 @@ import { TelegramModule } from './telegram/telegram.module';
       transport: {
         service: 'Gmail',
         auth: {
-          user: 'critijo@gmail.com',
-          pass: 'rujt irkh zwfj uzbl',
+          user: 'RatWave1999@gmail.com',
+          pass: 'mkdb ubsm inkx qixl',
         },
       },
       defaults: {
-        from: 'critijo@gmail.com',
+        from: 'RatWave1999@gmail.com',
       },
       template: {
         dir: __dirname + '/templates',
