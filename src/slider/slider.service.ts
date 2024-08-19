@@ -104,7 +104,7 @@ export class SliderService {
       for (let index = 0; index < Number(updateSliderDtos.elementsLength); index++) {
         let translation = null;
 
-        if (updateSliderDtos.message[index]) {
+        if (updateSliderDtos.message && updateSliderDtos.message[index]) {
           const parsedTranslation = JSON.parse(updateSliderDtos.message[index]);
           translation = {
             message:
@@ -141,6 +141,7 @@ export class SliderService {
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
+      console.log({error})
       response
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ error: error.message });
