@@ -23,7 +23,7 @@ export class SliderService {
       for (let index = 0; index < Number(createSliderDtos.elementsLength); index++) {
         let translation = null;
 
-        if (createSliderDtos.message[index]) {
+        if (createSliderDtos.message && createSliderDtos.message[index]) {
           const parsedTranslation = JSON.parse(createSliderDtos.message[index]);
           translation = {
             message:
@@ -104,7 +104,7 @@ export class SliderService {
       for (let index = 0; index < Number(updateSliderDtos.elementsLength); index++) {
         let translation = null;
 
-        if (updateSliderDtos.message[index]) {
+        if (updateSliderDtos.message && updateSliderDtos.message[index]) {
           const parsedTranslation = JSON.parse(updateSliderDtos.message[index]);
           translation = {
             message:
