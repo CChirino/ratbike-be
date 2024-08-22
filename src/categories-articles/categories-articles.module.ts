@@ -28,6 +28,7 @@ import { diskStorage } from 'multer';
       }),
       limits: {
         fileSize: 100 * 1024 * 1024, // 100 MB en bytes
+        fieldSize: 100 * 1024 * 1024, // 100 MB en bytes
       },
     }),
   ],
