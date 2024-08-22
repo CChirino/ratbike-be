@@ -33,8 +33,8 @@ async function bootstrap() {
   }
 
   // Middleware para manejar JSON y URL encoding
-  app.use(json({ limit: '20mb' }));
-  app.use(urlencoded({ extended: true, limit: '20mb' }));
+  app.use(json({ limit: '10000mb' }));
+  app.use(urlencoded({ extended: true, limit: '10000mb' }));
 
   // Middleware para servir archivos estáticos
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
