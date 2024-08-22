@@ -9,16 +9,18 @@ import {
 } from 'class-validator';
 
 export class CreateEventDto {
+  [x: string]: any;
+  
   @IsNotEmpty()
   @IsString()
   hostName: string;
 
   @IsObject()
   @IsNotEmpty()
-  translation: {
-    translationEventType: Record<string, any>;
-    translationEventDescription: Record<string, any>;
-  };
+  translationEventType: Record<string, any>;
+  @IsObject()
+  @IsNotEmpty()
+  translationEventDescription: Record<string, any>;
 
   @IsArray()
   @ArrayNotEmpty()

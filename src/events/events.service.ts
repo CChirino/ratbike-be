@@ -46,8 +46,21 @@ export class EventsService {
     response,
   ): Promise<Event> {
     try {
+      let translation = null;
+
+      if (createEventDto.translation) {
+        const parsedTranslation = JSON.parse(createEventDto.translation);
+
+        translation = {
+          translationEventType: parsedTranslation.translationEventType,
+          translationEventDescription:
+            parsedTranslation.translationEventDescription,
+        };
+      }
+
       const createdEvent = new this.eventModel({
         ...createEventDto,
+        ...(translation && { translation }),
         delete_at: null,
         delete_date: null,
         update_at: null,
@@ -69,8 +82,27 @@ export class EventsService {
 
   async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
     try {
+      let translation = null;
+
+      if (updateEventDto.translation) {
+        const parsedTranslation = JSON.parse(updateEventDto.translation);
+
+        translation = {
+          translationEventType: parsedTranslation.translationEventType,
+          translationEventDescription:
+            parsedTranslation.translationEventDescription,
+        };
+      }
+
       const updatedEvent = await this.eventModel
-        .findByIdAndUpdate(id, updateEventDto, { new: true })
+        .findByIdAndUpdate(
+          id,
+          {
+            ...updateEventDto,
+            ...(translation && { translation }),
+          },
+          { new: true },
+        )
         .exec();
       if (!updatedEvent) {
         throw new HttpException('Event not found', HttpStatus.NOT_FOUND);
@@ -100,6 +132,7 @@ export class EventsService {
       }
       return deletedEvent;
     } catch (error) {
+      console.log(error);
       if (error.status === HttpStatus.NOT_FOUND) {
         throw error;
       }

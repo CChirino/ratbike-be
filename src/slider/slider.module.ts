@@ -23,6 +23,9 @@ import { Slider, SliderSchema } from './schema/slider.schema';
           callback(null, `${uniqueSuffix}.${extension}`);
         },
       }),
+      limits: {
+        fileSize: 100 * 1024 * 1024, // 100 MB en bytes
+      },
     }),
   ],
   controllers: [SliderController],

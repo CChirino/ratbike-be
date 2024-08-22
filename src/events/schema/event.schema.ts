@@ -15,7 +15,7 @@ export class Event extends Document {
   @Prop({ type: Array, required: true })
   presentations: {
     eventDate: string;
-    Country: string;
+    country: string;
     openHour: string;
     link: string;
     cityLocation: string;
