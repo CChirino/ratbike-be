@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
@@ -28,7 +28,9 @@ export class SessionsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.sessionsService.remove(id);
+  remove(@Param('id') id: string, @Req() request: Request,) {
+    //@ts-ignore
+    const user = request.user;
+    return this.sessionsService.remove(id, user);
   }
 }

@@ -66,14 +66,14 @@ export class SessionsService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string, user: any) {
     try {
       const result = await this.sessionModel
-        .findOneAndDelete({ _id: id })
+        .findOneAndDelete({ email: user.email  })
         .exec();
 
       if (result) {
-        console.log(`Successfully removed session with ID: ${id}`);
+        console.log(`Successfully removed session from user: ${id}`);
       } else {
         console.log(`No session found with ID: ${id}`);
       }
@@ -95,7 +95,7 @@ export class SessionsService {
       if (!session) {
         throw new Error('Session not found for the provided email');
       }
-      await this.remove(session._id.toString());
+      await this.remove(session._id.toString(), user);
       this.invalidatedTokens.add(token);
     } catch (error) {
       console.error('Error invalidando el token:', error);
