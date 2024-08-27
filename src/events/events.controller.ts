@@ -17,7 +17,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('events')
 @Controller('events')
 @UseGuards(RolesGuard)
 export class EventsController {
@@ -25,7 +27,7 @@ export class EventsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador', 'user', 'public')
   create(
     @Body() createEventDto: CreateEventDto,
     @Res() response,
@@ -43,14 +45,14 @@ export class EventsController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador', 'user', 'public')
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventsService.update(id, updateEventDto);
   }

@@ -19,6 +19,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+
 @ApiTags('categories-products')
 @Controller('categories-products')
 @UseGuards(RolesGuard)
@@ -30,7 +31,7 @@ export class CategoriesProductsController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('urlImageCategory'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createCategoriesProductDto: CreateCategoriesProductDto,
@@ -51,14 +52,14 @@ export class CategoriesProductsController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador', 'user', 'public')
   findOne(@Param('id') id: string) {
     return this.categoriesProductsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   update(
     @Param('id') id: string,
     @Body() updateCategoriesProductDto: UpdateCategoriesProductDto,

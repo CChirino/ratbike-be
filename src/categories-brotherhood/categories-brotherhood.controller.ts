@@ -19,6 +19,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/decorators/roles.decorator';
 import { RolesGuard } from 'src/guards/roles.guard';
+
 @ApiTags('categories-brotherhood')
 @Controller('categories-brotherhood')
 @UseGuards(RolesGuard)
@@ -30,7 +31,7 @@ export class CategoriesBrotherhoodController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('urlImageCategoryBrotherhood'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   create(
     @Body() createCategoriesBrotherhoodDto: CreateCategoriesBrotherhoodDto,
     @UploadedFile() file: Express.Multer.File,
@@ -51,14 +52,14 @@ export class CategoriesBrotherhoodController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador', 'user', 'public')
   findOne(@Param('id') id: string) {
     return this.categoriesBrotherhoodService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   update(
     @Param('id') id: string,
     @Body() updateCategoriesBrotherhoodDto: UpdateCategoriesBrotherhoodDto,

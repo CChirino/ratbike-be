@@ -33,7 +33,7 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   @UseInterceptors(AnyFilesInterceptor())
   create(
     @UploadedFiles() files: Express.Multer.File[],
@@ -56,7 +56,7 @@ export class ArticlesController {
   }
 
   @Get('most-read')
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   @UseGuards(AuthGuard('jwt'))
   async getMostReadArticles() {
     const mostReadArticles = await this.articlesService.getMostReadArticles();
@@ -64,7 +64,7 @@ export class ArticlesController {
   }
 
   @Get('latest')
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   @UseGuards(AuthGuard('jwt'))
   async getLatestArticles() {
     const latestArticles = await this.articlesService.getLatestArticles();
@@ -79,7 +79,7 @@ export class ArticlesController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   @UseInterceptors(AnyFilesInterceptor())
   async update(
     @Param('id') id: string,
@@ -114,7 +114,7 @@ export class ArticlesController {
 
   @Get(':category')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   async getArticlesByCategory(@Param('category') category: string) {
     const articles =
       await this.articlesService.findArticlesByCategory(category);

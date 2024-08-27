@@ -31,7 +31,7 @@ export class CategoriesArticlesController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('urlImageCategoryArticles'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   create(
     @Body() createCategoriesArticleDto: CreateCategoriesArticleDto,
     @UploadedFile() file: Express.Multer.File,
@@ -52,14 +52,14 @@ export class CategoriesArticlesController {
 
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador', 'user', 'public')
   findOne(@Param('id') id: string) {
     return this.categoriesArticlesService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   update(
     @Param('id') id: string,
     @Body() updateCategoriesArticleDto: UpdateCategoriesArticleDto,

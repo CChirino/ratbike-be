@@ -32,7 +32,7 @@ export class ProductsController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   async create(
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
@@ -67,7 +67,7 @@ export class ProductsController {
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -93,7 +93,7 @@ export class ProductsController {
   }
 
   @Get(':category')
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   async getProductsByCategory(@Param('category') category: string) {
     const products =
       await this.productsService.findProductsByCategory(category);

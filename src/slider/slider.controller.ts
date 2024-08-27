@@ -18,14 +18,19 @@ import { UpdateSliderDto } from './dto/update-slider.dto';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/roles.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('slider')
 @Controller('slider')
+@UseGuards(RolesGuard)
 export class SliderController {
   constructor(private readonly sliderService: SliderService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   @UseInterceptors(AnyFilesInterceptor())
   create(
     @UploadedFiles() files: Express.Multer.File[],
@@ -38,14 +43,14 @@ export class SliderController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll() {
     return this.sliderService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  //@UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findOne(@Param('id') id: string) {
     return this.sliderService.findOne(id);
@@ -53,6 +58,7 @@ export class SliderController {
 
   @Patch()
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   @UseInterceptors(AnyFilesInterceptor())
   update(
     @Body() updateSliderDto: UpdateSliderDto,
@@ -64,6 +70,7 @@ export class SliderController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
   remove(@Param('id') id: string) {
     return this.sliderService.remove(id);
   }

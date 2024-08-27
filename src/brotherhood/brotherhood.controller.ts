@@ -33,7 +33,7 @@ export class BrotherhoodController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(AnyFilesInterceptor())
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   create(
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
@@ -67,7 +67,7 @@ export class BrotherhoodController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user')
+  @Roles('admin', 'moderador')
   @UseInterceptors(AnyFilesInterceptor())
   update(
     @Param('id') id: string,
@@ -102,7 +102,7 @@ export class BrotherhoodController {
   }
 
   @Get(':category')
-  @Roles('admin', 'moderador', 'user')
+  @Roles('public', 'admin', 'moderador', 'user')
   @UseGuards(AuthGuard('jwt'))
   async getProductsByCategory(@Param('category') category: string) {
     const products =
