@@ -7,6 +7,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AuthModule } from 'src/auth/auth.module';
 import { EmailModule } from '../email/email.module';
+import { LastreadingModule } from 'src/lastreading/lastreading.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { EmailModule } from '../email/email.module';
       },
     }),
     EmailModule,
+    LastreadingModule,
   ],
   controllers: [ProductsController],
   providers: [ProductsService],

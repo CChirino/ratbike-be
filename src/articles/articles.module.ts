@@ -5,6 +5,7 @@ import { Article, ArticleSchema } from './schema/article.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { LastreadingModule } from 'src/lastreading/lastreading.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { diskStorage } from 'multer';
         fieldSize: 100 * 1024 * 1024, // 100 MB en bytes
       },
     }),
+    LastreadingModule,
   ],
   controllers: [ArticlesController],
   providers: [ArticlesService],

@@ -36,6 +36,7 @@ import {
 import { SliderModule } from './slider/slider.module';
 import { TelegramService } from './telegram/telegram.service';
 import { TelegramModule } from './telegram/telegram.module';
+import { LastreadingModule } from './lastreading/lastreading.module';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { TelegramModule } from './telegram/telegram.module';
     ContactsModule,
     SliderModule,
     TelegramModule,
+    LastreadingModule,
   ],
   controllers: [AppController],
   providers: [

@@ -7,6 +7,8 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationResponse } from './interfaces/pagination.interface';
+import { LastReadingService } from 'src/lastreading/lastreading.service';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class WallService {
@@ -14,6 +16,7 @@ export class WallService {
     @InjectModel(Wall.name)
     private readonly wallModel: Model<WallDocument>,
     private readonly emailService: EmailService,
+    private lastReadingService: LastReadingService,
   ) {}
   async create(
     createWallDto: CreateWallDto,
@@ -508,6 +511,14 @@ export class WallService {
       } else {
         data = await this.wallModel.find(query).limit(actualLimit).exec();
       }
+
+      const lastReadingId = new Types.ObjectId(
+        '66d0e60e052326d271e4dd5c',
+      ).toString();
+      await this.lastReadingService.updateBrotherhood(lastReadingId, {
+        brotherhood: new Date(),
+      });
+
       const response: { status: number; data: PaginationResponse<Wall> } = {
         status: HttpStatus.OK,
         data: {

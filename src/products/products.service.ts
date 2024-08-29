@@ -7,6 +7,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import { EmailService } from '../email/email.service';
+import { LastReadingService } from 'src/lastreading/lastreading.service';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class ProductsService {
@@ -14,6 +16,7 @@ export class ProductsService {
     @InjectModel(Product.name)
     private readonly productModel: Model<ProductDocument>,
     private readonly emailService: EmailService,
+    private lastReadingService: LastReadingService,
   ) {}
 
   async create(
@@ -144,6 +147,13 @@ export class ProductsService {
       }
 
       const data = await query.exec();
+
+      const lastReadingId = new Types.ObjectId(
+        '66d0e60e052326d271e4dd5c',
+      ).toString();
+      await this.lastReadingService.updateStore(lastReadingId, {
+        store: new Date(),
+      });
 
       const response: { status: number; data: PaginationResponse<Product> } = {
         status: HttpStatus.OK,

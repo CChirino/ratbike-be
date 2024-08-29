@@ -7,13 +7,15 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationResponse } from './interfaces/pagination.interface';
-
+import { LastReadingService } from 'src/lastreading/lastreading.service';
+import { Types } from 'mongoose';
 @Injectable()
 export class BrotherhoodService {
   constructor(
     @InjectModel(Brotherhood.name)
     private readonly brotherhoodModel: Model<BrotherhoodDocument>,
     private readonly emailService: EmailService,
+    private lastReadingService: LastReadingService,
   ) {}
 
   async create(
@@ -145,6 +147,13 @@ export class BrotherhoodService {
       }
 
       const data = await query.exec();
+
+      const lastReadingId = new Types.ObjectId(
+        '66d0e60e052326d271e4dd5c',
+      ).toString();
+      await this.lastReadingService.updateBrotherhood(lastReadingId, {
+        brotherhood: new Date(),
+      });
 
       const response: {
         status: number;

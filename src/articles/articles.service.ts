@@ -4,14 +4,17 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article, ArticleDocument } from './schema/article.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import fs from 'fs-extra';
+import * as fs from 'fs';
 import { PaginationResponse } from './interfaces/pagination.interface';
+import { LastReadingService } from 'src/lastreading/lastreading.service';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectModel(Article.name)
     private readonly articleModel: Model<ArticleDocument>,
+    private lastReadingService: LastReadingService,
   ) {}
   async create(
     createArticleDto: CreateArticleDto,
@@ -134,6 +137,13 @@ export class ArticlesService {
       }
 
       const data = await query.exec();
+
+      const lastReadingId = new Types.ObjectId(
+        '66d0e60e052326d271e4dd5c',
+      ).toString();
+      await this.lastReadingService.updateNews(lastReadingId, {
+        news: new Date(),
+      });
 
       const response: {
         status: number;

@@ -4,17 +4,28 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event } from './schema/event.schema';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-
+import { LastReadingService } from 'src/lastreading/lastreading.service';
+import { Types } from 'mongoose';
 @Injectable()
 export class EventsService {
-  constructor(@InjectModel(Event.name) private eventModel: Model<Event>) {}
+  constructor(
+    @InjectModel(Event.name) private eventModel: Model<Event>,
+    private lastReadingService: LastReadingService, // Inyecta el servicio aquí
+  ) {}
 
   async findAll(): Promise<Event[]> {
     try {
+      const lastReadingId = new Types.ObjectId(
+        '66d0e60e052326d271e4dd5c',
+      ).toString();
+      await this.lastReadingService.updateEvents(lastReadingId, {
+        events: new Date(),
+      });
       return await this.eventModel
         .find({ delete_at: null, delete_date: null })
         .exec();
     } catch (error) {
+      console.error('Error during findAll:', error.message);
       throw new HttpException(
         'Error fetching events',
         HttpStatus.INTERNAL_SERVER_ERROR,
