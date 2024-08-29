@@ -59,9 +59,6 @@ export class LastReadingService {
     field: string,
     value: Date,
   ): Promise<LastReading> {
-    console.log(
-      `Updating field ${field} with value ${value} for LastReading ID: ${id}`,
-    );
     const lastReading = await this.lastReadingModel.findOne({ _id: id });
 
     if (!lastReading) {
@@ -71,7 +68,6 @@ export class LastReadingService {
 
     lastReading[field] = value;
     const updated = await lastReading.save();
-    console.log(`Update successful for field ${field}`);
     return updated;
   }
 }
