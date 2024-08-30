@@ -7,6 +7,7 @@ import { UpdateBrotherhoodDto } from './dto/UpdateBrotherhoodDto.dto';
 import { UpdateEventsDto } from './dto/UpdateEventsDto.dto';
 import { UpdateWallDto } from './dto/UpdateWallDto.dto';
 import { UpdateStoreDto } from './dto/UpdateStoreDto.dto';
+import { CreateLastReadingDto } from './dto/create-lastreading.dto';
 
 @Injectable()
 export class LastReadingService {
@@ -14,6 +15,13 @@ export class LastReadingService {
     @InjectModel(LastReading.name)
     private lastReadingModel: Model<LastReadingDocument>,
   ) {}
+
+  async create(
+    createLastReadingDto: CreateLastReadingDto,
+  ): Promise<LastReading> {
+    const createdLastReading = new this.lastReadingModel(createLastReadingDto);
+    return createdLastReading.save();
+  }
 
   async updateNews(
     id: string,

@@ -1,10 +1,11 @@
-import { Controller, Patch, Body, Param } from '@nestjs/common';
+import { Controller, Patch, Body, Param, Post } from '@nestjs/common';
 import { LastReadingService } from './lastreading.service';
 import { UpdateNewsDto } from './dto/UpdateNewsDto.dto';
 import { UpdateBrotherhoodDto } from './dto/UpdateBrotherhoodDto.dto';
 import { UpdateEventsDto } from './dto/UpdateEventsDto.dto';
 import { UpdateWallDto } from './dto/UpdateWallDto.dto';
 import { UpdateStoreDto } from './dto/UpdateStoreDto.dto';
+import { CreateLastReadingDto } from './dto/create-lastreading.dto';
 
 @Controller('last-reading')
 export class LastReadingController {
@@ -48,5 +49,10 @@ export class LastReadingController {
     @Body() updateWallDto: UpdateWallDto,
   ) {
     return this.lastReadingService.updateWall(id, updateWallDto);
+  }
+
+  @Post()
+  async create(@Body() createLastReadingDto: CreateLastReadingDto) {
+    return this.lastReadingService.create(createLastReadingDto);
   }
 }
