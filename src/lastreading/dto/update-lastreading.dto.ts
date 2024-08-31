@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/swagger';
-import { CreateLastreadingDto } from './create-lastreading.dto';
+import { CreateLastReadingDto } from './create-lastreading.dto';
 
-export class UpdateLastreadingDto extends PartialType(CreateLastreadingDto) {}
+export class UpdateLastreadingDto extends PartialType(CreateLastReadingDto) {}

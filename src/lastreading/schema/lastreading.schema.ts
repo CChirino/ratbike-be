@@ -4,6 +4,8 @@ export type LastReadingDocument = LastReading & Document;
 
 @Schema({ toJSON: { virtuals: true } })
 export class LastReading {
+  _id: string;
+
   @Prop({ type: Date, required: false, default: null })
   news: Date;
 

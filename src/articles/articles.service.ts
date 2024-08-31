@@ -138,12 +138,24 @@ export class ArticlesService {
 
       const data = await query.exec();
 
-      const lastReadingId = new Types.ObjectId(
-        '66d0e60e052326d271e4dd5c',
-      ).toString();
-      await this.lastReadingService.updateNews(lastReadingId, {
-        news: new Date(),
-      });
+      // Verificar si existe un registro en LastReading
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: new Date(),
+          brotherhood: null,
+          events: null,
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateNews(lastReading._id.toString(), {
+          news: new Date(),
+        });
+      }
 
       const response: {
         status: number;

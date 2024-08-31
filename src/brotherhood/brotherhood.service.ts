@@ -148,12 +148,26 @@ export class BrotherhoodService {
 
       const data = await query.exec();
 
-      const lastReadingId = new Types.ObjectId(
-        '66d0e60e052326d271e4dd5c',
-      ).toString();
-      await this.lastReadingService.updateBrotherhood(lastReadingId, {
-        brotherhood: new Date(),
-      });
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: null,
+          brotherhood: new Date(),
+          events: null,
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateBrotherhood(
+          lastReading._id.toString(),
+          {
+            brotherhood: new Date(),
+          },
+        );
+      }
 
       const response: {
         status: number;

@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { LastReading, LastReadingDocument } from './schema/lastreading.schema';
@@ -21,6 +26,18 @@ export class LastReadingService {
   ): Promise<LastReading> {
     const createdLastReading = new this.lastReadingModel(createLastReadingDto);
     return createdLastReading.save();
+  }
+
+  async findOne(): Promise<LastReading> {
+    try {
+      const lastReading = await this.lastReadingModel.findOne().exec();
+      return lastReading;
+    } catch (error) {
+      throw new HttpException(
+        'Error al obtener el registro de LastReading.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async updateNews(

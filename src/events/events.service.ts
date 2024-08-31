@@ -21,6 +21,24 @@ export class EventsService {
       await this.lastReadingService.updateEvents(lastReadingId, {
         events: new Date(),
       });
+
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: null,
+          brotherhood: null,
+          events: new Date(),
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateEvents(lastReading._id.toString(), {
+          events: new Date(),
+        });
+      }
       return await this.eventModel
         .find({ delete_at: null, delete_date: null })
         .exec();
