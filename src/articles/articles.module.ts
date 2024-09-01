@@ -6,6 +6,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { LastreadingModule } from 'src/lastreading/lastreading.module';
+import { UsersreadingModule } from 'src/usersreading/usersreading.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { LastreadingModule } from 'src/lastreading/lastreading.module';
       },
     }),
     LastreadingModule,
+    UsersreadingModule,
+    UserModule,
   ],
   controllers: [ArticlesController],
   providers: [ArticlesService],

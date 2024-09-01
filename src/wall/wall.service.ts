@@ -8,7 +8,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaginationResponse } from './interfaces/pagination.interface';
 import { LastReadingService } from 'src/lastreading/lastreading.service';
-import { Types } from 'mongoose';
+import { UsersreadingService } from 'src/usersreading/usersreading.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class WallService {
@@ -17,6 +18,8 @@ export class WallService {
     private readonly wallModel: Model<WallDocument>,
     private readonly emailService: EmailService,
     private lastReadingService: LastReadingService,
+    private userReadingService: UsersreadingService,
+    private usersService: UserService,
   ) {}
   async create(
     createWallDto: CreateWallDto,
@@ -80,6 +83,7 @@ export class WallService {
     }
   }
   async findAll(
+    user: any,
     page?: number,
     limit?: number,
     search?: string,
@@ -113,6 +117,7 @@ export class WallService {
       const countriesArray = countries ? countries.split(',') : [];
 
       return this.findAllWithFilters(
+        user,
         page,
         limit,
         search,
@@ -393,6 +398,7 @@ export class WallService {
   }
 
   async findAllWithFilters(
+    user: any,
     page?: number,
     limit?: number,
     search?: string,
@@ -530,6 +536,8 @@ export class WallService {
         });
       }
 
+      await this.handleUserReading(user);
+
       const response: { status: number; data: PaginationResponse<Wall> } = {
         status: HttpStatus.OK,
         data: {
@@ -564,5 +572,57 @@ export class WallService {
     return this.wallModel
       .findByIdAndUpdate(wallId, { status: newStatus }, { new: true })
       .exec();
+  }
+
+  private async handleUserReading(user: any): Promise<void> {
+    try {
+      // Buscar el ID del usuario por su correo electrónico
+      const userId = await this.usersService.findUserIdByEmail(user.email);
+
+      if (!userId) {
+        throw new HttpException('Usuario no encontrado.', HttpStatus.NOT_FOUND);
+      }
+
+      // Buscar el registro de lectura del usuario
+      let usersReading = await this.userReadingService.findOneByUserId(userId);
+
+      // Datos a utilizar para la creación o actualización
+      const updateData = {
+        wall: new Date(),
+      };
+
+      if (!usersReading) {
+        // Crear un nuevo registro si no existe
+        usersReading = await this.userReadingService.create({
+          userId,
+          ...updateData,
+          news: null,
+          brotherhood: null,
+          events: null,
+          store: null,
+        });
+      } else {
+        // Verifica que el registro exista antes de actualizar
+        if (!usersReading._id) {
+          throw new HttpException(
+            'Registro de lectura del usuario no válido.',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
+
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.userReadingService.updateReadingUsers(
+          usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
+          updateData,
+        );
+      }
+    } catch (error) {
+      // Manejar errores
+      console.error(
+        'Error al manejar el registro de lectura del usuario:',
+        error,
+      );
+      throw error;
+    }
   }
 }

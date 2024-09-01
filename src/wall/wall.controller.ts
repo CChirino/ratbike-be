@@ -45,8 +45,10 @@ export class WallController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
+    @Req() request: Request,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('skills') skills?: string,
@@ -58,7 +60,9 @@ export class WallController {
     @Query('userid') ownerId?: string,
     @Query('showupdatedonly') showUpdatedOnly?: any,
   ) {
+    const user = request.user;
     return this.wallService.findAll(
+      user,
       page,
       limit,
       search,

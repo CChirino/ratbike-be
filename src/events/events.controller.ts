@@ -38,9 +38,11 @@ export class EventsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
-  findAll() {
-    return this.eventsService.findAll();
+  findAll(@Req() request: Request) {
+    const user = request.user;
+    return this.eventsService.findAll(user);
   }
 
   @Get(':id')

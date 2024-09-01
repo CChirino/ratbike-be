@@ -50,13 +50,16 @@ export class BrotherhoodController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
+    @Req() request: Request,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('category') category?: string,
   ) {
-    return this.brotherhoodService.findAll(page, limit, category);
+    const user = request.user;
+    return this.brotherhoodService.findAll(user, page, limit, category);
   }
 
   @Get(':id')

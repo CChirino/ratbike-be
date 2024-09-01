@@ -6,14 +6,18 @@ import { Event } from './schema/event.schema';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LastReadingService } from 'src/lastreading/lastreading.service';
 import { Types } from 'mongoose';
+import { UsersreadingService } from 'src/usersreading/usersreading.service';
+import { UserService } from 'src/user/user.service';
 @Injectable()
 export class EventsService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<Event>,
     private lastReadingService: LastReadingService, // Inyecta el servicio aquí
+    private userReadingService: UsersreadingService,
+    private usersService: UserService,
   ) {}
 
-  async findAll(): Promise<Event[]> {
+  async findAll(user: any): Promise<Event[]> {
     try {
       const lastReadingId = new Types.ObjectId(
         '66d0e60e052326d271e4dd5c',
@@ -39,6 +43,9 @@ export class EventsService {
           events: new Date(),
         });
       }
+
+      await this.handleUserReading(user);
+
       return await this.eventModel
         .find({ delete_at: null, delete_date: null })
         .exec();
@@ -169,6 +176,58 @@ export class EventsService {
         'Error deleting event',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  private async handleUserReading(user: any): Promise<void> {
+    try {
+      // Buscar el ID del usuario por su correo electrónico
+      const userId = await this.usersService.findUserIdByEmail(user.email);
+
+      if (!userId) {
+        throw new HttpException('Usuario no encontrado.', HttpStatus.NOT_FOUND);
+      }
+
+      // Buscar el registro de lectura del usuario
+      let usersReading = await this.userReadingService.findOneByUserId(userId);
+
+      // Datos a utilizar para la creación o actualización
+      const updateData = {
+        events: new Date(),
+      };
+
+      if (!usersReading) {
+        // Crear un nuevo registro si no existe
+        usersReading = await this.userReadingService.create({
+          userId,
+          ...updateData,
+          news: null,
+          brotherhood: null,
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Verifica que el registro exista antes de actualizar
+        if (!usersReading._id) {
+          throw new HttpException(
+            'Registro de lectura del usuario no válido.',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
+
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.userReadingService.updateReadingUsers(
+          usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
+          updateData,
+        );
+      }
+    } catch (error) {
+      // Manejar errores
+      console.error(
+        'Error al manejar el registro de lectura del usuario:',
+        error,
+      );
+      throw error;
     }
   }
 }

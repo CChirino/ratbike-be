@@ -33,14 +33,17 @@ export class UserService {
     }
   }
 
-  async update(id: string, user: User, file: Express.Multer.File): Promise<User> {
-
-    if(file && file[0]?.path){
+  async update(
+    id: string,
+    user: User,
+    file: Express.Multer.File,
+  ): Promise<User> {
+    if (file && file[0]?.path) {
       const urlProfileImage = file[0].path.replace(/\\/g, '/');
       user.urlProfileImage = urlProfileImage;
     }
-    if(user.password && user.password.length){
-      user.password = await hash(user.password , 10)
+    if (user.password && user.password.length) {
+      user.password = await hash(user.password, 10);
     }
 
     return this.userModel.findByIdAndUpdate(id, user, { new: true });
@@ -60,5 +63,13 @@ export class UserService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findUserIdByEmail(email: string): Promise<string> {
+    const user = await this.userModel.findOne({ email }).exec();
+    if (user) {
+      return user._id.toString(); // Convertir el ObjectId a string
+    }
+    throw new Error('Usuario no encontrado');
   }
 }

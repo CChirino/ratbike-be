@@ -8,6 +8,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { EmailModule } from '../email/email.module';
 import { LastreadingModule } from 'src/lastreading/lastreading.module';
+import { UsersreadingModule } from 'src/usersreading/usersreading.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { LastreadingModule } from 'src/lastreading/lastreading.module';
     }),
     EmailModule,
     LastreadingModule,
+    UsersreadingModule,
+    UserModule,
   ],
   controllers: [WallController],
   providers: [WallService],

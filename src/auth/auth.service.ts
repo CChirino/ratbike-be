@@ -99,7 +99,7 @@ export class AuthService {
     if (!checkPassword) throw new HttpException('PASSWORD_INVALID', 403);
 
     const payload = {
-      userId: findUser._id,
+      userId: findUser._id.toString(),
       name: findUser.name,
       lastname: findUser.lastname,
       email: findUser.email,
@@ -109,7 +109,7 @@ export class AuthService {
 
     const data = {
       user: {
-        id: findUser._id,
+        id: findUser._id.toString(),
         name: findUser.name,
         lastname: findUser.lastname,
         email: findUser.email,
