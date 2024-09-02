@@ -76,6 +76,24 @@ export class ProductsService {
         data: createdProduct,
       };
 
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: null,
+          brotherhood: null,
+          events: null,
+          store: new Date(),
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateStore(lastReading._id.toString(), {
+          store: new Date(),
+        });
+      }
+
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       response

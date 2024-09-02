@@ -1,4 +1,4 @@
-import { Controller, Patch, Body, Param, Post } from '@nestjs/common';
+import { Controller, Patch, Body, Param, Post, Get } from '@nestjs/common';
 import { LastReadingService } from './lastreading.service';
 import { UpdateNewsDto } from './dto/UpdateNewsDto.dto';
 import { UpdateBrotherhoodDto } from './dto/UpdateBrotherhoodDto.dto';
@@ -10,6 +10,11 @@ import { CreateLastReadingDto } from './dto/create-lastreading.dto';
 @Controller('last-reading')
 export class LastReadingController {
   constructor(private readonly lastReadingService: LastReadingService) {}
+
+  @Get()
+  async getLastReadings(){
+    return this.lastReadingService.findOne();
+  }
 
   @Patch(':id/news')
   async updateNews(

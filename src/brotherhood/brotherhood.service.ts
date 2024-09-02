@@ -75,6 +75,28 @@ export class BrotherhoodService {
         status: HttpStatus.OK,
         data: createdBrotherhood,
       };
+
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: null,
+          brotherhood: new Date(),
+          events: null,
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateBrotherhood(
+          lastReading._id.toString(),
+          {
+            brotherhood: new Date(),
+          },
+        );
+      }
+
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
       response
