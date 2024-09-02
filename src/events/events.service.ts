@@ -19,24 +19,6 @@ export class EventsService {
 
   async findAll(user: any): Promise<Event[]> {
     try {
-      let lastReading = await this.lastReadingService.findOne();
-
-      if (!lastReading) {
-        // Crear un nuevo registro si no existe
-        lastReading = await this.lastReadingService.create({
-          news: null,
-          brotherhood: null,
-          events: new Date(),
-          store: null,
-          wall: null,
-        });
-      } else {
-        // Actualizar el campo 'news' si el registro ya existe
-        await this.lastReadingService.updateEvents(lastReading._id.toString(), {
-          events: new Date(),
-        });
-      }
-
       await this.handleUserReading(user);
 
       return await this.eventModel

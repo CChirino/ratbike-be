@@ -170,24 +170,6 @@ export class ProductsService {
 
       const data = await query.exec();
 
-      let lastReading = await this.lastReadingService.findOne();
-
-      if (!lastReading) {
-        // Crear un nuevo registro si no existe
-        lastReading = await this.lastReadingService.create({
-          news: null,
-          brotherhood: null,
-          events: null,
-          store: new Date(),
-          wall: null,
-        });
-      } else {
-        // Actualizar el campo 'news' si el registro ya existe
-        await this.lastReadingService.updateStore(lastReading._id.toString(), {
-          store: new Date(),
-        });
-      }
-
       await this.handleUserReading(user);
 
       const response: { status: number; data: PaginationResponse<Product> } = {
