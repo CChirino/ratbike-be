@@ -518,7 +518,7 @@ export class WallService {
         query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
       }
 
-      if(isPaid !== null){ //HAVENT TESTED THIS IF WE HAVE A BUG CHECK THIS FIRST
+      if(isPaid !== null && isPaid !== undefined){ //HAVENT TESTED THIS IF WE HAVE A BUG CHECK THIS FIRST
         query.isPaid = { $eq: isPaid }
       }
 
