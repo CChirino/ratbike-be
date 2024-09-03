@@ -6,8 +6,9 @@ import {
 } from './schema/categories-articles.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import * as fs from 'fs-extra';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class CategoriesArticlesService {
@@ -48,7 +49,7 @@ export class CategoriesArticlesService {
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -70,7 +71,7 @@ export class CategoriesArticlesService {
 
       return response;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -78,7 +79,7 @@ export class CategoriesArticlesService {
     try {
       return this.categoryArticleModel.findById(id).exec();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -91,7 +92,7 @@ export class CategoriesArticlesService {
         .findByIdAndUpdate(id, updateCategoriesArticleDto, { new: true })
         .exec();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -108,7 +109,7 @@ export class CategoriesArticlesService {
       }
       return productArticle;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 }

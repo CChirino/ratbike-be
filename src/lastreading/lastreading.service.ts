@@ -13,6 +13,7 @@ import { UpdateEventsDto } from './dto/UpdateEventsDto.dto';
 import { UpdateWallDto } from './dto/UpdateWallDto.dto';
 import { UpdateStoreDto } from './dto/UpdateStoreDto.dto';
 import { CreateLastReadingDto } from './dto/create-lastreading.dto';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class LastReadingService {
@@ -31,12 +32,15 @@ export class LastReadingService {
   async findOne(): Promise<LastReading> {
     try {
       const lastReading = await this.lastReadingModel.findOne().exec();
+      if (!lastReading) {
+        throw new HttpException(
+          `Error al crear el registro de lectura`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
       return lastReading;
     } catch (error) {
-      throw new HttpException(
-        'Error al obtener el registro de LastReading.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
 
@@ -51,32 +55,48 @@ export class LastReadingService {
     id: string,
     updateBrotherhoodDto: UpdateBrotherhoodDto,
   ): Promise<LastReading> {
-    return this.updateField(
-      id,
-      'brotherhood',
-      updateBrotherhoodDto.brotherhood,
-    );
+    try {
+      return this.updateField(
+        id,
+        'brotherhood',
+        updateBrotherhoodDto.brotherhood,
+      );
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async updateEvents(
     id: string,
     updateEventsDto: UpdateEventsDto,
   ): Promise<LastReading> {
-    return this.updateField(id, 'events', updateEventsDto.events);
+    try {
+      return this.updateField(id, 'events', updateEventsDto.events);
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async updateStore(
     id: string,
     updateStoreDto: UpdateStoreDto,
   ): Promise<LastReading> {
-    return this.updateField(id, 'store', updateStoreDto.store);
+    try {
+      return this.updateField(id, 'store', updateStoreDto.store);
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async updateWall(
     id: string,
     updateWallDto: UpdateWallDto,
   ): Promise<LastReading> {
-    return this.updateField(id, 'wall', updateWallDto.wall);
+    try {
+      return this.updateField(id, 'wall', updateWallDto.wall);
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   private async updateField(
@@ -84,15 +104,23 @@ export class LastReadingService {
     field: string,
     value: Date,
   ): Promise<LastReading> {
-    const lastReading = await this.lastReadingModel.findOne({ _id: id });
+    try {
+      const lastReading = await this.lastReadingModel.findOne({ _id: id });
 
-    if (!lastReading) {
-      console.error('LastReading not found');
-      throw new NotFoundException('LastReading not found');
+      if (!lastReading) {
+        console.error('LastReading not found');
+        throw new NotFoundException('LastReading not found');
+      }
+
+      lastReading[field] = value;
+      const updated = await lastReading.save();
+      return updated;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
-
-    lastReading[field] = value;
-    const updated = await lastReading.save();
-    return updated;
   }
 }

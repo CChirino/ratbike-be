@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as fs from 'fs-extra';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class CategoryProductService {
@@ -46,7 +47,7 @@ export class CategoryProductService {
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
   async findAll(): Promise<{ status: number; data: CategoryProduct[] }> {
@@ -67,7 +68,7 @@ export class CategoryProductService {
 
       return response;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -75,7 +76,7 @@ export class CategoryProductService {
     try {
       return this.categoryProductModel.findById(id).exec();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -88,7 +89,7 @@ export class CategoryProductService {
         .findByIdAndUpdate(id, updateCategoryProductDto, { new: true })
         .exec();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -105,7 +106,7 @@ export class CategoryProductService {
       }
       return productCategory;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 }

@@ -10,6 +10,7 @@ import { PaginationResponse } from './interfaces/pagination.interface';
 import { LastReadingService } from 'src/lastreading/lastreading.service';
 import { UsersreadingService } from 'src/usersreading/usersreading.service';
 import { UserService } from 'src/user/user.service';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class WallService {
@@ -76,10 +77,15 @@ export class WallService {
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      response
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
+      // response
+      //   .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      //   .json({ error: error.message });
+      // throw error;
     }
   }
   async findAll(
@@ -94,6 +100,7 @@ export class WallService {
     wallModality?: string,
     ownerId?: string,
     showUpdatedOnly?: boolean,
+    isPaid?: boolean 
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -128,26 +135,31 @@ export class WallService {
         wallModality,
         ownerId,
         showUpdatedOnly,
+        isPaid
       );
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
   async findOne(id: string): Promise<{ status: number; wall: Wall }> {
     try {
       const wall = await this.wallModel.findById(id).exec();
+
+      if(!wall){
+        throw new HttpException("WALL_NOT_FOUND", HttpStatus.NOT_FOUND)
+      } 
+
       return {
         status: HttpStatus.OK,
         wall: wall,
       };
     } catch (error) {
-      // Manejo del error
-      const errorMessage = error.message || 'Error interno del servidor';
-      const errorResponse = {
-        error: errorMessage,
-      };
-      throw new HttpException(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -187,7 +199,11 @@ export class WallService {
 
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -251,7 +267,51 @@ export class WallService {
 
       return response.status(HttpStatus.OK).json(responseObj);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
+    }
+  }
+
+  async updateIsPaid(
+    id: string,
+    user: any,
+    response,
+  ): Promise<Wall> {
+    try {
+      const emailUser = user.email;
+      const updatedWall = await this.wallModel
+        .findByIdAndUpdate(
+          id,
+          {
+            isPaid: true,
+            update_at: new Date(), // Actualizar el campo update_at
+          },
+          { new: true },
+        )
+        .exec();
+
+      if (!updatedWall) {
+        throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+      }
+
+      //TODO add email when the paid status is updated
+      // await this.emailService.postItProcessCompleteEmail(emailUser, updatedWall);
+
+      const responseObj = {
+        status: HttpStatus.OK,
+        data: updatedWall,
+      };
+
+      return response.status(HttpStatus.CREATED).json(responseObj);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -263,10 +323,17 @@ export class WallService {
         wall.delete_at = new Date().toISOString();
         wall.delete_date = new Date();
         await wall.save();
+      }else{
+        throw new HttpException("UNABLE_TO_GET_WALL", HttpStatus.NOT_FOUND)
+        
       }
       return wall;
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -352,7 +419,11 @@ export class WallService {
 
       return response;
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
   async getWallsByCountry(
@@ -409,6 +480,7 @@ export class WallService {
     wallModality?: string,
     ownerId?: string,
     showUpdatedOnly: any = 'true',
+    isPaid?: boolean
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -444,6 +516,10 @@ export class WallService {
       if (wallStatus === 'desactualizado') {
         query.update_at = { $not: { $gte: oneMonthAgo } };
         query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
+      }
+
+      if(isPaid !== null){ //HAVENT TESTED THIS IF WE HAVE A BUG CHECK THIS FIRST
+        query.isPaid = { $eq: isPaid }
       }
 
       if (search) {
@@ -534,17 +610,26 @@ export class WallService {
       };
       return response;
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
   async findExpiredWalls(): Promise<WallDocument[]> {
-    const expirationDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // Hace 30 días
-    return this.wallModel
-      .find({
-        status: 'aprobado',
-        endDateWall: { $lt: expirationDate },
-      })
-      .exec();
+    try{
+      const expirationDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // Hace 30 días
+      return this.wallModel
+        .find({
+          status: 'aprobado',
+          endDateWall: { $lt: expirationDate },
+        })
+        .exec();
+    }catch(error){
+      throw new UnexpectedException(error);
+      
+    }
   }
 
   async updateWallStatus(
@@ -604,7 +689,11 @@ export class WallService {
         'Error al manejar el registro de lectura del usuario:',
         error,
       );
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 }

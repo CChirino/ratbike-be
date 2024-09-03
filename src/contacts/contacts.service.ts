@@ -4,6 +4,7 @@ import { EmailService } from 'src/email/email.service';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Contact, ContactDocument } from './schema/contact.schema';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class ContactsService {
@@ -13,37 +14,57 @@ export class ContactsService {
   ) {}
 
   async sendContactEmail(createContactDto: CreateContactDto, user: any) {
-    const { subject, comments } = createContactDto;
-    const userEmail = user.email;
+    try {
+      const { subject, comments } = createContactDto;
+      const userEmail = user.email;
 
-    // Guardar los datos de contacto en la base de datos
-    const createdContact = new this.contactModel({
-      ...createContactDto,
-      email: userEmail,
-    });
-    await createdContact.save();
+      // Guardar los datos de contacto en la base de datos
+      const createdContact = new this.contactModel({
+        ...createContactDto,
+        email: userEmail,
+      });
+      await createdContact.save();
 
-    // Enviar correo electrónico
-    await this.emailService.sendMailContact({
-      to: userEmail,
-      subject: subject,
-      text: comments,
-    });
+      // Enviar correo electrónico
+      await this.emailService.sendMailContact({
+        to: userEmail,
+        subject: subject,
+        text: comments,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   findAll() {
-    return `This action returns all contacts`;
+    try {
+      return `This action returns all contacts`;
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} contact`;
+    try {
+      return `This action returns a #${id} contact`;
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   update(id: string) {
-    return `This action updates a #${id} contact`;
+    try {
+      return `This action updates a #${id} contact`;
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   remove(id: string) {
-    return `This action removes a #${id} contact`;
+    try {
+      return `This action removes a #${id} contact`;
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 }

@@ -10,6 +10,7 @@ import { EmailService } from '../email/email.service';
 import { LastReadingService } from 'src/lastreading/lastreading.service';
 import { UsersreadingService } from 'src/usersreading/usersreading.service';
 import { UserService } from 'src/user/user.service';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class ProductsService {
@@ -96,10 +97,7 @@ export class ProductsService {
 
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      response
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
   async findAll(
@@ -187,23 +185,32 @@ export class ProductsService {
 
       return response;
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
   async findOne(id: string): Promise<{ status: number; product: Product }> {
     try {
       const product = await this.productModel.findById(id).exec();
+
+      if (!product) {
+        throw new HttpException('PRODUCT_NOT_FOUND', HttpStatus.NOT_FOUND);
+      }
+
       return {
         status: HttpStatus.OK,
         product: product,
       };
     } catch (error) {
       // Manejo del error
-      const errorMessage = error.message || 'Error interno del servidor';
-      const errorResponse = {
-        error: errorMessage,
-      };
-      throw new HttpException(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
   async update(
@@ -287,7 +294,11 @@ export class ProductsService {
 
       return response.status(HttpStatus.OK).json(responseObj);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -297,10 +308,7 @@ export class ProductsService {
 
       if (!product) {
         // Si el producto no se encuentra, devolver una respuesta 404
-        return response.status(HttpStatus.NOT_FOUND).json({
-          status: HttpStatus.NOT_FOUND,
-          message: 'Product not found',
-        });
+        throw new HttpException('PRODUCT_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
 
       // Marcar el producto para eliminación
@@ -316,10 +324,11 @@ export class ProductsService {
       });
     } catch (error) {
       // Manejo de errores
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message,
-      });
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -376,7 +385,11 @@ export class ProductsService {
         'Error al manejar el registro de lectura del usuario:',
         error,
       );
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 }

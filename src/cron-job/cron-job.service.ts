@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { WallService } from 'src/wall/wall.service';
 import { EmailService } from 'src/email/email.service';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class CronJobService {
@@ -28,6 +29,7 @@ export class CronJobService {
       }
     } catch (error) {
       this.logger.error('Error al actualizar muros vencidos', error);
+      throw new UnexpectedException(error);
     }
   }
 }
