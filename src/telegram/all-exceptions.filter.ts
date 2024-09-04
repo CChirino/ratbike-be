@@ -25,7 +25,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     Method: ${request.method}\n
     User: ${JSON.stringify(request.user || '')}\n
     Payload: ${JSON.stringify(request.body)}\n
-    Message: ${exception instanceof Error ? exception.message : JSON.stringify(exception)}\n
+    Message: ${JSON.stringify(exception)}\n
     `;
 
     process.env.NODE_ENV === 'production' &&
