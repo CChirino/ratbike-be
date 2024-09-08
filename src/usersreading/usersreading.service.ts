@@ -6,6 +6,7 @@ import {
   UsersReadingDocument,
 } from './schema/usersreading.schema';
 import { CreateUsersreadingDto } from './dto/create-usersreading.dto';
+import { UnexpectedException } from 'src/Unexpected.exception';
 @Injectable()
 export class UsersreadingService {
   constructor(
@@ -17,12 +18,15 @@ export class UsersreadingService {
       const usersReading = await this.userReadingModel
         .findOne({ userId })
         .exec();
+      if (!usersReading) {
+        throw new HttpException(
+          `Error al crear el registro de lectura`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
       return usersReading;
     } catch (error) {
-      throw new HttpException(
-        'Error al obtener el registro de lectura del usuario.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
   async create(
@@ -34,10 +38,7 @@ export class UsersreadingService {
       });
       return await createdRecord.save();
     } catch (error) {
-      throw new HttpException(
-        `Error al crear el registro de lectura: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
 
@@ -55,10 +56,7 @@ export class UsersreadingService {
         .exec();
       return updatedUserReading;
     } catch (error) {
-      throw new HttpException(
-        `Error al actualizar el registro de lectura: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
 }

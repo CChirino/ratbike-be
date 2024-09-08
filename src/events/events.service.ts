@@ -5,9 +5,9 @@ import { Model } from 'mongoose';
 import { Event } from './schema/event.schema';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { LastReadingService } from 'src/lastreading/lastreading.service';
-import { Types } from 'mongoose';
 import { UsersreadingService } from 'src/usersreading/usersreading.service';
 import { UserService } from 'src/user/user.service';
+import { UnexpectedException } from 'src/Unexpected.exception';
 @Injectable()
 export class EventsService {
   constructor(
@@ -19,31 +19,6 @@ export class EventsService {
 
   async findAll(user: any): Promise<Event[]> {
     try {
-      const lastReadingId = new Types.ObjectId(
-        '66d0e60e052326d271e4dd5c',
-      ).toString();
-      await this.lastReadingService.updateEvents(lastReadingId, {
-        events: new Date(),
-      });
-
-      let lastReading = await this.lastReadingService.findOne();
-
-      if (!lastReading) {
-        // Crear un nuevo registro si no existe
-        lastReading = await this.lastReadingService.create({
-          news: null,
-          brotherhood: null,
-          events: new Date(),
-          store: null,
-          wall: null,
-        });
-      } else {
-        // Actualizar el campo 'news' si el registro ya existe
-        await this.lastReadingService.updateEvents(lastReading._id.toString(), {
-          events: new Date(),
-        });
-      }
-
       await this.handleUserReading(user);
 
       return await this.eventModel
@@ -51,10 +26,7 @@ export class EventsService {
         .exec();
     } catch (error) {
       console.error('Error during findAll:', error.message);
-      throw new HttpException(
-        'Error fetching events',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
 
@@ -66,13 +38,11 @@ export class EventsService {
       }
       return event;
     } catch (error) {
-      if (error.status === HttpStatus.NOT_FOUND) {
+      if (error instanceof HttpException) {
         throw error;
+      } else {
+        throw new UnexpectedException(error);
       }
-      throw new HttpException(
-        'Error fetching event',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
     }
   }
 
@@ -107,12 +77,28 @@ export class EventsService {
         status: HttpStatus.OK,
         data: createdEvent,
       };
+
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: null,
+          brotherhood: null,
+          events: new Date(),
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateEvents(lastReading._id.toString(), {
+          events: new Date(),
+        });
+      }
+
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      throw new HttpException(
-        'Error creating event',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
 
@@ -145,13 +131,11 @@ export class EventsService {
       }
       return updatedEvent;
     } catch (error) {
-      if (error.status === HttpStatus.NOT_FOUND) {
+      if (error instanceof HttpException) {
         throw error;
+      } else {
+        throw new UnexpectedException(error);
       }
-      throw new HttpException(
-        'Error updating event',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
     }
   }
 
@@ -168,14 +152,11 @@ export class EventsService {
       }
       return deletedEvent;
     } catch (error) {
-      console.log(error);
-      if (error.status === HttpStatus.NOT_FOUND) {
+      if (error instanceof HttpException) {
         throw error;
+      } else {
+        throw new UnexpectedException(error);
       }
-      throw new HttpException(
-        'Error deleting event',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
     }
   }
 
@@ -227,7 +208,11 @@ export class EventsService {
         'Error al manejar el registro de lectura del usuario:',
         error,
       );
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 }

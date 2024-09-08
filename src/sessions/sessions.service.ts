@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Session, SessionDocument } from './schema/session.schema';
+import { UnexpectedException } from 'src/Unexpected.exception';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
-import { Session, SessionDocument } from './schema/session.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -20,6 +21,9 @@ export class SessionsService {
   async findAll() {
     try {
       const data = await this.sessionModel.find().exec();
+      if(!data){
+        throw new HttpException("SESSIONS_NOT_FOUND", HttpStatus.NOT_FOUND);
+      }
 
       const responseObj: {
         status: number;
@@ -31,8 +35,11 @@ export class SessionsService {
 
       return await data;
     } catch (error) {
-      console.log({ error });
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -42,8 +49,11 @@ export class SessionsService {
       const session = await this.sessionModel.findOne({ userId }).exec();
       return session;
     } catch (error) {
-      console.error('Error finding session:', error);
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -62,7 +72,11 @@ export class SessionsService {
 
       return updatedSession;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -83,7 +97,7 @@ export class SessionsService {
       };
     } catch (error) {
       console.error('Error removing session:', error);
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -93,17 +107,25 @@ export class SessionsService {
         .findOne({ email: user.email })
         .exec();
       if (!session) {
-        throw new Error('Session not found for the provided email');
+        throw new HttpException('SESSION_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
       await this.remove(session._id.toString(), user);
       this.invalidatedTokens.add(token);
     } catch (error) {
       console.error('Error invalidando el token:', error);
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
   async isTokenInvalidated(token: string): Promise<boolean> {
-    return this.invalidatedTokens.has(token);
+    try{
+      return this.invalidatedTokens.has(token);
+    }catch(error){
+      throw new UnexpectedException(error);
+    }
   }
 }

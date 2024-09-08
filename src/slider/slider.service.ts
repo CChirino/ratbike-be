@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateSliderDto } from './dto/create-slider.dto';
 import { UpdateSliderDto } from './dto/update-slider.dto';
 import { SliderDocument, Slider } from './schema/slider.schema';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class SliderService {
@@ -20,21 +21,24 @@ export class SliderService {
   ): Promise<Slider> {
     try {
       let documentsToUpload = [];
-      for (let index = 0; index < Number(createSliderDtos.elementsLength); index++) {
+      for (
+        let index = 0;
+        index < Number(createSliderDtos.elementsLength);
+        index++
+      ) {
         let translation = null;
 
         if (createSliderDtos.message && createSliderDtos.message[index]) {
           const parsedTranslation = JSON.parse(createSliderDtos.message[index]);
           translation = {
-            message:
-              parsedTranslation,
+            message: parsedTranslation,
           };
         }
 
         let newSlider = new this.sliderModel({
           name: createSliderDtos.name[index],
           link: createSliderDtos.link[index],
-          translation: translation
+          translation: translation,
         });
 
         if (files && files.length > 0) {
@@ -43,35 +47,31 @@ export class SliderService {
         }
 
         documentsToUpload.push(newSlider);
-
       }
 
-      this.sliderModel.insertMany(documentsToUpload, {ordered: true})
+      this.sliderModel.insertMany(documentsToUpload, { ordered: true });
 
       const responseObj = {
-        status: HttpStatus.CREATED
+        status: HttpStatus.CREATED,
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      response
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
   async findAll(): Promise<{ status: number; data: Slider[] }> {
     try {
       const sliders = await this.sliderModel.find().exec();
+      if (!sliders) {
+        throw new HttpException('No sliders found', HttpStatus.NOT_FOUND);
+      }
       return {
         status: HttpStatus.OK,
         data: sliders,
       };
     } catch (error) {
-      throw new HttpException(
-        error.message || 'Error interno del servidor',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnexpectedException(error);
     }
   }
 
@@ -86,10 +86,11 @@ export class SliderService {
         data: slider,
       };
     } catch (error) {
-      throw new HttpException(
-        error.message || 'Error interno del servidor',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -101,14 +102,17 @@ export class SliderService {
     try {
       let bulkOperations = [];
 
-      for (let index = 0; index < Number(updateSliderDtos.elementsLength); index++) {
+      for (
+        let index = 0;
+        index < Number(updateSliderDtos.elementsLength);
+        index++
+      ) {
         let translation = null;
 
         if (updateSliderDtos.message && updateSliderDtos.message[index]) {
           const parsedTranslation = JSON.parse(updateSliderDtos.message[index]);
           translation = {
-            message:
-              parsedTranslation,
+            message: parsedTranslation,
           };
         }
 
@@ -116,7 +120,7 @@ export class SliderService {
           _id: updateSliderDtos.identifier[index],
           name: updateSliderDtos.name[index],
           link: updateSliderDtos.link[index],
-          translation: translation
+          translation: translation,
         });
 
         if (files && files.length > 0) {
@@ -128,24 +132,18 @@ export class SliderService {
           updateOne: {
             filter: { _id: updateSliderDtos.identifier[index] },
             update: { $set: newSlider }, // Or use $inc, $push, etc. as needed
-          }
-        }
-        );
-
+          },
+        });
       }
 
-      await this.sliderModel.bulkWrite(bulkOperations, {ordered: true});
+      await this.sliderModel.bulkWrite(bulkOperations, { ordered: true });
 
       const responseObj = {
-        status: HttpStatus.CREATED
+        status: HttpStatus.CREATED,
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      console.log({error})
-      response
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -161,11 +159,11 @@ export class SliderService {
       slider.delete_date = new Date();
       await slider.save();
     } catch (error) {
-      console.log(error);
-      throw new HttpException(
-        error.message || 'Error interno del servidor',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 }

@@ -59,6 +59,7 @@ export class WallController {
     @Query('modality') wallModality?: string,
     @Query('userid') ownerId?: string,
     @Query('showupdatedonly') showUpdatedOnly?: any,
+    @Query('ispaid') isPaid?: boolean,
   ) {
     const user = request.user;
     return this.wallService.findAll(
@@ -73,6 +74,7 @@ export class WallController {
       wallModality,
       ownerId,
       showUpdatedOnly,
+      isPaid
     );
   }
 
@@ -108,6 +110,18 @@ export class WallController {
   ) {
     const user = request.user;
     return this.wallService.updateAll(id, updateWallDto, files, user, response);
+  }
+
+  @Patch('update-is-paid/:id')
+  @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'moderador')
+  updateIsPaid(
+    @Param('id') id: string,
+    @Req() request: Request,
+    @Res() response,
+  ){
+    const user = request.user;
+    return this.wallService.updateIsPaid(id, user, response);
   }
 
   @Delete(':id')

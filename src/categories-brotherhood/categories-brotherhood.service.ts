@@ -8,6 +8,7 @@ import {
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as fs from 'fs-extra';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class CategoriesBrotherhoodService {
@@ -49,7 +50,7 @@ export class CategoriesBrotherhoodService {
       };
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -70,7 +71,7 @@ export class CategoriesBrotherhoodService {
       };
       return response;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -78,7 +79,7 @@ export class CategoriesBrotherhoodService {
     try {
       return this.categoryBrotherhoodModel.findById(id).exec();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -91,7 +92,7 @@ export class CategoriesBrotherhoodService {
         .findByIdAndUpdate(id, updateCategoriesBrotherhoodDto, { new: true })
         .exec();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -108,7 +109,7 @@ export class CategoriesBrotherhoodService {
       }
       return brotherhoodCategory;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new UnexpectedException(error);
     }
   }
 }

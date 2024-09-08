@@ -9,7 +9,7 @@ import { PaginationResponse } from './interfaces/pagination.interface';
 import { LastReadingService } from 'src/lastreading/lastreading.service';
 import { UsersreadingService } from 'src/usersreading/usersreading.service';
 import { UserService } from 'src/user/user.service';
-import { Types } from 'mongoose';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class ArticlesService {
@@ -67,12 +67,28 @@ export class ArticlesService {
         status: HttpStatus.OK,
         data: createdArticle,
       };
+
+      let lastReading = await this.lastReadingService.findOne();
+
+      if (!lastReading) {
+        // Crear un nuevo registro si no existe
+        lastReading = await this.lastReadingService.create({
+          news: new Date(),
+          brotherhood: null,
+          events: null,
+          store: null,
+          wall: null,
+        });
+      } else {
+        // Actualizar el campo 'news' si el registro ya existe
+        await this.lastReadingService.updateNews(lastReading._id.toString(), {
+          news: new Date(),
+        });
+      }
+
       return response.status(HttpStatus.CREATED).json(responseObj);
     } catch (error) {
-      response
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -143,25 +159,6 @@ export class ArticlesService {
 
       const data = await query.exec();
 
-      // Verificar si existe un registro en LastReading
-      let lastReading = await this.lastReadingService.findOne();
-
-      if (!lastReading) {
-        // Crear un nuevo registro si no existe
-        lastReading = await this.lastReadingService.create({
-          news: new Date(),
-          brotherhood: null,
-          events: null,
-          store: null,
-          wall: null,
-        });
-      } else {
-        // Actualizar el campo 'news' si el registro ya existe
-        await this.lastReadingService.updateNews(lastReading._id.toString(), {
-          news: new Date(),
-        });
-      }
-
       await this.handleUserReading(user);
 
       const response: {
@@ -181,25 +178,32 @@ export class ArticlesService {
       };
       return response;
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
   async findOne(id: string): Promise<{ status: number; article: Article }> {
     try {
       const article = await this.articleModel.findById(id).exec();
+      if (!article) {
+        throw new HttpException('ARTICLE_NOT_FOUND', HttpStatus.NOT_FOUND);
+      }
       await this.incrementViews(id);
+
       return {
         status: HttpStatus.OK,
         article: article,
       };
     } catch (error) {
-      // Manejo del error
-      const errorMessage = error.message || 'Error interno del servidor';
-      const errorResponse = {
-        error: errorMessage,
-      };
-      throw new HttpException(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -268,7 +272,11 @@ export class ArticlesService {
 
       return updatedArticle; // Solo devuelves el artículo actualizado
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -295,7 +303,11 @@ export class ArticlesService {
         data: article,
       });
     } catch (error) {
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 
@@ -314,7 +326,7 @@ export class ArticlesService {
 
       return mostReadArticles;
     } catch (error) {
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -328,7 +340,7 @@ export class ArticlesService {
 
       return latestArticles;
     } catch (error) {
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -341,7 +353,7 @@ export class ArticlesService {
       article.views += 1;
       return article.save();
     } catch (error) {
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -389,11 +401,11 @@ export class ArticlesService {
       }
     } catch (error) {
       // Manejar errores
-      console.error(
-        'Error al manejar el registro de lectura del usuario:',
-        error,
-      );
-      throw error;
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
 }

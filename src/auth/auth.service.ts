@@ -19,6 +19,7 @@ import { COUNTRIES_ISO_3166_1_GEOLOCATION } from 'src/constants';
 import { randomBytes } from 'crypto';
 import * as fs from 'fs-extra';
 import { uuid } from 'uuidv4';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class AuthService {
@@ -34,144 +35,171 @@ export class AuthService {
     file: Express.Multer.File,
     response,
   ) {
-    const { password, urlProfileImage } = userObject;
-    const plainToHash = await hash(password, 10);
-    userObject = {
-      ...userObject,
-      password: plainToHash,
-      urlProfileImage,
-      terms: true,
-    };
-
-    if (
-      !userObject.password ||
-      !userObject.name ||
-      !userObject.lastname ||
-      !userObject.email ||
-      !userObject.country ||
-      userObject.password.length < 8
-    ) {
-      throw new HttpException('UNPROCESSABLE_ENTITY', 422);
-    }
-
-    if (file) {
-      const urlProfileImage = file.path.replace(/\\/g, '/');
-      userObject.urlProfileImage = urlProfileImage;
-    } else {
-      const defaultImagePath = 'uploads/profile/default-profile.jpg';
-      if (fs.existsSync(defaultImagePath)) {
-        userObject.urlProfileImage = defaultImagePath;
-      }
-    }
-
     try {
-      const createdUser = await this.userModel.create(userObject);
-      const { name, lastname, email, role, country } = createdUser;
-
-      const data: RegistrationResponse = {
-        name,
-        lastname,
-        email,
-        role,
-        country,
+      const { password, urlProfileImage } = userObject;
+      const plainToHash = await hash(password, 10);
+      userObject = {
+        ...userObject,
+        password: plainToHash,
         urlProfileImage,
+        terms: true,
       };
 
-      await this.emailService.sendRegistrationConfirmation(
-        createdUser.email,
-        createdUser.name,
-      );
-      response.status(HttpStatus.OK).json(data);
-    } catch (error) {
-      if (error.keyValue && error.keyValue.email && error.code === 11000) {
-        throw new HttpException('EMAIL_ALREADY_TAKEN', 409);
+      if (
+        !userObject.password ||
+        !userObject.name ||
+        !userObject.lastname ||
+        !userObject.email ||
+        !userObject.country ||
+        userObject.password.length < 8
+      ) {
+        throw new HttpException('UNPROCESSABLE_ENTITY', HttpStatus.UNPROCESSABLE_ENTITY);
       }
-      throw new HttpException('INTERNAL_SERVER_ERROR', 500);
+
+      if (file) {
+        const urlProfileImage = file.path.replace(/\\/g, '/');
+        userObject.urlProfileImage = urlProfileImage;
+      } else {
+        const defaultImagePath = 'uploads/profile/default-profile.jpg';
+        if (fs.existsSync(defaultImagePath)) {
+          userObject.urlProfileImage = defaultImagePath;
+        }
+      }
+
+      try {
+        const createdUser = await this.userModel.create(userObject);
+        const { name, lastname, email, role, country } = createdUser;
+
+        const data: RegistrationResponse = {
+          name,
+          lastname,
+          email,
+          role,
+          country,
+          urlProfileImage,
+        };
+
+        await this.emailService.sendRegistrationConfirmation(
+          createdUser.email,
+          createdUser.name,
+        );
+        response.status(HttpStatus.OK).json(data);
+      } catch (error) {
+        if (error.keyValue && error.keyValue.email && error.code === 11000) {
+          throw new HttpException('EMAIL_ALREADY_TAKEN', HttpStatus.CONFLICT);
+        }
+        throw error;
+      }
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
   }
+
   async login(userObjectLogin: LoginAuthDto, response) {
-    const { email, password } = userObjectLogin;
-    const findUser = await this.userModel.findOne({ email });
-    if (!findUser) throw new HttpException('USER_NOT_FOUND', 404);
+    try {
+      const { email, password } = userObjectLogin;
+      const findUser = await this.userModel.findOne({ email });
+      if (!findUser) throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
 
-    const checkPassword = await compare(password, findUser.password);
+      const checkPassword = await compare(password, findUser.password);
 
-    if (!checkPassword) throw new HttpException('PASSWORD_INVALID', 403);
+      if (!checkPassword) throw new HttpException('PASSWORD_INVALID', HttpStatus.FORBIDDEN);
 
-    const payload = {
-      userId: findUser._id.toString(),
-      name: findUser.name,
-      lastname: findUser.lastname,
-      email: findUser.email,
-      role: findUser.role,
-    };
-    const token = await this.jwtService.sign(payload);
-
-    const data = {
-      user: {
-        id: findUser._id.toString(),
+      const payload = {
+        userId: findUser._id.toString(),
         name: findUser.name,
         lastname: findUser.lastname,
         email: findUser.email,
-        urlProfileImage: findUser.urlProfileImage,
         role: findUser.role,
-        country: findUser.country,
-      },
-      token,
-    };
+      };
+      const token = await this.jwtService.sign(payload);
 
-    // Buscar la sesión activa del usuario
-    const existingSession = await this.sessionsService.findOne(findUser._id);
+      const data = {
+        user: {
+          id: findUser._id.toString(),
+          name: findUser.name,
+          lastname: findUser.lastname,
+          email: findUser.email,
+          urlProfileImage: findUser.urlProfileImage,
+          role: findUser.role,
+          country: findUser.country,
+        },
+        token,
+      };
 
-    if (existingSession) {
-      // Actualizar la sesión existente si es válida
-      await this.sessionsService.update(existingSession._id.toString(), {
-        name: findUser.name,
-        lastname: findUser.lastname,
-        email: findUser.email,
-        urlProfileImage: findUser.urlProfileImage,
-        vocation: findUser.vocation,
-        country: findUser.country,
-        city: findUser.city,
-        latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
-        longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
-      });
-    } else {
-      // Crear una nueva sesión
-      await this.sessionsService.create({
-        userId: findUser._id,
-        sessionId: uuid(), // Generar un nuevo sessionId
-        name: findUser.name,
-        lastname: findUser.lastname,
-        email: findUser.email,
-        urlProfileImage: findUser.urlProfileImage,
-        vocation: findUser.vocation,
-        country: findUser.country,
-        city: findUser.city,
-        latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
-        longitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
-      });
+      // Buscar la sesión activa del usuario
+      const existingSession = await this.sessionsService.findOne(findUser._id);
+
+      if (existingSession) {
+        // Actualizar la sesión existente si es válida
+        await this.sessionsService.update(existingSession._id.toString(), {
+          name: findUser.name,
+          lastname: findUser.lastname,
+          email: findUser.email,
+          urlProfileImage: findUser.urlProfileImage,
+          vocation: findUser.vocation,
+          country: findUser.country,
+          city: findUser.city,
+          latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
+          longitude:
+            COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
+        });
+      } else {
+        // Crear una nueva sesión
+        await this.sessionsService.create({
+          userId: findUser._id,
+          sessionId: uuid(), // Generar un nuevo sessionId
+          name: findUser.name,
+          lastname: findUser.lastname,
+          email: findUser.email,
+          urlProfileImage: findUser.urlProfileImage,
+          vocation: findUser.vocation,
+          country: findUser.country,
+          city: findUser.city,
+          latitude: COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].latitude,
+          longitude:
+            COUNTRIES_ISO_3166_1_GEOLOCATION[findUser.country].longitude,
+        });
+      }
+
+      response.status(HttpStatus.OK).json(data);
+    } catch (error) {
+      console.log({error})
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
     }
-
-    response.status(HttpStatus.OK).json(data);
   }
 
   refreshToken(refreshToken: string): string {
-    // Aquí puedes implementar la lógica de renovación del token según tus necesidades
+    try {
+      // Aquí puedes implementar la lógica de renovación del token según tus necesidades
+      // Decodificar el token de actualización para obtener la información necesaria
+      const decodedToken = this.jwtService.decode(refreshToken) as {
+        id: string;
+        name: string;
+      };
 
-    // Decodificar el token de actualización para obtener la información necesaria
-    const decodedToken = this.jwtService.decode(refreshToken) as {
-      id: string;
-      name: string;
-    };
+      // Generar un nuevo token de acceso utilizando el id y nombre del usuario
+      const newAccessToken = this.jwtService.sign({
+        id: decodedToken.id,
+        name: decodedToken.name,
+      });
 
-    // Generar un nuevo token de acceso utilizando el id y nombre del usuario
-    const newAccessToken = this.jwtService.sign({
-      id: decodedToken.id,
-      name: decodedToken.name,
-    });
-
-    return newAccessToken;
+      return newAccessToken;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
+    }
   }
 
   isRefreshTokenExpired(refreshToken: string): boolean {
@@ -182,21 +210,26 @@ export class AuthService {
       if (error.name === 'TokenExpiredError') {
         return true; // El token está expirado
       }
-      throw error;
+
+      throw new UnexpectedException(error);
     }
   }
 
   async uploadImage(file: Express.Multer.File): Promise<string> {
-    const imageBuffer = file.buffer; // Obtiene el búfer del archivo de imagen
-    const imageName = `${Date.now()}-${file.originalname}`; // Genera un nombre único para el archivo
-    const imagePath = `uploads/${imageName}`; // Ruta donde se guardará la imagen
+    try {
+      const imageBuffer = file.buffer; // Obtiene el búfer del archivo de imagen
+      const imageName = `${Date.now()}-${file.originalname}`; // Genera un nombre único para el archivo
+      const imagePath = `uploads/${imageName}`; // Ruta donde se guardará la imagen
 
-    await fs.writeFile(imagePath, imageBuffer); // Guarda la imagen en el sistema de archivos
+      await fs.writeFile(imagePath, imageBuffer); // Guarda la imagen en el sistema de archivos
 
-    // Elimina el archivo temporal después de guardarlo
-    await fs.unlink(file.path);
+      // Elimina el archivo temporal después de guardarlo
+      await fs.unlink(file.path);
 
-    return imagePath; // Devuelve la ruta de la imagen guardada
+      return imagePath; // Devuelve la ruta de la imagen guardada
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendPasswordResetEmail(
@@ -207,9 +240,7 @@ export class AuthService {
       const findUser = await this.userModel.findOne({ email });
 
       if (!findUser) {
-        return response
-          .status(HttpStatus.NOT_FOUND)
-          .json({ status: 404, message: 'User not found' });
+        throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
 
       // Generar un token aleatorio
@@ -233,10 +264,15 @@ export class AuthService {
         .status(HttpStatus.OK)
         .json({ status: 200, message: 'Email sent successfully' });
     } catch (error) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        status: 500,
-        message: 'Failed to send email: ' + error.message,
-      });
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
+      // return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      //   status: 500,
+      //   message: 'Failed to send email: ' + error.message,
+      // });
     }
   }
 
@@ -268,14 +304,23 @@ export class AuthService {
       user.resetPasswordExpires = undefined;
       await user.save();
     } catch (error) {
-      console.error('Error in resetPassword:', error);
-      throw new BadRequestException(
-        'Failed to reset password: ' + error.message,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new UnexpectedException(error);
+      }
+      // console.error('Error in resetPassword:', error);
+      // throw new BadRequestException(
+      //   'Failed to reset password: ' + error.message,
+      // );
     }
   }
 
   async logout(token: string, user: any): Promise<void> {
-    await this.sessionsService.invalidateToken(token, user);
+    try {
+      await this.sessionsService.invalidateToken(token, user);
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 }

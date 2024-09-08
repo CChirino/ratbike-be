@@ -6,6 +6,7 @@ import { Wall } from 'src/wall/schema/wall.schema';
 import { WallDocument } from 'src/wall/schema/wall.schema';
 import { Skill } from 'src/skills/schema/skills.schema';
 import { I18nService } from 'nestjs-i18n';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Injectable()
 export class EmailService {
@@ -47,7 +48,7 @@ export class EmailService {
       };
     } catch (error) {
       this.logger.error(`Error getting translation for ${key}`, error);
-      throw error;
+      throw new UnexpectedException(error);
     }
   }
 
@@ -56,44 +57,56 @@ export class EmailService {
     name: string,
     lang: string = 'en',
   ) {
-    const translation = await this.getTranslation(
-      'registration_confirmation',
-      lang,
-      { name },
-    );
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation(
+        'registration_confirmation',
+        lang,
+        { name },
+      );
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
   async sendPasswordResetRequest(
     email: string,
     resetUrl: string,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('password_reset', lang, {
-      resetUrl,
-    });
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('password_reset', lang, {
+        resetUrl,
+      });
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendProductRequest(
     productId: string,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('product_request', lang, {
-      productId,
-    });
-    await this.mailerService.sendMail({
-      to: 'RatWave1999@gmail.com',
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('product_request', lang, {
+        productId,
+      });
+      await this.mailerService.sendMail({
+        to: 'RatWave1999@gmail.com',
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendApprovalEmail(
@@ -101,14 +114,18 @@ export class EmailService {
     product: Product,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('product_approval', lang, {
-      productName: product.nameProduct,
-    });
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('product_approval', lang, {
+        productName: product.nameProduct,
+      });
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendRejectionEmail(
@@ -116,14 +133,18 @@ export class EmailService {
     product: Product,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('product_rejection', lang, {
-      productName: product.nameProduct,
-    });
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('product_rejection', lang, {
+        productName: product.nameProduct,
+      });
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendApprovalEmailBrotherhood(
@@ -131,18 +152,22 @@ export class EmailService {
     brotherhood: Brotherhood,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation(
-      'brotherhood_approval',
-      lang,
-      {
-        brotherhoodName: brotherhood.nameBrotherhood,
-      },
-    );
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation(
+        'brotherhood_approval',
+        lang,
+        {
+          brotherhoodName: brotherhood.nameBrotherhood,
+        },
+      );
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendRejectionEmailBrotherhood(
@@ -150,18 +175,22 @@ export class EmailService {
     brotherhood: Brotherhood,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation(
-      'brotherhood_rejection',
-      lang,
-      {
-        brotherhoodName: brotherhood.nameBrotherhood,
-      },
-    );
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation(
+        'brotherhood_rejection',
+        lang,
+        {
+          brotherhoodName: brotherhood.nameBrotherhood,
+        },
+      );
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendApprovalEmailWall(
@@ -224,7 +253,7 @@ export class EmailService {
       wallId,
     });
     await this.mailerService.sendMail({
-      to: ['RatWave1999@gmail.com', 'critijo@gmail.com'],
+      to: 'RatWave1999@gmail.com',
       subject: translation.subject,
       html: translation.html,
     });
@@ -234,14 +263,22 @@ export class EmailService {
     wallId: string,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('post_request_update', lang, {
-      wallId,
-    });
-    await this.mailerService.sendMail({
-      to: ['RatWave1999@gmail.com', 'critijo@gmail.com'],
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation(
+        'post_request_update',
+        lang,
+        {
+          wallId,
+        },
+      );
+      await this.mailerService.sendMail({
+        to: 'RatWave1999@gmail.com',
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendExpiredWallNotification(wall: WallDocument): Promise<void> {
@@ -252,6 +289,7 @@ export class EmailService {
       );
     } catch (error) {
       this.logger.error('Error al enviar notificación de muro vencido', error);
+      throw new UnexpectedException(error);
     }
   }
 
@@ -260,14 +298,18 @@ export class EmailService {
     skill: Skill,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('skill_approval', lang, {
-      skillName: skill.titleSkill,
-    });
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('skill_approval', lang, {
+        skillName: skill.titleSkill,
+      });
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendRejectionEmailSkill(
@@ -275,28 +317,36 @@ export class EmailService {
     skill: Skill,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('skill_rejection', lang, {
-      skillName: skill.titleSkill,
-    });
-    await this.mailerService.sendMail({
-      to: email,
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('skill_rejection', lang, {
+        skillName: skill.titleSkill,
+      });
+      await this.mailerService.sendMail({
+        to: email,
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendPostRequestSkill(
     skillId: string,
     lang: string = 'en',
   ): Promise<void> {
-    const translation = await this.getTranslation('skill_request', lang, {
-      skillId,
-    });
-    await this.mailerService.sendMail({
-      to: 'RatWave1999@gmail.com',
-      subject: translation.subject,
-      html: translation.html,
-    });
+    try {
+      const translation = await this.getTranslation('skill_request', lang, {
+        skillId,
+      });
+      await this.mailerService.sendMail({
+        to: 'RatWave1999@gmail.com',
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
   }
 
   async sendMailContact(
@@ -315,6 +365,7 @@ export class EmailService {
       this.logger.log(`Email sent to ${mailOptions.to}`);
     } catch (error) {
       this.logger.error('Error sending email', error);
+      throw new UnexpectedException(error);
     }
   }
 }

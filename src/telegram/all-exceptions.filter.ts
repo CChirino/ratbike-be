@@ -6,6 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { TelegramService } from './telegram.service';
+import { UnexpectedException } from 'src/Unexpected.exception';
 
 @Catch()
 @Injectable()
@@ -19,9 +20,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const status =
       exception instanceof HttpException ? exception.getStatus() : 500;
 
-    const message = `Error: ${status}\nURL: ${request.url}\nMethod: ${request.method}\nMessage: ${exception instanceof Error ? exception.message : 'Unknown error'}`;
+    const message = `Error: ${status}\n
+    URL: ${request.url}\n
+    Method: ${request.method}\n
+    User: ${JSON.stringify(request.user || '')}\n
+    Payload: ${JSON.stringify(request.body)}\n
+    Message: ${JSON.stringify(exception)}\n
+    `;
 
-    await this.telegramService.sendErrorMessage(message);
+    process.env.NODE_ENV === 'production' &&
+      exception instanceof UnexpectedException &&
+      (await this.telegramService.sendErrorMessage(message));
 
     response.status(status).json({
       statusCode: status,
