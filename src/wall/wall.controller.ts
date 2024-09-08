@@ -74,7 +74,7 @@ export class WallController {
       wallModality,
       ownerId,
       showUpdatedOnly,
-      isPaid
+      isPaid,
     );
   }
 
@@ -119,7 +119,7 @@ export class WallController {
     @Param('id') id: string,
     @Req() request: Request,
     @Res() response,
-  ){
+  ) {
     const user = request.user;
     return this.wallService.updateIsPaid(id, user, response);
   }

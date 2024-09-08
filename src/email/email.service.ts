@@ -281,12 +281,31 @@ export class EmailService {
     }
   }
 
-  async sendExpiredWallNotification(wall: WallDocument): Promise<void> {
+  async sendExpiredWallNotification(
+    wall: any, // Usamos 'any' temporalmente para evitar problemas de tipado
+    lang: string = 'en',
+  ): Promise<void> {
     try {
-      // Lógica para enviar el correo electrónico
-      this.logger.log(
-        `Enviando notificación de muro vencido: ${wall.titleWall}`,
-      );
+      if (wall.user && typeof wall.user.email === 'string') {
+        // Verifica si 'user' está poblado y tiene un email
+        const translation = await this.getTranslation('wall_expired', lang, {
+          wallName: wall.titleWall,
+        });
+
+        await this.mailerService.sendMail({
+          to: wall.user.email,
+          subject: translation.subject,
+          html: translation.html,
+        });
+
+        this.logger.log(
+          `Notificación de muro vencido enviada: ${wall.titleWall}`,
+        );
+      } else {
+        this.logger.warn(
+          `El muro ${wall.titleWall} no tiene un usuario poblado o el correo no está disponible.`,
+        );
+      }
     } catch (error) {
       this.logger.error('Error al enviar notificación de muro vencido', error);
       throw new UnexpectedException(error);

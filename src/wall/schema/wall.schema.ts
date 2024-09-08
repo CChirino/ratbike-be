@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { User } from 'src/user/schema/user.schema';
 
 export type WallDocument = Wall & Document;
 
@@ -62,6 +63,9 @@ export class Wall {
 
   @Prop({ default: false })
   isPaid: boolean;
+
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  user: User;
 }
 
 export const WallSchema = SchemaFactory.createForClass(Wall);

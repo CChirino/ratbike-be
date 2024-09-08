@@ -21,7 +21,6 @@ export class CronJobService {
 
   async updateExpiredWalls() {
     try {
-      0;
       const expiredWalls = await this.wallService.findExpiredWalls();
       for (const wall of expiredWalls) {
         await this.wallService.updateWallStatus(wall._id, 'desactualizado');

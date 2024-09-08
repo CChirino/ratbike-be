@@ -627,12 +627,13 @@ export class WallService {
   }
   async findExpiredWalls(): Promise<WallDocument[]> {
     try {
-      const expirationDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // Hace 30 días
+      const expirationDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
       return this.wallModel
         .find({
           status: 'aprobado',
           endDateWall: { $lt: expirationDate },
         })
+        .populate('user') // Poblar la referencia del usuario
         .exec();
     } catch (error) {
       throw new UnexpectedException(error);
