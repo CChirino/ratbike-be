@@ -38,18 +38,23 @@ import { TelegramService } from './telegram/telegram.service';
 import { TelegramModule } from './telegram/telegram.module';
 import { LastreadingModule } from './lastreading/lastreading.module';
 import { UsersreadingModule } from './usersreading/usersreading.module';
-
+import { LanguageInterceptor } from './interceptors/language/language.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // Hace que el ConfigModule esté disponible globalmente
     }),
     I18nModule.forRoot({
-      fallbackLanguage: 'es',
+      fallbackLanguage: 'en',
       loaderOptions: {
         path: path.join(__dirname, '../i18n/'),
         watch: true,
       },
+      resolvers: [
+        // Utiliza HeaderResolver para obtener el idioma desde el encabezado 'Lang'
+        { use: HeaderResolver, options: ['Lang'] },
+      ],
     }),
     AuthModule,
     MongooseModule.forRoot(process.env.MONGODB_URI),
@@ -103,6 +108,10 @@ import { UsersreadingModule } from './usersreading/usersreading.module';
     JwtStrategy,
     Reflector,
     TelegramService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LanguageInterceptor, // Agregar el interceptor globalmente
+    },
   ],
   exports: [CronJobService, EmailService],
 })

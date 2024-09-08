@@ -1,63 +1,62 @@
 {
-    "registration_confirmation": {
-      "subject": "Registration Confirmation - Rat Bikes",
-      "html": "<h1>Welcome, {name}!</h1><p>Thank you for registering on our site. Your registration has been successfully confirmed.</p>"
-    },
-    "password_reset": {
-      "subject": "Password Reset - Rat Bikes",
-      "html": "<h1>Reset Password</h1><p>You have requested to reset your password. Click the following link to create a new password:</p><a href='{resetUrl}'>Reset Password</a>"
-    },
-    "product_request": {
-      "subject": "Product Under Review - Rat Bikes",
-      "html": "<h1>Approve Product</h1><p>A new product has been created, which requires approval and modifications regarding the language.</p><a href='{url}/products/{{productId}}'>Update Product</a>"
-    },
-    "product_approval": {
-      "subject": "Product Approved - Rat Bikes",
-      "html": "<h1>Congratulations!</h1><p>Your product {productName} has been approved.</p>"
-    },
-    "product_rejection": {
-      "subject": "Product Rejected - Rat Bikes",
-      "html": "<h1>We are sorry to inform you</h1><p>Your product {productName} has been rejected.</p>"
-    },
-    "brotherhood_approval": {
-      "subject": "Brotherhood Approved - Rat Bikes",
-      "html": "<h1>Congratulations!</h1><p>Your brotherhood {brotherhoodName} has been approved.</p>"
-    },
-    "brotherhood_rejection": {
-      "subject": "Brotherhood Rejected - Rat Bikes",
-      "html": "<h1>We are sorry to inform you</h1><p>Your brotherhood {brotherhoodName} has been rejected.</p>"
-    },
-    "wall_approval": {
-      "subject": "Wall Post Approved - Rat Bikes",
-      "html": "<h1>Congratulations!</h1><p>Your wall post {wallName} has been approved.</p>"
-    },
-    "wall_rejection": {
-      "subject": "Wall Post Rejected - Rat Bikes",
-      "html": "<h1>We are sorry to inform you</h1><p>Your wall post {wallName} has been rejected.</p>"
-    },
-    "post_request": {
-      "subject": "Wall Post Under Review - Rat Bikes",
-      "html": "<h1>Wall Post Under Review</h1><p>A new wall post has been created, which requires approval and modifications regarding the language.</p><a href='{url}/wall/{{wallId}}'>Update Wall Post</a>"
-    },
-    "post_request_update": {
-      "subject": "Wall Post Under Review - Rat Bikes (Update)",
-      "html": "<h1>Wall Post Under Review</h1><p>A wall post has been updated, which requires approval and modifications regarding the language.</p><a href='{url}/wall/{{wallId}}'>Update Wall Post-it</a>"
-    },
-    "skill_approval": {
-      "subject": "Skill Approved - Rat Bikes",
-      "html": "<h1>Congratulations!</h1><p>Your skill {skillName} has been approved.</p>"
-    },
-    "skill_rejection": {
-      "subject": "Skill Rejected - Rat Bikes",
-      "html": "<h1>We are sorry to inform you</h1><p>Your skill {skillName} has been rejected.</p>"
-    },
-    "skill_request": {
-      "subject": "Skill Under Review - Rat Bikes",
-      "html": "<h1>Skill Under Review</h1><p>A new skill has been created, which requires approval and modifications regarding the language.</p><a href='{url}/skills/{{skillId}}'>Update Skill</a>"
-    },
-    "contact": {
-      "subject": "Contact - Rat Bikes",
-      "html": "<p>{text}</p>"
-    }
+  "registration_confirmation": {
+    "subject": "Registration Confirmation - Rat Wave",
+    "html": "<h1>Welcome, {name}!</h1><p>Thank you for registering on our site. Your registration has been successfully confirmed.</p>"
+  },
+  "password_reset": {
+    "subject": "Password Reset - Rat Wave",
+    "html": "<h1>Reset Password</h1><p>You have requested to reset your password. Click the following link to create a new password:</p><a href='{resetUrl}'>Reset Password</a> <br> <p>if the link is not working, copy and paste the following url in your browser <a href='{resetUrl}'>{resetUrl}</a></p>"
+  },
+  "product_request": {
+    "subject": "Product Under Review - Rat Wave",
+    "html": "<h1>Approve Product</h1><p>A new product has been created, which requires approval and modifications regarding the language.</p><a href='{url}/products/{{productId}}'>Update Product</a>"
+  },
+  "product_approval": {
+    "subject": "Product Approved - Rat Wave",
+    "html": "<h1>Congratulations!</h1><p>Your product {productName} has been approved.</p>"
+  },
+  "product_rejection": {
+    "subject": "Product Rejected - Rat Wave",
+    "html": "<h1>We are sorry to inform you</h1><p>Your product {productName} has been rejected.</p>"
+  },
+  "brotherhood_approval": {
+    "subject": "Brotherhood Approved - Rat Wave",
+    "html": "<h1>Congratulations!</h1><p>Your brotherhood {brotherhoodName} has been approved.</p>"
+  },
+  "brotherhood_rejection": {
+    "subject": "Brotherhood Rejected - Rat Wave",
+    "html": "<h1>We are sorry to inform you</h1><p>Your brotherhood {brotherhoodName} has been rejected.</p>"
+  },
+  "wall_approval": {
+    "subject": "Wall Post Approved - Rat Wave",
+    "html": "<h1>Congratulations!</h1><p>Your wall post-it {wallName} has been approved. this post-it will have a duration of three months, after those three months we will send you an email to remember that you have to update it, if the post-it is not updated before those three months, it will be deleted automatically. you would have to re-upload it if you want to show it again</p> <br> <a href='{url}/wall/{wallId}'>Check your post-it here</a> <br> <p>  if the link is not working, copy and paste the following url in your browser:  <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "wall_rejection": {
+    "subject": "Wall Post Rejected - Rat Wave",
+    "html": "<h1>We are sorry to inform you</h1><p>Your wall post {wallName} has been rejected for the following reason: {wallRejectedReason} </p> <br> <a href='{url}/post-it-revision/{wallId}'>Check your post-it here</a> <br> <p>If the link is not working, copy and paste the following url in your browser: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p> "
+  },
+  "post_request": {
+    "subject": "Wall Post Created And Under Review - Rat Wave",
+    "html": "<h1>Wall Post Created  Under Review</h1><p>You have created a post-it therefore it needs to be validated. we will be in touch in you to let you know the following details and the status of the post-it</p><a href='{url}/wall/{wallId}'>Check your post-it here (Preview)</a> <p> if the link is not working, copy and paste the following url in your browser: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "post_request_update": {
+    "subject": "Wall Post Under Review - Rat Wave (Update)",
+    "html": "<h1>Wall Post Under Review</h1><p>A wall post has been updated, which requires approval and modifications regarding the language.</p><a href='{url}/wall/{{wallId}}'>Update Wall Post-it</a>"
+  },
+  "skill_approval": {
+    "subject": "Skill Approved - Rat Wave",
+    "html": "<h1>Congratulations!</h1><p>Your skill {skillName} has been approved.</p>"
+  },
+  "skill_rejection": {
+    "subject": "Skill Rejected - Rat Wave",
+    "html": "<h1>We are sorry to inform you</h1><p>Your skill {skillName} has been rejected.</p>"
+  },
+  "skill_request": {
+    "subject": "Skill Under Review - Rat Wave",
+    "html": "<h1>Skill Under Review</h1><p>A new skill has been created, which requires approval and modifications regarding the language.</p><a href='{url}/skills/{{skillId}}'>Update Skill</a>"
+  },
+  "contact": {
+    "subject": "Contact - Rat Wave",
+    "html": "<p>{text}</p>"
   }
-  
+}

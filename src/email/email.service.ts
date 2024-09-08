@@ -41,7 +41,6 @@ export class EmailService {
       });
 
       this.logger.log(`Translation for ${key}: ${subject}, ${html}`);
-
       return {
         subject,
         html,
@@ -55,7 +54,7 @@ export class EmailService {
   async sendRegistrationConfirmation(
     email: string,
     name: string,
-    lang: string = 'es',
+    lang: string = 'en',
   ) {
     const translation = await this.getTranslation(
       'registration_confirmation',
@@ -71,7 +70,7 @@ export class EmailService {
   async sendPasswordResetRequest(
     email: string,
     resetUrl: string,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('password_reset', lang, {
       resetUrl,
@@ -85,7 +84,7 @@ export class EmailService {
 
   async sendProductRequest(
     productId: string,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('product_request', lang, {
       productId,
@@ -100,7 +99,7 @@ export class EmailService {
   async sendApprovalEmail(
     email: string,
     product: Product,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('product_approval', lang, {
       productName: product.nameProduct,
@@ -115,7 +114,7 @@ export class EmailService {
   async sendRejectionEmail(
     email: string,
     product: Product,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('product_rejection', lang, {
       productName: product.nameProduct,
@@ -130,7 +129,7 @@ export class EmailService {
   async sendApprovalEmailBrotherhood(
     email: string,
     brotherhood: Brotherhood,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation(
       'brotherhood_approval',
@@ -149,7 +148,7 @@ export class EmailService {
   async sendRejectionEmailBrotherhood(
     email: string,
     brotherhood: Brotherhood,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation(
       'brotherhood_rejection',
@@ -167,10 +166,12 @@ export class EmailService {
 
   async sendApprovalEmailWall(
     email: string,
+    wallId: string,
     wall: Wall,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('wall_approval', lang, {
+      wallId,
       wallName: wall.titleWall,
     });
     await this.mailerService.sendMail({
@@ -182,11 +183,14 @@ export class EmailService {
 
   async sendRejectionEmailWall(
     email: string,
+    wallId: string,
     wall: Wall,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('wall_rejection', lang, {
       wallName: wall.titleWall,
+      wallRejectedReason: wall.rejectedReason,
+      wallId,
     });
     await this.mailerService.sendMail({
       to: email,
@@ -195,12 +199,32 @@ export class EmailService {
     });
   }
 
-  async sendPostRequest(wallId: string, lang: string = 'es'): Promise<void> {
+  async sendPostRequest(
+    email: string,
+    wallId: string,
+    lang: string = 'en',
+  ): Promise<void> {
     const translation = await this.getTranslation('post_request', lang, {
       wallId,
     });
     await this.mailerService.sendMail({
-      to: 'RatWave1999@gmail.com',
+      to: email,
+      subject: translation.subject,
+      html: translation.html,
+    });
+  }
+
+  async sendPostRequestAdmin(
+    email: string,
+    wallId: string,
+    lang: string = 'en',
+  ): Promise<void> {
+    const translation = await this.getTranslation('post_request_admin', lang, {
+      email,
+      wallId,
+    });
+    await this.mailerService.sendMail({
+      to: ['RatWave1999@gmail.com', 'critijo@gmail.com'],
       subject: translation.subject,
       html: translation.html,
     });
@@ -208,13 +232,13 @@ export class EmailService {
 
   async sendPostRequestUpdate(
     wallId: string,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('post_request_update', lang, {
       wallId,
     });
     await this.mailerService.sendMail({
-      to: 'RatWave1999@gmail.com',
+      to: ['RatWave1999@gmail.com', 'critijo@gmail.com'],
       subject: translation.subject,
       html: translation.html,
     });
@@ -234,7 +258,7 @@ export class EmailService {
   async sendApprovalEmailSkill(
     email: string,
     skill: Skill,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('skill_approval', lang, {
       skillName: skill.titleSkill,
@@ -249,7 +273,7 @@ export class EmailService {
   async sendRejectionEmailSkill(
     email: string,
     skill: Skill,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('skill_rejection', lang, {
       skillName: skill.titleSkill,
@@ -263,7 +287,7 @@ export class EmailService {
 
   async sendPostRequestSkill(
     skillId: string,
-    lang: string = 'es',
+    lang: string = 'en',
   ): Promise<void> {
     const translation = await this.getTranslation('skill_request', lang, {
       skillId,
@@ -277,7 +301,7 @@ export class EmailService {
 
   async sendMailContact(
     mailOptions: { to: string; subject: string; text: string },
-    lang: string = 'es',
+    lang: string = 'en',
   ) {
     const translation = await this.getTranslation('contact', lang, {
       text: mailOptions.text,

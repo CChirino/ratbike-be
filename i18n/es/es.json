@@ -1,62 +1,62 @@
 {
   "registration_confirmation": {
-    "subject": "Confirmación de registro - Rat Bikes",
-    "html": "<h1>Bienvenido, {name}!</h1><p>Gracias por registrarte en nuestro sitio. Tu registro ha sido confirmado correctamente.</p>"
+    "subject": "Confirmación de Registro - Rat Wave",
+    "html": "<h1>¡Bienvenido, {name}!</h1><p>Gracias por registrarte en nuestro sitio. Tu registro ha sido confirmado con éxito.</p>"
   },
   "password_reset": {
-    "subject": "Restablecimiento de contraseña - Rat Bikes",
-    "html": "<h1>Restablecer contraseña</h1><p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva contraseña:</p><a href='{resetUrl}'>Restablecer contraseña</a>"
+    "subject": "Restablecer Contraseña - Rat Wave",
+    "html": "<h1>Restablecer Contraseña</h1><p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva contraseña:</p><a href='{resetUrl}'>Restablecer Contraseña</a> <br> <p>Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{resetUrl}'>{resetUrl}</a></p>"
   },
   "product_request": {
-    "subject": "Producto en Revisión - Rat Bikes",
-    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un producto nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/products/{{productId}}'>Actualizar producto</a>"
+    "subject": "Producto en Revisión - Rat Wave",
+    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un nuevo producto que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/products/{{productId}}'>Actualizar Producto</a>"
   },
   "product_approval": {
-    "subject": "Producto Aprobado - Rat Bikes",
-    "html": "<h1>¡Felicidades!</h1><p>Tu producto {productName} ha sido aprobado.</p>"
+    "subject": "Producto Aprobado - Rat Wave",
+    "html": "<h1>¡Felicitaciones!</h1><p>Tu producto {productName} ha sido aprobado.</p>"
   },
   "product_rejection": {
-    "subject": "Producto Rechazado - Rat Bikes",
+    "subject": "Producto Rechazado - Rat Wave",
     "html": "<h1>Lamentamos informarte</h1><p>Tu producto {productName} ha sido rechazado.</p>"
   },
   "brotherhood_approval": {
-    "subject": "Brotherhood Aprobado - Rat Bikes",
-    "html": "<h1>¡Felicidades!</h1><p>Tu brotherhood {brotherhoodName} ha sido aprobado.</p>"
+    "subject": "Hermandad Aprobada - Rat Wave",
+    "html": "<h1>¡Felicitaciones!</h1><p>Tu hermandad {brotherhoodName} ha sido aprobada.</p>"
   },
   "brotherhood_rejection": {
-    "subject": "Brotherhood Rechazado - Rat Bikes",
-    "html": "<h1>Lamentamos informarte</h1><p>Tu brotherhood {brotherhoodName} ha sido rechazado.</p>"
+    "subject": "Hermandad Rechazada - Rat Wave",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu hermandad {brotherhoodName} ha sido rechazada.</p>"
   },
   "wall_approval": {
-    "subject": "Post-it Wall Aprobado - Rat Bikes",
-    "html": "<h1>¡Felicidades!</h1><p>Tu Post-it {wallName} ha sido aprobado.</p>"
+    "subject": "Post-it de Muro Aprobado - Rat Wave",
+    "html": "<h1>¡Felicitaciones!</h1><p>Tu post-it de muro {wallName} ha sido aprobado. Este post-it tendrá una duración de tres meses, después de los cuales te enviaremos un correo electrónico para recordarte que debes actualizarlo. Si no se actualiza antes de esos tres meses, se eliminará automáticamente. Deberás volver a subirlo si deseas mostrarlo nuevamente.</p> <br> <a href='{url}/wall/{{wallId}}'>Consulta tu post-it aquí</a> <br> <p>Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
   },
   "wall_rejection": {
-    "subject": "Post-it Wall Rechazado - Rat Bikes",
-    "html": "<h1>Lamentamos informarte</h1><p>Tu Post-it {wallName} ha sido rechazado.</p>"
+    "subject": "Post-it de Muro Rechazado - Rat Wave",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu post-it de muro {wallName} ha sido rechazado por la siguiente razón: {wallRejectedReason}</p> <br> <a href='{url}/post-it-revision/{wallId}'>Consulta tu post-it aquí</a> <br> <p>Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
   },
   "post_request": {
-    "subject": "Post-it en Revisión - Rat Bikes",
-    "html": "<h1>Post-it En revisión</h1><p>Se ha creado un Post-it nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/wall/{{wallId}}'>Actualizar Post-it</a>"
+    "subject": "Post-it de Muro Creado y en Revisión - Rat Wave",
+    "html": "<h1>Post-it de Muro Creado en Revisión</h1><p>Has creado un post-it, por lo que necesita ser validado. Nos pondremos en contacto contigo para informarte los siguientes detalles y el estado del post-it.</p><a href='{url}/wall/{wallId}'>Consulta tu post-it aquí (Vista previa)</a> <p>Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
   },
   "post_request_update": {
-    "subject": "Post-it en Revisión - Rat Bikes (Actualización)",
-    "html": "<h1>Post-it En revisión</h1><p>Se ha actualizado un Post-it, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/wall/{{wallId}}'>Actualizar Post-it</a>"
+    "subject": "Post-it de Muro en Revisión - Rat Wave (Actualización)",
+    "html": "<h1>Post-it de Muro en Revisión</h1><p>Se ha actualizado un post-it de muro, lo que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/wall/{{wallId}}'>Actualizar Post-it de Muro</a>"
   },
   "skill_approval": {
-    "subject": "Skill Aprobado - Rat Bikes",
-    "html": "<h1>¡Felicidades!</h1><p>Tu skill {skillName} ha sido aprobado.</p>"
+    "subject": "Habilidad Aprobada - Rat Wave",
+    "html": "<h1>¡Felicitaciones!</h1><p>Tu habilidad {skillName} ha sido aprobada.</p>"
   },
   "skill_rejection": {
-    "subject": "Skill Rechazado - Rat Bikes",
-    "html": "<h1>Lamentamos informarte</h1><p>Tu skill {skillName} ha sido rechazado.</p>"
+    "subject": "Habilidad Rechazada - Rat Wave",
+    "html": "<h1>Lamentamos informarte</h1><p>Tu habilidad {skillName} ha sido rechazada.</p>"
   },
   "skill_request": {
-    "subject": "Skill en Revisión - Rat Bikes",
-    "html": "<h1>Skill En revisión</h1><p>Se ha creado un Skill nuevo, el cual requiere aprobación y modificaciones en respecto al idioma.</p><a href='{url}/skills/{{skillId}}'>Actualizar Skill</a>"
+    "subject": "Habilidad en Revisión - Rat Wave",
+    "html": "<h1>Habilidad en Revisión</h1><p>Se ha creado una nueva habilidad que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/skills/{{skillId}}'>Actualizar Habilidad</a>"
   },
   "contact": {
-    "subject": "Contacto - Rat Bikes",
+    "subject": "Contacto - Rat Wave",
     "html": "<p>{text}</p>"
   }
 }

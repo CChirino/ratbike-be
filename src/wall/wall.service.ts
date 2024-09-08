@@ -66,9 +66,11 @@ export class WallService {
 
       const createdWall = await newWall.save();
 
-      const wallId = createdWall._id;
+      const wallId = createdWall._id.toString();
+      const emailUser = user.email;
 
-      await this.emailService.sendPostRequest(wallId);
+      await this.emailService.sendPostRequest(emailUser, wallId);
+      await this.emailService.sendPostRequestAdmin(emailUser, wallId);
 
       const responseObj = {
         status: HttpStatus.OK,
@@ -174,10 +176,20 @@ export class WallService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
+      const wallId = updatedWall._id.toString();
+
       if (updatedWall.status === 'aprobado') {
-        await this.emailService.sendApprovalEmailWall(emailUser, updatedWall);
+        await this.emailService.sendApprovalEmailWall(
+          emailUser,
+          wallId,
+          updatedWall,
+        );
       } else if (updatedWall.status === 'rechazado') {
-        await this.emailService.sendRejectionEmailWall(emailUser, updatedWall);
+        await this.emailService.sendRejectionEmailWall(
+          emailUser,
+          wallId,
+          updatedWall,
+        );
       }
 
       const responseObj = {
@@ -240,7 +252,7 @@ export class WallService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      const wallId = updatedWall._id;
+      const wallId = updatedWall._id.toString();
 
       await this.emailService.sendPostRequestUpdate(wallId);
 
