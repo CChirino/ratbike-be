@@ -40,6 +40,7 @@ import { LastreadingModule } from './lastreading/lastreading.module';
 import { UsersreadingModule } from './usersreading/usersreading.module';
 import { LanguageInterceptor } from './interceptors/language/language.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ImageService } from './image/image.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -112,6 +113,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       provide: APP_INTERCEPTOR,
       useClass: LanguageInterceptor, // Agregar el interceptor globalmente
     },
+    ImageService,
   ],
   exports: [CronJobService, EmailService],
 })

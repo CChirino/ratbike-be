@@ -649,6 +649,13 @@ export class WallService {
       .exec();
   }
 
+  async findAllImages(): Promise<{ path: string }[]> {
+    const walls = await this.wallModel.find({}, 'galleryImagesWall').exec();
+    return walls.flatMap((wall) =>
+      wall.galleryImagesWall.map((image) => ({ path: image })),
+    );
+  }
+
   private async handleUserReading(user: any): Promise<void> {
     try {
       // Buscar el ID del usuario por su correo electrónico
