@@ -102,7 +102,7 @@ export class WallService {
     wallModality?: string,
     ownerId?: string,
     showUpdatedOnly?: boolean,
-    isPaid?: boolean 
+    isPaid?: boolean,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       page = page && parseInt(page.toString(), 10);
@@ -137,7 +137,7 @@ export class WallService {
         wallModality,
         ownerId,
         showUpdatedOnly,
-        isPaid
+        isPaid,
       );
     } catch (error) {
       if (error instanceof HttpException) {
@@ -152,9 +152,9 @@ export class WallService {
     try {
       const wall = await this.wallModel.findById(id).exec();
 
-      if(!wall){
-        throw new HttpException("WALL_NOT_FOUND", HttpStatus.NOT_FOUND)
-      } 
+      if (!wall) {
+        throw new HttpException('WALL_NOT_FOUND', HttpStatus.NOT_FOUND);
+      }
 
       return {
         status: HttpStatus.OK,
@@ -287,11 +287,7 @@ export class WallService {
     }
   }
 
-  async updateIsPaid(
-    id: string,
-    user: any,
-    response,
-  ): Promise<Wall> {
+  async updateIsPaid(id: string, user: any, response): Promise<Wall> {
     try {
       const emailUser = user.email;
       const updatedWall = await this.wallModel
@@ -335,9 +331,8 @@ export class WallService {
         wall.delete_at = new Date().toISOString();
         wall.delete_date = new Date();
         await wall.save();
-      }else{
-        throw new HttpException("UNABLE_TO_GET_WALL", HttpStatus.NOT_FOUND)
-        
+      } else {
+        throw new HttpException('UNABLE_TO_GET_WALL', HttpStatus.NOT_FOUND);
       }
       return wall;
     } catch (error) {
@@ -492,7 +487,7 @@ export class WallService {
     wallModality?: string,
     ownerId?: string,
     showUpdatedOnly: any = 'true',
-    isPaid?: boolean
+    isPaid?: boolean,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
@@ -530,8 +525,9 @@ export class WallService {
         query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
       }
 
-      if(isPaid !== null && isPaid !== undefined){ //HAVENT TESTED THIS IF WE HAVE A BUG CHECK THIS FIRST
-        query.isPaid = { $eq: isPaid }
+      if (isPaid !== null && isPaid !== undefined) {
+        //HAVENT TESTED THIS IF WE HAVE A BUG CHECK THIS FIRST
+        query.isPaid = { $eq: isPaid };
       }
 
       if (search) {
@@ -630,7 +626,7 @@ export class WallService {
     }
   }
   async findExpiredWalls(): Promise<WallDocument[]> {
-    try{
+    try {
       const expirationDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000); // Hace 30 días
       return this.wallModel
         .find({
@@ -638,9 +634,8 @@ export class WallService {
           endDateWall: { $lt: expirationDate },
         })
         .exec();
-    }catch(error){
+    } catch (error) {
       throw new UnexpectedException(error);
-      
     }
   }
 
