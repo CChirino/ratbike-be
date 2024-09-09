@@ -9,7 +9,7 @@
   },
   "product_request": {
     "subject": "Producto en Revisión - Rat Wave",
-    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un nuevo producto que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/products/{{productId}}'>Actualizar Producto</a>"
+    "html": "<h1>Aprobar Producto</h1><p>Se ha creado un nuevo producto que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/products/{productId}'>Actualizar Producto</a>"
   },
   "product_approval": {
     "subject": "Producto Aprobado - Rat Wave",
@@ -40,8 +40,8 @@
     "html": "<h1>Post-it de Muro Creado en Revisión</h1><p>Has creado un post-it, por lo que necesita ser validado. Nos pondremos en contacto contigo para informarte los siguientes detalles y el estado del post-it.</p><a href='{url}/wall/{wallId}'>Consulta tu post-it aquí (Vista previa)</a> <p>Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
   },
   "post_request_admin": {
-  "subject": "Nuevo Post-It creado (Requiere validación) - Rat Wave",
-  "html": "<h1>Un usuario ha creado un nuevo Post-It y necesita validación</h1><p>Un usuario ha creado un Post-It. Recuerda enviar los detalles del proceso al usuario por correo electrónico a {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Puedes gestionar el estado del Post-It aquí</a> <br> <p> Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
+    "subject": "Nuevo Post-It creado (Requiere validación) - Rat Wave",
+    "html": "<h1>Un usuario ha creado un nuevo Post-It y necesita validación</h1><p>Un usuario ha creado un Post-It. Recuerda enviar los detalles del proceso al usuario por correo electrónico a {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Puedes gestionar el estado del Post-It aquí</a> <br> <p> Si el enlace no funciona, copia y pega la siguiente URL en tu navegador: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
   },
   "post_request_update": {
     "subject": "Post-it de Muro en Revisión - Rat Wave (Actualización)",
@@ -57,7 +57,7 @@
   },
   "skill_request": {
     "subject": "Habilidad en Revisión - Rat Wave",
-    "html": "<h1>Habilidad en Revisión</h1><p>Se ha creado una nueva habilidad que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/skills/{{skillId}}'>Actualizar Habilidad</a>"
+    "html": "<h1>Habilidad en Revisión</h1><p>Se ha creado una nueva habilidad que requiere aprobación y modificaciones relacionadas con el idioma.</p><a href='{url}/skills/{skillId}'>Actualizar Habilidad</a>"
   },
   "contact": {
     "subject": "Contacto - Rat Wave",

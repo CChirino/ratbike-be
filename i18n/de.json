@@ -1,0 +1,50 @@
+{
+  "registration_confirmation": {
+    "subject": "Registrierungsbestätigung - Rat Wave",
+    "html": "<h1>Willkommen, {name}!</h1><p>Vielen Dank für Ihre Registrierung auf unserer Website. Ihre Registrierung wurde erfolgreich bestätigt.</p>"
+  },
+  "password_reset": {
+    "subject": "Passwort zurücksetzen - Rat Wave",
+    "html": "<h1>Passwort zurücksetzen</h1><p>Sie haben darum gebeten, Ihr Passwort zurückzusetzen. Klicken Sie auf den folgenden Link, um ein neues Passwort zu erstellen:</p><a href='{resetUrl}'>Passwort zurücksetzen</a> <br> <p>Wenn der Link nicht funktioniert, kopieren Sie die folgende URL in Ihren Browser <a href='{resetUrl}'>{resetUrl}</a></p>"
+  },
+  "product_request": {
+    "subject": "Produkt zur Überprüfung - Rat Wave",
+    "html": "<h1>Produkt genehmigen</h1><p>Ein neues Produkt wurde erstellt, das Genehmigung und Anpassungen in Bezug auf die Sprache erfordert.</p><a href='{url}/products/{productId}'>Produkt aktualisieren</a>"
+  },
+  "product_approval": {
+    "subject": "Produkt genehmigt - Rat Wave",
+    "html": "<h1>Herzlichen Glückwunsch!</h1><p>Ihr Produkt {productName} wurde genehmigt.</p>"
+  },
+  "product_rejection": {
+    "subject": "Produkt abgelehnt - Rat Wave",
+    "html": "<h1>Es tut uns leid, Sie zu informieren</h1><p>Ihr Produkt {productName} wurde abgelehnt.</p>"
+  },
+  "brotherhood_approval": {
+    "subject": "Bruderschaft genehmigt - Rat Wave",
+    "html": "<h1>Herzlichen Glückwunsch!</h1><p>Ihre Bruderschaft {brotherhoodName} wurde genehmigt.</p>"
+  },
+  "brotherhood_rejection": {
+    "subject": "Bruderschaft abgelehnt - Rat Wave",
+    "html": "<h1>Es tut uns leid, Sie zu informieren</h1><p>Ihre Bruderschaft {brotherhoodName} wurde abgelehnt.</p>"
+  },
+  "wall_approval": {
+    "subject": "Wandbeitrag genehmigt - Rat Wave",
+    "html": "<h1>Herzlichen Glückwunsch!</h1><p>Ihr Wandbeitrag {wallName} wurde genehmigt. Dieser Wandbeitrag hat eine Dauer von drei Monaten. Nach diesen drei Monaten senden wir Ihnen eine E-Mail, um Sie daran zu erinnern, dass Sie ihn aktualisieren müssen. Wenn der Wandbeitrag nicht vor Ablauf dieser drei Monate aktualisiert wird, wird er automatisch gelöscht. Sie müssten ihn erneut hochladen, wenn Sie ihn erneut anzeigen möchten.</p> <br> <a href='{url}/wall/{wallId}'>Sehen Sie sich Ihren Wandbeitrag hier an</a> <br> <p>  Wenn der Link nicht funktioniert, kopieren Sie die folgende URL in Ihren Browser:  <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "wall_rejection": {
+    "subject": "Wandbeitrag abgelehnt - Rat Wave",
+    "html": "<h1>Es tut uns leid, Sie zu informieren</h1><p>Ihr Wandbeitrag {wallName} wurde aus folgendem Grund abgelehnt: {wallRejectedReason} </p> <br> <a href='{url}/post-it-revision/{wallId}'>Sehen Sie sich Ihren Wandbeitrag hier an</a> <br> <p>Wenn der Link nicht funktioniert, kopieren Sie die folgende URL in Ihren Browser: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p> "
+  },
+  "post_request": {
+    "subject": "Wandbeitrag erstellt und zur Überprüfung - Rat Wave",
+    "html": "<h1>Wandbeitrag erstellt und zur Überprüfung</h1><p>Sie haben einen Wandbeitrag erstellt, daher muss er validiert werden. Wir werden Sie kontaktieren, um Sie über die folgenden Details und den Status des Wandbeitrags zu informieren.</p><a href='{url}/wall/{wallId}'>Sehen Sie sich Ihren Wandbeitrag hier an (Vorschau)</a> <p> Wenn der Link nicht funktioniert, kopieren Sie die folgende URL in Ihren Browser: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "post_request_admin": {
+    "subject": "Neuer Wandbeitrag erstellt (Validierung erforderlich) - Rat Wave",
+    "html": "<h1>Ein Benutzer hat einen neuen Wandbeitrag erstellt und benötigt Validierung</h1><p>Ein Benutzer hat einen Wandbeitrag erstellt. Denken Sie daran, die Details des Prozesses per E-Mail an {email} zu senden.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Sie können den Status des Wandbeitrags hier verwalten</a> <br> <p> Wenn der Link nicht funktioniert, kopieren Sie die folgende URL in Ihren Browser:  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
+  },
+  "post_request_update": {
+    "subject": "Wandbeitrag zur Überprüfung - Rat Wave (Update)",
+    "html": "<h1>Wandbeitrag zur Überprüfung</h1><p>Ein Wandbeitrag wurde aktualisiert, was Genehmigung und Anpassungen in Bezug auf die Sprache erfordert.</p><a href='{url}/wall/{wallId}'>Wandbeitrag aktualisieren</a>"
+  }
+}

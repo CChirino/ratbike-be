@@ -1,0 +1,50 @@
+{
+  "registration_confirmation": {
+    "subject": "Confirmação de Registro - Rat Wave",
+    "html": "<h1>Bem-vindo, {name}!</h1><p>Obrigado por se registrar em nosso site. Seu registro foi confirmado com sucesso.</p>"
+  },
+  "password_reset": {
+    "subject": "Redefinir Senha - Rat Wave",
+    "html": "<h1>Redefinir Senha</h1><p>Você solicitou redefinir sua senha. Clique no link a seguir para criar uma nova senha:</p><a href='{resetUrl}'>Redefinir Senha</a> <br> <p>se o link não estiver funcionando, copie e cole o seguinte URL no seu navegador <a href='{resetUrl}'>{resetUrl}</a></p>"
+  },
+  "product_request": {
+    "subject": "Produto em Revisão - Rat Wave",
+    "html": "<h1>Aprovar Produto</h1><p>Um novo produto foi criado, que requer aprovação e modificações quanto à linguagem.</p><a href='{url}/products/{productId}'>Atualizar Produto</a>"
+  },
+  "product_approval": {
+    "subject": "Produto Aprovado - Rat Wave",
+    "html": "<h1>Parabéns!</h1><p>Seu produto {productName} foi aprovado.</p>"
+  },
+  "product_rejection": {
+    "subject": "Produto Rejeitado - Rat Wave",
+    "html": "<h1>Lamentamos informá-lo</h1><p>Seu produto {productName} foi rejeitado.</p>"
+  },
+  "brotherhood_approval": {
+    "subject": "Fraternidade Aprovada - Rat Wave",
+    "html": "<h1>Parabéns!</h1><p>Sua fraternidade {brotherhoodName} foi aprovada.</p>"
+  },
+  "brotherhood_rejection": {
+    "subject": "Fraternidade Rejeitada - Rat Wave",
+    "html": "<h1>Lamentamos informá-lo</h1><p>Sua fraternidade {brotherhoodName} foi rejeitada.</p>"
+  },
+  "wall_approval": {
+    "subject": "Postagem na Parede Aprovada - Rat Wave",
+    "html": "<h1>Parabéns!</h1><p>Seu post-it na parede {wallName} foi aprovado. Este post-it terá uma duração de três meses, após esses três meses, enviaremos um e-mail para lembrá-lo de que você precisa atualizá-lo, se o post-it não for atualizado antes desses três meses, ele será excluído automaticamente. Você teria que re-carregar se quiser mostrá-lo novamente</p> <br> <a href='{url}/wall/{wallId}'>Verifique seu post-it aqui</a> <br> <p>  se o link não estiver funcionando, copie e cole o seguinte URL no seu navegador:  <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "wall_rejection": {
+    "subject": "Postagem na Parede Rejeitada - Rat Wave",
+    "html": "<h1>Lamentamos informá-lo</h1><p>Sua postagem na parede {wallName} foi rejeitada pelo seguinte motivo: {wallRejectedReason} </p> <br> <a href='{url}/post-it-revision/{wallId}'>Verifique seu post-it aqui</a> <br> <p>Se o link não estiver funcionando, copie e cole o seguinte URL no seu navegador: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p> "
+  },
+  "post_request": {
+    "subject": "Postagem na Parede Criada e em Revisão - Rat Wave",
+    "html": "<h1>Postagem na Parede Criada e em Revisão</h1><p>Você criou um post-it, portanto, ele precisa ser validado. Entraremos em contato com você para informá-lo dos seguintes detalhes e do status do post-it.</p><a href='{url}/wall/{wallId}'>Verifique seu post-it aqui (Prévia)</a> <p> se o link não estiver funcionando, copie e cole o seguinte URL no seu navegador: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "post_request_admin": {
+    "subject": "Nova Postagem na Parede Criada (Validação necessária) - Rat Wave",
+    "html": "<h1>Um usuário criou um novo post-it e precisa de validação</h1><p>Um usuário criou um post-it. Lembre-se de enviar os detalhes do processo ao usuário por e-mail para {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Você pode gerenciar o status do post-it aqui</a> <br> <p> se o link não estiver funcionando, copie e cole o seguinte URL no seu navegador:  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
+  },
+  "post_request_update": {
+    "subject": "Postagem na Parede em Revisão - Rat Wave (Atualização)",
+    "html": "<h1>Postagem na Parede em Revisão</h1><p>Uma postagem na parede foi atualizada, o que requer aprovação e modificações quanto à linguagem.</p><a href='{url}/wall/{wallId}'>Atualizar Post-it na Parede</a>"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "registration_confirmation": {
+    "subject": "Conferma di registrazione - Rat Wave",
+    "html": "<h1>Benvenuto, {name}!</h1><p>Grazie per esserti registrato sul nostro sito. La tua registrazione è stata confermata con successo.</p>"
+  },
+  "password_reset": {
+    "subject": "Ripristino password - Rat Wave",
+    "html": "<h1>Ripristina password</h1><p>Hai richiesto di ripristinare la tua password. Clicca sul seguente link per creare una nuova password:</p><a href='{resetUrl}'>Ripristina password</a> <br> <p>se il link non funziona, copia e incolla il seguente URL nel tuo browser <a href='{resetUrl}'>{resetUrl}</a></p>"
+  },
+  "product_request": {
+    "subject": "Prodotto in revisione - Rat Wave",
+    "html": "<h1>Approva prodotto</h1><p>È stato creato un nuovo prodotto che richiede approvazione e modifiche relative alla lingua.</p><a href='{url}/products/{productId}'>Aggiorna prodotto</a>"
+  },
+  "product_approval": {
+    "subject": "Prodotto approvato - Rat Wave",
+    "html": "<h1>Congratulazioni!</h1><p>Il tuo prodotto {productName} è stato approvato.</p>"
+  },
+  "product_rejection": {
+    "subject": "Prodotto rifiutato - Rat Wave",
+    "html": "<h1>Siamo spiacenti di informarti</h1><p>Il tuo prodotto {productName} è stato rifiutato.</p>"
+  },
+  "brotherhood_approval": {
+    "subject": "Fratellanza approvata - Rat Wave",
+    "html": "<h1>Congratulazioni!</h1><p>La tua fratellanza {brotherhoodName} è stata approvata.</p>"
+  },
+  "brotherhood_rejection": {
+    "subject": "Fratellanza rifiutata - Rat Wave",
+    "html": "<h1>Siamo spiacenti di informarti</h1><p>La tua fratellanza {brotherhoodName} è stata rifiutata.</p>"
+  },
+  "wall_approval": {
+    "subject": "Post del muro approvato - Rat Wave",
+    "html": "<h1>Congratulazioni!</h1><p>Il tuo post-it del muro {wallName} è stato approvato. Questo post-it avrà una durata di tre mesi, dopo questi tre mesi ti invieremo una email per ricordarti che devi aggiornarlo, se il post-it non viene aggiornato prima di questi tre mesi, verrà automaticamente eliminato. Dovresti ricaricarlo se vuoi mostrarlo di nuovo</p> <br> <a href='{url}/wall/{wallId}'>Controlla il tuo post-it qui</a> <br> <p>  se il link non funziona, copia e incolla il seguente URL nel tuo browser:  <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "wall_rejection": {
+    "subject": "Post del muro rifiutato - Rat Wave",
+    "html": "<h1>Siamo spiacenti di informarti</h1><p>Il tuo post del muro {wallName} è stato rifiutato per il seguente motivo: {wallRejectedReason} </p> <br> <a href='{url}/post-it-revision/{wallId}'>Controlla il tuo post-it qui</a> <br> <p>Se il link non funziona, copia e incolla il seguente URL nel tuo browser: <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p> "
+  },
+  "post_request": {
+    "subject": "Post del muro creato e in revisione - Rat Wave",
+    "html": "<h1>Post del muro creato e in revisione</h1><p>Hai creato un post-it, quindi deve essere validato. Ti contatteremo per informarti dei seguenti dettagli e dello stato del post-it.</p><a href='{url}/wall/{wallId}'>Controlla il tuo post-it qui (Anteprima)</a> <p> se il link non funziona, copia e incolla il seguente URL nel tuo browser: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "post_request_admin": {
+    "subject": "Nuovo post del muro creato (Validazione richiesta) - Rat Wave",
+    "html": "<h1>Un utente ha creato un nuovo post-it e richiede convalida</h1><p>Un utente ha creato un post-it. Ricorda di inviare i dettagli del processo all'utente tramite email a {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Puoi gestire lo stato del post-it qui</a> <br> <p> se il link non funziona, copia e incolla il seguente URL nel tuo browser:  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
+  },
+  "post_request_update": {
+    "subject": "Post del muro in revisione - Rat Wave (Aggiornamento)",
+    "html": "<h1>Post del muro in revisione</h1><p>Un post del muro è stato aggiornato, il che richiede approvazione e modifiche relative alla lingua.</p><a href='{url}/wall/{wallId}'>Aggiorna post-it del muro</a>"
+  }
+}

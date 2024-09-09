@@ -1,0 +1,66 @@
+{
+  "registration_confirmation": {
+    "subject": "Confirmation d'inscription - Rat Wave",
+    "html": "<h1>Bienvenue, {name}!</h1> <p> Merci de vous être inscrit sur notre site. Votre inscription a été confirmée avec succès.</p>"
+  },
+  "password_reset": {
+    "subject": "Réinitialisation du Mot de Passe - Rat Wave",
+    "html": "<h1> Réinitialiser le mot de passe</h1><p> Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien suivant pour créer un nouveau mot de passe:</p><a href='{resetUrl}'>Réinitialiser le mot de passe</a> <br> <p> si le lien ne fonctionne pas, copiez et collez l'URL suivante dans votre navigateur <a href='{resetUrl}'>{resetUrl}</a></p>"
+  },
+  "product_request": {
+    "subject": "Demande de produit - Rat Wave",
+    "html": "<h1>Approuver le produit</h1><p>Un nouveau produit a été créé, qui nécessite une approbation et des modifications concernant la langue.</p><a href='{url}/products/{productId}'>Mettre à jour le produit</a>"
+  },
+  "product_approval": {
+    "subject": "Produit approuvé - Rat Wave",
+    "html": "<h1>Félicitations !</h1><p>Votre produit {productName} a été approuvé.</p>"
+  },
+  "product_rejection": {
+    "subject": "Produit rejeté - Rat Wave",
+    "html": "<h1>Nous sommes désolés de vous informer</h1><p>Votre produit {productName} a été rejeté.</p>"
+  },
+  "brotherhood_approval": {
+    "subject": "Fraternité approuvée - Rat Wave",
+    "html": "<h1>Félicitations !</h1><p>Votre fraternité {brotherhoodName} a été approuvée.</p>"
+  },
+  "brotherhood_rejection": {
+    "subject": "Fraternité rejetée - Rat Wave",
+    "html": "<h1>Nous sommes désolés de vous informer</h1><p>Votre fraternité {brotherhoodName} a été rejetée.</p>"
+  },
+  "wall_approval": {
+    "subject": "Publication murale approuvée - Rat Wave",
+    "html": "<h1>Félicitations !</h1><p>Votre publication murale {wallName} a été approuvée. Cette publication durera trois mois. Après ces trois mois, nous vous enverrons un e-mail pour vous rappeler de la mettre à jour. Si la publication n'est pas mise à jour avant ces trois mois, elle sera automatiquement supprimée. Vous devrez la télécharger à nouveau si vous souhaitez la montrer à nouveau.</p> <br> <a href='{url}/wall/{wallId}'>Consultez votre publication ici</a> <br> <p>  Si le lien ne fonctionne pas, copiez et collez l'URL suivante dans votre navigateur :  <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "wall_rejection": {
+    "subject": "Publication murale rejetée - Rat Wave",
+    "html": "<h1>Nous sommes désolés de vous informer</h1><p>Votre publication murale {wallName} a été rejetée pour la raison suivante : {wallRejectedReason} </p> <br> <a href='{url}/post-it-revision/{wallId}'>Consultez votre publication ici</a> <br> <p>Si le lien ne fonctionne pas, copiez et collez l'URL suivante dans votre navigateur : <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p> "
+  },
+  "post_request": {
+    "subject": "Publication murale créée et en cours d'examen - Rat Wave",
+    "html": "<h1>Publication murale créée et en cours d'examen</h1><p>Vous avez créé une publication, elle doit donc être validée. Nous vous contacterons pour vous communiquer les détails suivants et le statut de la publication.</p><a href='{url}/wall/{wallId}'>Consultez votre publication ici (aperçu)</a> <p> Si le lien ne fonctionne pas, copiez et collez l'URL suivante dans votre navigateur : <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
+  },
+  "post_request_admin": {
+    "subject": "Nouvelle publication murale créée (validation requise) - Rat Wave",
+    "html": "<h1>Un utilisateur a créé une nouvelle publication et nécessite une validation</h1><p>Un utilisateur a créé une publication. N'oubliez pas d'envoyer les détails du processus à l'utilisateur par e-mail à {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Vous pouvez gérer le statut de la publication ici</a> <br> <p> Si le lien ne fonctionne pas, copiez et collez l'URL suivante dans votre navigateur :  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
+  },
+  "post_request_update": {
+    "subject": "Publication murale en cours d'examen - Rat Wave (mise à jour)",
+    "html": "<h1>Publication murale en cours d'examen</h1><p>Une publication murale a été mise à jour, ce qui nécessite une approbation et des modifications concernant la langue.</p><a href='{url}/wall/{wallId}'>Mettre à jour la publication murale</a>"
+  },
+  "skill_approval": {
+    "subject": "Compétence approuvée - Rat Wave",
+    "html": "<h1>Félicitations !</h1><p>Votre compétence {skillName} a été approuvée.</p>"
+  },
+  "skill_rejection": {
+    "subject": "Compétence rejetée - Rat Wave",
+    "html": "<h1>Nous sommes désolés de vous informer</h1><p>Votre compétence {skillName} a été rejetée.</p>"
+  },
+  "skill_request": {
+    "subject": "Compétence en cours d'examen - Rat Wave",
+    "html": "<h1>Compétence en cours d'examen</h1><p>Une nouvelle compétence a été créée, ce qui nécessite une approbation et des modifications concernant la langue.</p><a href='{url}/skills/{skillId}'>Mettre à jour la compétence</a>"
+  },
+  "contact": {
+    "subject": "Contact - Rat Wave",
+    "html": "<p>{text}</p>"
+  }
+}
