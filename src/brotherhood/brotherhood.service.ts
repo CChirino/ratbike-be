@@ -48,20 +48,23 @@ export class BrotherhoodService {
         createdBy: user.name + ' ' + user.lastname,
       });
 
+      // if (files && files.length > 0) {
+      //   const urlImageProduct = files[0].path.replace(/\\/g, '/');
+      //   newBrotherhood.urlImageBrotherhood = urlImageProduct;
+      // } else {
+      //   const defaultImagePath =
+      //     'uploads/brotherhood/default-product-image.jpg';
+      //   if (fs.existsSync(defaultImagePath)) {
+      //     newBrotherhood.urlImageBrotherhood = defaultImagePath;
+      //   }
+      // }
+
       if (files && files.length > 0) {
+        // THE IMAGE GALLERY WILL NOW HANDLE THE FRONT PICTURE
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
         newBrotherhood.urlImageBrotherhood = urlImageProduct;
-      } else {
-        const defaultImagePath =
-          'uploads/brotherhood/default-product-image.jpg';
-        if (fs.existsSync(defaultImagePath)) {
-          newBrotherhood.urlImageBrotherhood = defaultImagePath;
-        }
-      }
 
-      if (files && files.length > 1) {
         const galleryImagesBrotherhood = files
-          .slice(1)
           .map((file) => file.path.replace(/\\/g, '/'));
         newBrotherhood.galleryImagesBrotherhood = galleryImagesBrotherhood;
       }

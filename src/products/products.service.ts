@@ -49,19 +49,22 @@ export class ProductsService {
         createdBy: user.name + ' ' + user.lastname,
       });
 
+      // if (files && files.length > 0) {
+      //   const urlImageProduct = files[0].path.replace(/\\/g, '/');
+      //   newProduct.urlImageProduct = urlImageProduct;
+      // } else {
+      //   const defaultImagePath = 'uploads/products/default-product-image.jpg';
+      //   if (fs.existsSync(defaultImagePath)) {
+      //     newProduct.urlImageProduct = defaultImagePath;
+      //   }
+      // }
+
       if (files && files.length > 0) {
+        // THE IMAGE GALLERY WILL NOW HANDLE THE FRONT PICTURE
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
         newProduct.urlImageProduct = urlImageProduct;
-      } else {
-        const defaultImagePath = 'uploads/products/default-product-image.jpg';
-        if (fs.existsSync(defaultImagePath)) {
-          newProduct.urlImageProduct = defaultImagePath;
-        }
-      }
 
-      if (files && files.length > 1) {
         const galleryImages = files
-          .slice(1)
           .map((file) => file.path.replace(/\\/g, '/'));
         newProduct.galleryImages = galleryImages;
       }

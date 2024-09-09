@@ -52,12 +52,12 @@ export class WallService {
       if (files && files.length > 0) {
         const urlImageWall = files[0].path.replace(/\\/g, '/');
         newWall.urlImageWall = urlImageWall;
-        if (files.length > 1) {
-          const galleryImagesWall = files.map((file) =>
-            file.path.replace(/\\/g, '/'),
-          );
-          newWall.galleryImagesWall = galleryImagesWall;
-        }
+        
+        const galleryImagesWall = files.map((file) =>
+          file.path.replace(/\\/g, '/'),
+        );
+        newWall.galleryImagesWall = galleryImagesWall;
+        
       } else {
         const defaultImagePath = 'uploads/wall/default-product-image.jpg';
         if (fs.existsSync(defaultImagePath)) {

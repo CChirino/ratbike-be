@@ -44,19 +44,22 @@ export class ArticlesService {
         createdBy: user.name + ' ' + user.lastname,
       });
 
-      if (files && files.length > 0) {
-        const urlImageArticle = files[0].path.replace(/\\/g, '/');
-        newArticle.urlImageArticle = urlImageArticle;
-      } else {
-        const defaultImagePath = 'uploads/articles/default-article-image.jpg';
-        if (fs.existsSync(defaultImagePath)) {
-          newArticle.urlImageArticle = defaultImagePath;
-        }
-      }
+      // if (files && files.length > 0) {
+      //   const urlImageArticle = files[0].path.replace(/\\/g, '/');
+      //   newArticle.urlImageArticle = urlImageArticle;
+      // } else {
+      //   const defaultImagePath = 'uploads/articles/default-article-image.jpg';
+      //   if (fs.existsSync(defaultImagePath)) {
+      //     newArticle.urlImageArticle = defaultImagePath;
+      //   }
+      // }
 
-      if (files && files.length > 1) {
+      if (files && files.length > 0) {
+        // THE IMAGE GALLERY WILL NOW HANDLE THE FRONT PICTURE
+        const urlImageWall = files[0].path.replace(/\\/g, '/');
+        newArticle.urlImageArticle = urlImageWall;
+
         const galleryImagesArticles = files
-          .slice(1)
           .map((file) => file.path.replace(/\\/g, '/'));
         newArticle.galleryImagesArticles = galleryImagesArticles;
       }
