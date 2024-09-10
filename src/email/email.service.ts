@@ -100,7 +100,7 @@ export class EmailService {
         productId,
       });
       await this.mailerService.sendMail({
-        to: 'RatWave1999@gmail.com',
+        to: 'angeldchz@gmail.com',
         subject: translation.subject,
         html: translation.html,
       });
@@ -253,7 +253,7 @@ export class EmailService {
       wallId,
     });
     await this.mailerService.sendMail({
-      to: 'RatWave1999@gmail.com',
+      to: 'angeldchz@gmail.com',
       subject: translation.subject,
       html: translation.html,
     });
@@ -272,7 +272,7 @@ export class EmailService {
         },
       );
       await this.mailerService.sendMail({
-        to: 'RatWave1999@gmail.com',
+        to: 'angeldchz@gmail.com',
         subject: translation.subject,
         html: translation.html,
       });
@@ -359,7 +359,7 @@ export class EmailService {
         skillId,
       });
       await this.mailerService.sendMail({
-        to: 'RatWave1999@gmail.com',
+        to: 'angeldchz@gmail.com',
         subject: translation.subject,
         html: translation.html,
       });
