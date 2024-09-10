@@ -72,11 +72,10 @@ export class AuthController {
   @Patch('reset-password')
   @Roles('public', 'admin', 'moderador', 'user')
   async resetPassword(
-    @Body('email') email: string,
-    @Body('token') token: string,
     @Body('newPassword') newPassword: string,
+    @Body('token') token: string,
   ): Promise<void> {
-    await this.authService.resetPassword(email, newPassword, token);
+    await this.authService.resetPassword(newPassword, token);
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -277,14 +277,13 @@ export class AuthService {
   }
 
   async resetPassword(
-    email: string,
     newPassword: string,
     token: string,
   ): Promise<void> {
     try {
       // const email = req.body.email;
       // Encontrar al usuario por el email
-      const user = await this.userModel.findOne({ email });
+      const user = await this.userModel.findOne({ resetPasswordToken: token });
 
       if (!user) {
         throw new NotFoundException('User not found');
