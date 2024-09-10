@@ -64,12 +64,12 @@ import { ImageService } from './image/image.service';
       transport: {
         service: 'Gmail',
         auth: {
-          user: 'angeldchz@gmail.com',
+          user: 'RatWave1999@gmail.com',
           pass: 'mkdb ubsm inkx qixl',
         },
       },
       defaults: {
-        from: 'angeldchz@gmail.com',
+        from: 'RatWave1999@gmail.com',
       },
       template: {
         dir: __dirname + '/templates',
