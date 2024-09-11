@@ -53,7 +53,10 @@ export class AuthService {
         !userObject.country ||
         userObject.password.length < 8
       ) {
-        throw new HttpException('UNPROCESSABLE_ENTITY', HttpStatus.UNPROCESSABLE_ENTITY);
+        throw new HttpException(
+          'UNPROCESSABLE_ENTITY',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
       }
 
       if (file) {
@@ -103,11 +106,13 @@ export class AuthService {
     try {
       const { email, password } = userObjectLogin;
       const findUser = await this.userModel.findOne({ email });
-      if (!findUser) throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
+      if (!findUser)
+        throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
 
       const checkPassword = await compare(password, findUser.password);
 
-      if (!checkPassword) throw new HttpException('PASSWORD_INVALID', HttpStatus.FORBIDDEN);
+      if (!checkPassword)
+        throw new HttpException('PASSWORD_INVALID', HttpStatus.FORBIDDEN);
 
       const payload = {
         userId: findUser._id.toString(),
@@ -115,6 +120,7 @@ export class AuthService {
         lastname: findUser.lastname,
         email: findUser.email,
         role: findUser.role,
+        country: findUser.country,
       };
       const token = await this.jwtService.sign(payload);
 
@@ -168,7 +174,7 @@ export class AuthService {
 
       response.status(HttpStatus.OK).json(data);
     } catch (error) {
-      console.log({error})
+      console.log({ error });
       if (error instanceof HttpException) {
         throw error;
       } else {
@@ -250,6 +256,11 @@ export class AuthService {
       // Guardar el token y su expiración en la base de datos del usuario
       findUser.resetPasswordToken = resetToken;
       findUser.resetPasswordExpires = resetTokenExpiry;
+
+      console.log('Token y expiración asignados:', {
+        token: findUser.resetPasswordToken,
+        expires: findUser.resetPasswordExpires,
+      });
       await findUser.save();
 
       const frontendUrl =
@@ -276,10 +287,7 @@ export class AuthService {
     }
   }
 
-  async resetPassword(
-    newPassword: string,
-    token: string,
-  ): Promise<void> {
+  async resetPassword(newPassword: string, token: string): Promise<void> {
     try {
       // const email = req.body.email;
       // Encontrar al usuario por el email
