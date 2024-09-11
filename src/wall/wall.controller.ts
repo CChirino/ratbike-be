@@ -38,14 +38,14 @@ export class WallController {
     @Body() createWallDto: CreateWallDto,
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
-    @Req() request: Request,
+    @Req() request,
   ) {
     const user = request.user;
-    return this.wallService.create(createWallDto, files, user, response);
+    return this.wallService.create(createWallDto, files, user, response, request?.lang);
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  // @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Req() request: Request,
@@ -90,11 +90,11 @@ export class WallController {
   update(
     @Param('id') id: string,
     @Body() updateWallDto: UpdateWallDto,
-    @Req() request: Request,
+    @Req() request,
     @Res() response,
   ) {
     const user = request.user;
-    return this.wallService.update(id, updateWallDto, user, response);
+    return this.wallService.update(id, updateWallDto, user, response, request?.lang);
   }
 
   @Patch('update-all/:id')
@@ -104,12 +104,12 @@ export class WallController {
   updateAll(
     @Param('id') id: string,
     @Body() updateWallDto: UpdateWallDto,
-    @Req() request: Request,
+    @Req() request,
     @UploadedFiles() files: Express.Multer.File[],
     @Res() response,
   ) {
     const user = request.user;
-    return this.wallService.updateAll(id, updateWallDto, files, user, response);
+    return this.wallService.updateAll(id, updateWallDto, files, user, response, request?.lang);
   }
 
   @Patch('update-is-paid/:id')

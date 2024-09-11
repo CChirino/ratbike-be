@@ -50,7 +50,6 @@ export class BrotherhoodController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Req() request: Request,

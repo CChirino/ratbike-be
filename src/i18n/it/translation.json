@@ -45,6 +45,6 @@
   },
   "post_request_update": {
     "subject": "Post del muro in revisione - Rat Wave (Aggiornamento)",
-    "html": "<h1>Post del muro in revisione</h1><p>Un post del muro è stato aggiornato, il che richiede approvazione e modifiche relative alla lingua.</p><a href='{url}/wall/{wallId}'>Aggiorna post-it del muro</a>"
+    "html": "<h1>Post del muro in revisione</h1><p>Un post del muro è stato aggiornato, richiederà una nuova approvazione. Ti contatteremo quando sarà pronto e lo ripubblicheremo.</p><a href='{url}/wall/{wallId}'>Vedi post del muro</a>"
   }
 }

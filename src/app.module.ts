@@ -41,6 +41,7 @@ import { UsersreadingModule } from './usersreading/usersreading.module';
 import { LanguageInterceptor } from './interceptors/language/language.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ImageService } from './image/image.service';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -49,12 +50,12 @@ import { ImageService } from './image/image.service';
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
-        path: path.join(__dirname, '../i18n/'),
+        path: path.join(__dirname, './i18n/'),
         watch: true,
       },
       resolvers: [
-        // Utiliza HeaderResolver para obtener el idioma desde el encabezado 'Lang'
-        { use: HeaderResolver, options: ['Lang'] },
+        // Utiliza HeaderResolver para obtener el idioma desde el encabezado 'lang'
+        { use: HeaderResolver, options: ['lang'] },
       ],
     }),
     AuthModule,

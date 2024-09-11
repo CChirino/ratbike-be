@@ -44,8 +44,8 @@
     "html": "<h1>Un utilisateur a créé une nouvelle publication et nécessite une validation</h1><p>Un utilisateur a créé une publication. N'oubliez pas d'envoyer les détails du processus à l'utilisateur par e-mail à {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Vous pouvez gérer le statut de la publication ici</a> <br> <p> Si le lien ne fonctionne pas, copiez et collez l'URL suivante dans votre navigateur :  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
   },
   "post_request_update": {
-    "subject": "Publication murale en cours d'examen - Rat Wave (mise à jour)",
-    "html": "<h1>Publication murale en cours d'examen</h1><p>Une publication murale a été mise à jour, ce qui nécessite une approbation et des modifications concernant la langue.</p><a href='{url}/wall/{wallId}'>Mettre à jour la publication murale</a>"
+    "subject": "Publication Murale en Cours d'Examen - Rat Wave (Mise à Jour)",
+    "html": "<h1>Publication Murale en Cours d'Examen</h1><p>Une publication murale a été mise à jour, elle nécessitera une réapprobation. Nous vous contacterons lorsque ce sera prêt et nous la republierons.</p><a href='{url}/wall/{wallId}'>Voir la Publication Murale</a>"
   },
   "skill_approval": {
     "subject": "Compétence approuvée - Rat Wave",

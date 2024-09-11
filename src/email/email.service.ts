@@ -22,6 +22,7 @@ export class EmailService {
     lang: string,
     variables: Record<string, any> = {},
   ) {
+
     try {
       // Determinar la URL del frontend basada en el entorno
       const frontendUrl =
@@ -32,13 +33,13 @@ export class EmailService {
       // Agregar la URL a las variables de traducción
       variables.url = frontendUrl;
 
-      const subject = await this.i18n.translate(`${key}.subject`, {
+      const subject = await this.i18n.translate(`translation.${key}.subject`, {
         lang,
-        args: variables,
+        args: variables
       });
-      const html = await this.i18n.translate(`${key}.html`, {
+      const html = await this.i18n.translate(`translation.${key}.html`, {
         lang,
-        args: variables,
+        args: variables
       });
 
       this.logger.log(`Translation for ${key}: ${subject}, ${html}`);
@@ -93,14 +94,14 @@ export class EmailService {
 
   async sendProductRequest(
     productId: string,
-    lang: string = 'en',
+    // lang: string = 'en', //CAMBIADO A ES MANUALMENTE
   ): Promise<void> {
     try {
-      const translation = await this.getTranslation('product_request', lang, {
+      const translation = await this.getTranslation('product_request', 'es', {
         productId,
       });
       await this.mailerService.sendMail({
-        to: 'angeldchz@gmail.com',
+        to: 'angeldchz@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
         subject: translation.subject,
         html: translation.html,
       });
@@ -246,20 +247,43 @@ export class EmailService {
   async sendPostRequestAdmin(
     email: string,
     wallId: string,
-    lang: string = 'en',
+    // lang: string = 'en', //CAMBIADO A ES MANUALMENTE
   ): Promise<void> {
-    const translation = await this.getTranslation('post_request_admin', lang, {
+    const translation = await this.getTranslation('post_request_admin', 'es', {
       email,
       wallId,
     });
     await this.mailerService.sendMail({
-      to: 'angeldchz@gmail.com',
+      to: 'angeldchz@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
       subject: translation.subject,
       html: translation.html,
     });
   }
 
   async sendPostRequestUpdate(
+    wallId: string,
+    // lang: string = 'en', //CAMBIADO A ES MANUALMENTE
+  ): Promise<void> {
+    try {
+      const translation = await this.getTranslation(
+        'post_request_admin',
+        'es',
+        {
+          wallId,
+        },
+      );
+      await this.mailerService.sendMail({
+        to: 'angeldchz@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
+        subject: translation.subject,
+        html: translation.html,
+      });
+    } catch (error) {
+      throw new UnexpectedException(error);
+    }
+  }
+
+  async sendPostRequestUpdateUser(
+    email: string,
     wallId: string,
     lang: string = 'en',
   ): Promise<void> {
@@ -272,7 +296,7 @@ export class EmailService {
         },
       );
       await this.mailerService.sendMail({
-        to: 'angeldchz@gmail.com',
+        to: email, 
         subject: translation.subject,
         html: translation.html,
       });
@@ -283,12 +307,12 @@ export class EmailService {
 
   async sendExpiredWallNotification(
     wall: any, // Usamos 'any' temporalmente para evitar problemas de tipado
-    lang: string = 'en',
+    // lang: string = 'en', //CAMBIADO A ES MANUALMENTE
   ): Promise<void> {
     try {
       if (wall.user && typeof wall.user.email === 'string') {
         // Verifica si 'user' está poblado y tiene un email
-        const translation = await this.getTranslation('wall_expired', lang, {
+        const translation = await this.getTranslation('wall_expired', 'es', {
           wallName: wall.titleWall,
         });
 
@@ -359,7 +383,7 @@ export class EmailService {
         skillId,
       });
       await this.mailerService.sendMail({
-        to: 'angeldchz@gmail.com',
+        to: 'angeldchz@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
         subject: translation.subject,
         html: translation.html,
       });

@@ -45,6 +45,6 @@
   },
   "post_request_update": {
     "subject": "Postagem na Parede em Revisão - Rat Wave (Atualização)",
-    "html": "<h1>Postagem na Parede em Revisão</h1><p>Uma postagem na parede foi atualizada, o que requer aprovação e modificações quanto à linguagem.</p><a href='{url}/wall/{wallId}'>Atualizar Post-it na Parede</a>"
+    "html": "<h1>Postagem na Parede em Revisão</h1><p>Uma postagem na parede foi atualizada, ela exigirá uma reaprovação. Entraremos em contato com você quando estiver pronta e a republicaremos.</p><a href='{url}/wall/{wallId}'>Ver Postagem na Parede</a>"
   }
 }

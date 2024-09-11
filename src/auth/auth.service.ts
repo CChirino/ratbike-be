@@ -34,6 +34,7 @@ export class AuthService {
     userObject: RegisterAuthDto,
     file: Express.Multer.File,
     response,
+    lang = "en"
   ) {
     try {
       const { password, urlProfileImage } = userObject;
@@ -85,6 +86,7 @@ export class AuthService {
         await this.emailService.sendRegistrationConfirmation(
           createdUser.email,
           createdUser.name,
+          lang
         );
         response.status(HttpStatus.OK).json(data);
       } catch (error) {
@@ -241,6 +243,7 @@ export class AuthService {
   async sendPasswordResetEmail(
     email: string,
     response,
+    lang: string = 'en'
   ): Promise<{ status: number; message: string }> {
     try {
       const findUser = await this.userModel.findOne({ email });
@@ -261,6 +264,7 @@ export class AuthService {
         token: findUser.resetPasswordToken,
         expires: findUser.resetPasswordExpires,
       });
+      
       await findUser.save();
 
       const frontendUrl =
@@ -269,7 +273,8 @@ export class AuthService {
           : process.env.DEV_FRONTEND_URL;
 
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
-      await this.emailService.sendPasswordResetRequest(email, resetUrl);
+
+      await this.emailService.sendPasswordResetRequest(email, resetUrl, lang);
 
       return response
         .status(HttpStatus.OK)

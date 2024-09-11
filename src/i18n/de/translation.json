@@ -44,7 +44,7 @@
     "html": "<h1>Ein Benutzer hat einen neuen Wandbeitrag erstellt und benötigt Validierung</h1><p>Ein Benutzer hat einen Wandbeitrag erstellt. Denken Sie daran, die Details des Prozesses per E-Mail an {email} zu senden.</p> <br> <a href='{url}/post-it-revision/{wallId}'>Sie können den Status des Wandbeitrags hier verwalten</a> <br> <p> Wenn der Link nicht funktioniert, kopieren Sie die folgende URL in Ihren Browser:  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
   },
   "post_request_update": {
-    "subject": "Wandbeitrag zur Überprüfung - Rat Wave (Update)",
-    "html": "<h1>Wandbeitrag zur Überprüfung</h1><p>Ein Wandbeitrag wurde aktualisiert, was Genehmigung und Anpassungen in Bezug auf die Sprache erfordert.</p><a href='{url}/wall/{wallId}'>Wandbeitrag aktualisieren</a>"
+    "subject": "Wandbeitrag zur Überprüfung - Rat Wave (Aktualisierung)",
+    "html": "<h1>Wandbeitrag zur Überprüfung</h1><p>Ein Wandbeitrag wurde aktualisiert, er wird eine erneute Genehmigung erfordern. Wir werden Sie kontaktieren, wenn er fertig ist und wir ihn erneut veröffentlichen werden.</p><a href='{url}/wall/{wallId}'>Wandbeitrag ansehen</a>"
   }
 }

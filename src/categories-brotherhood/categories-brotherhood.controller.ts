@@ -51,7 +51,6 @@ export class CategoriesBrotherhoodController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador', 'user', 'public')
   findOne(@Param('id') id: string) {
     return this.categoriesBrotherhoodService.findOne(id);

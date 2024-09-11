@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 export class LanguageInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const lang = request.headers['Lang']; // Captura el valor del encabezado 'Lang'
+    const lang = request.headers['lang']; // Captura el valor del encabezado 'lang'
 
     if (lang) {
       request.lang = lang; // Almacena el idioma en el objeto request

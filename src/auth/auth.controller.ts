@@ -34,8 +34,9 @@ export class AuthController {
     @UploadedFile() file: Express.Multer.File,
     @Body() userObject: RegisterAuthDto,
     @Res() response,
+    @Req() req
   ) {
-    return await this.authService.register(userObject, file, response);
+    return await this.authService.register(userObject, file, response, req?.lang);
   }
   @Post('login')
   @Roles('public', 'admin', 'moderador', 'user')
@@ -65,8 +66,9 @@ export class AuthController {
   async requestPasswordReset(
     @Body('email') email: string,
     @Res() response,
+    @Req() req,
   ): Promise<void> {
-    await this.authService.sendPasswordResetEmail(email, response);
+    await this.authService.sendPasswordResetEmail(email, response, req?.lang);
   }
 
   @Patch('reset-password')

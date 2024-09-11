@@ -9,7 +9,7 @@
   },
   "product_request": {
     "subject": "Product Under Review - Rat Wave",
-    "html": "<h1>Approve Product</h1><p>A new product has been created, which requires approval and modifications regarding the language.</p><a href='{url}/products/{{productId}}'>Update Product</a>"
+    "html": "<h1>Approve Product</h1><p>A new product has been created, which requires approval and modifications regarding the language.</p><a href='{url}/products/{productId}'>Update Product</a>"
   },
   "product_approval": {
     "subject": "Product Approved - Rat Wave",
@@ -39,24 +39,12 @@
     "subject": "Wall Post Created And Under Review - Rat Wave",
     "html": "<h1>Wall Post Created  Under Review</h1><p>You have created a post-it therefore it needs to be validated. we will be in touch in you to let you know the following details and the status of the post-it</p><a href='{url}/wall/{wallId}'>Check your post-it here (Preview)</a> <p> if the link is not working, copy and paste the following url in your browser: <a href='{url}/wall/{wallId}'>{url}/wall/{wallId}</a></p>"
   },
+  "post_request_admin": {
+    "subject": "New Wall Post Created (Validation required) - Rat Wave",
+    "html": "<h1>A user created a new post it and needs validation</h1><p>A user has created a post-it it. remember to send the details of the process to the user via email to {email}.</p> <br> <a href='{url}/post-it-revision/{wallId}'>You can manage the post-it status here</a> <br> <p> if the link is not working, copy and paste the following url in your browser:  <a href='{url}/post-it-revision/{wallId}'>{url}/post-it-revision/{wallId}</a></p>"
+  },
   "post_request_update": {
     "subject": "Wall Post Under Review - Rat Wave (Update)",
-    "html": "<h1>Wall Post Under Review</h1><p>A wall post has been updated, which requires approval and modifications regarding the language.</p><a href='{url}/wall/{{wallId}}'>Update Wall Post-it</a>"
-  },
-  "skill_approval": {
-    "subject": "Skill Approved - Rat Wave",
-    "html": "<h1>Congratulations!</h1><p>Your skill {skillName} has been approved.</p>"
-  },
-  "skill_rejection": {
-    "subject": "Skill Rejected - Rat Wave",
-    "html": "<h1>We are sorry to inform you</h1><p>Your skill {skillName} has been rejected.</p>"
-  },
-  "skill_request": {
-    "subject": "Skill Under Review - Rat Wave",
-    "html": "<h1>Skill Under Review</h1><p>A new skill has been created, which requires approval and modifications regarding the language.</p><a href='{url}/skills/{{skillId}}'>Update Skill</a>"
-  },
-  "contact": {
-    "subject": "Contact - Rat Wave",
-    "html": "<p>{text}</p>"
+    "html": "<h1>Wall Post Under Review</h1><p>A wall post has been updated, it will require re-approval. We will contact you when it's ready and we will re-publish it.</p><a href='{url}/wall/{wallId}'>View Wall Post</a>"
   }
 }

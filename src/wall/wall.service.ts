@@ -27,6 +27,7 @@ export class WallService {
     files: Express.Multer.File[],
     user: any,
     response,
+    lang = "en"
   ): Promise<Wall> {
     try {
       let translation = null;
@@ -70,7 +71,7 @@ export class WallService {
       const wallId = createdWall._id.toString();
       const emailUser = user.email;
 
-      await this.emailService.sendPostRequest(emailUser, wallId);
+      await this.emailService.sendPostRequest(emailUser, wallId, lang);
       await this.emailService.sendPostRequestAdmin(emailUser, wallId);
 
       const responseObj = {
@@ -170,6 +171,7 @@ export class WallService {
     updateWallDto: UpdateWallDto,
     user: any,
     response,
+    lang
   ): Promise<Wall> {
     try {
       const emailUser = user.email;
@@ -195,12 +197,14 @@ export class WallService {
           emailUser,
           wallId,
           updatedWall,
+          lang
         );
       } else if (updatedWall.status === 'rechazado') {
         await this.emailService.sendRejectionEmailWall(
           emailUser,
           wallId,
           updatedWall,
+          lang
         );
       }
 
@@ -225,6 +229,7 @@ export class WallService {
     files: Express.Multer.File[],
     user: any,
     response,
+    lang = "en"
   ): Promise<Wall> {
     try {
       const updateData: any = {
@@ -270,6 +275,7 @@ export class WallService {
 
       const wallId = updatedWall._id.toString();
 
+      await this.emailService.sendPostRequestUpdateUser(user.email, wallId, lang);
       await this.emailService.sendPostRequestUpdate(wallId);
 
       const responseObj = {

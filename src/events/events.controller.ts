@@ -27,7 +27,7 @@ export class EventsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  @Roles('admin', 'moderador', 'user', 'public')
+  @Roles('admin', 'moderador')
   create(
     @Body() createEventDto: CreateEventDto,
     @Res() response,
@@ -38,7 +38,6 @@ export class EventsController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(@Req() request: Request) {
     const user = request.user;
@@ -46,7 +45,6 @@ export class EventsController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
   @Roles('admin', 'moderador', 'user', 'public')
   findOne(@Param('id') id: string) {
     return this.eventsService.findOne(id);

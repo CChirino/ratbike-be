@@ -46,7 +46,6 @@ export class ArticlesController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   findAll(
     @Req() request: Request,
@@ -60,7 +59,6 @@ export class ArticlesController {
 
   @Get('most-read')
   @Roles('public', 'admin', 'moderador', 'user')
-  @UseGuards(AuthGuard('jwt'))
   async getMostReadArticles() {
     const mostReadArticles = await this.articlesService.getMostReadArticles();
     return mostReadArticles;
@@ -68,7 +66,6 @@ export class ArticlesController {
 
   @Get('latest')
   @Roles('public', 'admin', 'moderador', 'user')
-  @UseGuards(AuthGuard('jwt'))
   async getLatestArticles() {
     const latestArticles = await this.articlesService.getLatestArticles();
     return latestArticles;
@@ -116,7 +113,6 @@ export class ArticlesController {
   }
 
   @Get(':category')
-  @UseGuards(AuthGuard('jwt'))
   @Roles('public', 'admin', 'moderador', 'user')
   async getArticlesByCategory(@Param('category') category: string) {
     const articles =
