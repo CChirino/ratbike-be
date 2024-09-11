@@ -64,8 +64,8 @@ export class Wall {
   @Prop({ default: false })
   isPaid: boolean;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  user: User;
+  // @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  // user: User;
 }
 
 export const WallSchema = SchemaFactory.createForClass(Wall);

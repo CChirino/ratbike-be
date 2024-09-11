@@ -21,7 +21,7 @@ export class ProductsService {
     private lastReadingService: LastReadingService,
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) {}
+  ) { }
 
   async create(
     createProductDto: CreateProductDto,
@@ -171,7 +171,11 @@ export class ProductsService {
 
       const data = await query.exec();
 
-      await this.handleUserReading(user);
+      try {
+        user?.email && await this.handleUserReading(user);
+      } catch (error) {
+        console.log({ error })
+      }
 
       const response: { status: number; data: PaginationResponse<Product> } = {
         status: HttpStatus.OK,
@@ -357,7 +361,7 @@ export class ProductsService {
         store: new Date(),
       };
 
-      if (!usersReading) {
+      if (user?.email && !usersReading) {
         // Crear un nuevo registro si no existe
         usersReading = await this.userReadingService.create({
           userId,
@@ -369,7 +373,7 @@ export class ProductsService {
         });
       } else {
         // Verifica que el registro exista antes de actualizar
-        if (!usersReading._id) {
+        if (user?.email && !usersReading._id) {
           throw new HttpException(
             'Registro de lectura del usuario no válido.',
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -377,7 +381,7 @@ export class ProductsService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        await this.userReadingService.updateReadingUsers(
+        user?.email && await this.userReadingService.updateReadingUsers(
           usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
           updateData,
         );

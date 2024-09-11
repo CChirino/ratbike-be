@@ -21,7 +21,7 @@ export class WallService {
     private lastReadingService: LastReadingService,
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) {}
+  ) { }
   async create(
     createWallDto: CreateWallDto,
     files: Express.Multer.File[],
@@ -52,12 +52,12 @@ export class WallService {
       if (files && files.length > 0) {
         const urlImageWall = files[0].path.replace(/\\/g, '/');
         newWall.urlImageWall = urlImageWall;
-        
+
         const galleryImagesWall = files.map((file) =>
           file.path.replace(/\\/g, '/'),
         );
         newWall.galleryImagesWall = galleryImagesWall;
-        
+
       } else {
         const defaultImagePath = 'uploads/wall/default-product-image.jpg';
         if (fs.existsSync(defaultImagePath)) {
@@ -602,7 +602,11 @@ export class WallService {
         data = await this.wallModel.find(query).limit(actualLimit).exec();
       }
 
-      await this.handleUserReading(user);
+      try {
+        user?.email && await this.handleUserReading(user);
+      } catch (error) {
+        console.log({ error })
+      }
 
       const response: { status: number; data: PaginationResponse<Wall> } = {
         status: HttpStatus.OK,
@@ -673,7 +677,7 @@ export class WallService {
         wall: new Date(),
       };
 
-      if (!usersReading) {
+      if (user?.email && !usersReading) {
         // Crear un nuevo registro si no existe
         usersReading = await this.userReadingService.create({
           userId,
@@ -685,7 +689,7 @@ export class WallService {
         });
       } else {
         // Verifica que el registro exista antes de actualizar
-        if (!usersReading._id) {
+        if (user?.email && !usersReading._id) {
           throw new HttpException(
             'Registro de lectura del usuario no válido.',
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -693,7 +697,7 @@ export class WallService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        await this.userReadingService.updateReadingUsers(
+        user?.email && await this.userReadingService.updateReadingUsers(
           usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
           updateData,
         );

@@ -20,7 +20,7 @@ export class BrotherhoodService {
     private lastReadingService: LastReadingService,
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) {}
+  ) { }
 
   async create(
     createBrotherhoodDto: CreateBrotherhoodDto,
@@ -175,7 +175,11 @@ export class BrotherhoodService {
 
       const data = await query.exec();
 
-      await this.handleUserReading(user);
+      try {
+        user?.email && await this.handleUserReading(user);
+      } catch (error) {
+        console.log({ error })
+      }
 
       const response: {
         status: number;
@@ -208,7 +212,7 @@ export class BrotherhoodService {
   ): Promise<{ status: number; brotherhood: Brotherhood }> {
     try {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
-      if(!brotherhood){
+      if (!brotherhood) {
         throw new HttpException('BROTHERHOOD_ITEM_NOT_FOUND', HttpStatus.NOT_FOUND);
       }
       return {
@@ -322,7 +326,7 @@ export class BrotherhoodService {
     try {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
 
-      if (!brotherhood){
+      if (!brotherhood) {
         throw new HttpException("BROTHERHOOD_PRODUCT_NOT_FOUND", HttpStatus.NOT_FOUND)
       }
 
@@ -343,13 +347,13 @@ export class BrotherhoodService {
   }
 
   async findProductsByCategory(category: string): Promise<Brotherhood[]> {
-    try{
+    try {
       const brotherhood = await this.brotherhoodModel.find({ category }).exec();
-      if (!brotherhood){
+      if (!brotherhood) {
         throw new HttpException("BROTHERHOOD_PRODUCT_NOT_FOUND", HttpStatus.NOT_FOUND)
       }
       return brotherhood;
-    }catch(error){
+    } catch (error) {
       if (error instanceof HttpException) {
         throw error;
       } else {
@@ -375,7 +379,7 @@ export class BrotherhoodService {
         brotherhood: new Date(),
       };
 
-      if (!usersReading) {
+      if (user?.email && !usersReading) {
         // Crear un nuevo registro si no existe
         usersReading = await this.userReadingService.create({
           userId,
@@ -387,7 +391,7 @@ export class BrotherhoodService {
         });
       } else {
         // Verifica que el registro exista antes de actualizar
-        if (!usersReading._id) {
+        if (user?.email && !usersReading._id) {
           throw new HttpException(
             'Registro de lectura del usuario no válido.',
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -395,7 +399,7 @@ export class BrotherhoodService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        await this.userReadingService.updateReadingUsers(
+        user?.email && await this.userReadingService.updateReadingUsers(
           usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
           updateData,
         );

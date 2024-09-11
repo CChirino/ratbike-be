@@ -15,11 +15,15 @@ export class EventsService {
     private lastReadingService: LastReadingService, // Inyecta el servicio aquí
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) {}
+  ) { }
 
   async findAll(user: any): Promise<Event[]> {
     try {
-      await this.handleUserReading(user);
+      try {
+        user?.email && await this.handleUserReading(user);
+      } catch (error) {
+        console.log({ error })
+      }
 
       return await this.eventModel
         .find({ delete_at: null, delete_date: null })
@@ -177,7 +181,7 @@ export class EventsService {
         events: new Date(),
       };
 
-      if (!usersReading) {
+      if (user?.email && !usersReading) {
         // Crear un nuevo registro si no existe
         usersReading = await this.userReadingService.create({
           userId,
@@ -189,7 +193,7 @@ export class EventsService {
         });
       } else {
         // Verifica que el registro exista antes de actualizar
-        if (!usersReading._id) {
+        if (user?.email && !usersReading._id) {
           throw new HttpException(
             'Registro de lectura del usuario no válido.',
             HttpStatus.INTERNAL_SERVER_ERROR,
@@ -197,7 +201,7 @@ export class EventsService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        await this.userReadingService.updateReadingUsers(
+        user?.email && await this.userReadingService.updateReadingUsers(
           usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
           updateData,
         );

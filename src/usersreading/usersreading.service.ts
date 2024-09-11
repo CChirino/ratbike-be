@@ -12,7 +12,7 @@ export class UsersreadingService {
   constructor(
     @InjectModel(UsersReading.name)
     private userReadingModel: Model<UsersReadingDocument>,
-  ) {}
+  ) { }
   async findOneByUserId(userId: string): Promise<UsersReading> {
     try {
       const usersReading = await this.userReadingModel
