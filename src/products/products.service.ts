@@ -21,7 +21,7 @@ export class ProductsService {
     private lastReadingService: LastReadingService,
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) { }
+  ) {}
 
   async create(
     createProductDto: CreateProductDto,
@@ -64,8 +64,9 @@ export class ProductsService {
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
         newProduct.urlImageProduct = urlImageProduct;
 
-        const galleryImages = files
-          .map((file) => file.path.replace(/\\/g, '/'));
+        const galleryImages = files.map((file) =>
+          file.path.replace(/\\/g, '/'),
+        );
         newProduct.galleryImages = galleryImages;
       }
 
@@ -172,9 +173,9 @@ export class ProductsService {
       const data = await query.exec();
 
       try {
-        user?.email && await this.handleUserReading(user);
+        user?.email && (await this.handleUserReading(user));
       } catch (error) {
-        console.log({ error })
+        console.log({ error });
       }
 
       const response: { status: number; data: PaginationResponse<Product> } = {
@@ -249,26 +250,25 @@ export class ProductsService {
         update_at: new Date(),
       };
 
+      //ACTUALIZAR IMAGEN FRONTAL 
+      files
+        .filter((file) => file.fieldname === 'productImage')
+        .map((file) => {
+          const urlImageProduct = file.path.replace(/\\/g, '/');
+          updateData.urlImageProduct = urlImageProduct;
+        });
+        
       // Manejar archivos si se proporcionan
       if (files && files.length > 0) {
-        const urlImageProduct = files[0].path.replace(/\\/g, '/');
-        updateData.urlImageProduct = urlImageProduct;
-        updateData.galleryImages = [
+        const galleryImages = files
+          .filter((file) => file.fieldname !== 'productImage')
+          .map((file) => file.path.replace(/\\/g, '/'));
+        updateData.galleryImagesWall = [
+          ...galleryImages,
           ...(updateProductDto.filesToKeep.length
             ? updateProductDto.filesToKeep.split(',')
             : []),
         ];
-        if (files.length > 1) {
-          const galleryImages = files.map((file) =>
-            file.path.replace(/\\/g, '/'),
-          );
-          updateData.galleryImagesWall = [
-            ...galleryImages,
-            ...(updateProductDto.filesToKeep.length
-              ? updateProductDto.filesToKeep.split(',')
-              : []),
-          ];
-        }
       } else {
         updateData.galleryImages = [
           ...(updateProductDto.filesToKeep.length
@@ -381,10 +381,11 @@ export class ProductsService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        user?.email && await this.userReadingService.updateReadingUsers(
-          usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
-          updateData,
-        );
+        user?.email &&
+          (await this.userReadingService.updateReadingUsers(
+            usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
+            updateData,
+          ));
       }
     } catch (error) {
       // Manejar errores

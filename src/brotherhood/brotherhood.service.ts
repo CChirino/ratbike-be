@@ -20,7 +20,7 @@ export class BrotherhoodService {
     private lastReadingService: LastReadingService,
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) { }
+  ) {}
 
   async create(
     createBrotherhoodDto: CreateBrotherhoodDto,
@@ -35,16 +35,16 @@ export class BrotherhoodService {
         const parsedTranslation = JSON.parse(createBrotherhoodDto.translation);
 
         translation = {
-          translationNameProduct: parsedTranslation.translationName,
+          translationNameProduct: parsedTranslation.translationNameProduct,
           translationDescriptionProduct:
-            parsedTranslation.translationDescription,
+            parsedTranslation.translationDescriptionProduct,
         };
       }
 
       const newBrotherhood = new this.brotherhoodModel({
         ...createBrotherhoodDto,
         ...(translation && { translation }),
-        status: 'revision',
+        status: 'aprobado',
         createdBy: user.name + ' ' + user.lastname,
       });
 
@@ -64,8 +64,9 @@ export class BrotherhoodService {
         const urlImageProduct = files[0].path.replace(/\\/g, '/');
         newBrotherhood.urlImageBrotherhood = urlImageProduct;
 
-        const galleryImagesBrotherhood = files
-          .map((file) => file.path.replace(/\\/g, '/'));
+        const galleryImagesBrotherhood = files.map((file) =>
+          file.path.replace(/\\/g, '/'),
+        );
         newBrotherhood.galleryImagesBrotherhood = galleryImagesBrotherhood;
       }
 
@@ -176,9 +177,9 @@ export class BrotherhoodService {
       const data = await query.exec();
 
       try {
-        user?.email && await this.handleUserReading(user);
+        user?.email && (await this.handleUserReading(user));
       } catch (error) {
-        console.log({ error })
+        console.log({ error });
       }
 
       const response: {
@@ -213,7 +214,10 @@ export class BrotherhoodService {
     try {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
       if (!brotherhood) {
-        throw new HttpException('BROTHERHOOD_ITEM_NOT_FOUND', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'BROTHERHOOD_ITEM_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
       }
       return {
         status: HttpStatus.OK,
@@ -244,8 +248,9 @@ export class BrotherhoodService {
         const parsedTranslation = JSON.parse(updateBrotherhoodDto.translation);
 
         translation = {
-          translationName: parsedTranslation.translationName,
-          translationDescription: parsedTranslation.translationDescription,
+          translationNameProduct: parsedTranslation.translationNameProduct,
+          translationDescriptionProduct:
+            parsedTranslation.translationDescriptionProduct,
         };
       }
 
@@ -263,26 +268,24 @@ export class BrotherhoodService {
         throw new HttpException('Brotherhood not found', HttpStatus.NOT_FOUND);
       }
 
-      // Manejar archivos si se proporcionan
+      //ACTUALIZAR IMAGEN FRONTAL SI EXISTE UN ARCHIVO CUYO FIELDNANE SEA URLIMAGEBROTHERHOOD
+      files
+        .filter((file) => file.fieldname === 'urlImageBrotherhood')
+        .map((file) => {
+          const urlImageBrotherhood = file.path.replace(/\\/g, '/');
+          updateData.urlImageBrotherhood = urlImageBrotherhood;
+        });
+
       if (files && files.length > 0) {
-        const urlImageBrotherhood = files[0].path.replace(/\\/g, '/');
-        updateData.urlImageBrotherhood = urlImageBrotherhood;
+        const galleryImagesBrotherhood = files
+          .filter((file) => file.fieldname !== 'urlImageBrotherhood')
+          .map((file) => file.path.replace(/\\/g, '/'));
         updateData.galleryImagesBrotherhood = [
+          ...galleryImagesBrotherhood,
           ...(updateBrotherhoodDto.filesToKeep.length
             ? updateBrotherhoodDto.filesToKeep.split(',')
             : []),
         ];
-        if (files.length > 1) {
-          const galleryImagesBrotherhood = files.map((file) =>
-            file.path.replace(/\\/g, '/'),
-          );
-          updateData.galleryImagesBrotherhood = [
-            ...galleryImagesBrotherhood,
-            ...(updateBrotherhoodDto.filesToKeep.length
-              ? updateBrotherhoodDto.filesToKeep.split(',')
-              : []),
-          ];
-        }
       } else {
         updateData.galleryImagesBrotherhood = [
           ...(updateBrotherhoodDto.filesToKeep.length
@@ -327,7 +330,10 @@ export class BrotherhoodService {
       const brotherhood = await this.brotherhoodModel.findById(id).exec();
 
       if (!brotherhood) {
-        throw new HttpException("BROTHERHOOD_PRODUCT_NOT_FOUND", HttpStatus.NOT_FOUND)
+        throw new HttpException(
+          'BROTHERHOOD_PRODUCT_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       brotherhood.delete_at = new Date().toISOString();
@@ -350,7 +356,10 @@ export class BrotherhoodService {
     try {
       const brotherhood = await this.brotherhoodModel.find({ category }).exec();
       if (!brotherhood) {
-        throw new HttpException("BROTHERHOOD_PRODUCT_NOT_FOUND", HttpStatus.NOT_FOUND)
+        throw new HttpException(
+          'BROTHERHOOD_PRODUCT_NOT_FOUND',
+          HttpStatus.NOT_FOUND,
+        );
       }
       return brotherhood;
     } catch (error) {
@@ -399,10 +408,11 @@ export class BrotherhoodService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        user?.email && await this.userReadingService.updateReadingUsers(
-          usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
-          updateData,
-        );
+        user?.email &&
+          (await this.userReadingService.updateReadingUsers(
+            usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
+            updateData,
+          ));
       }
     } catch (error) {
       // Manejar errores

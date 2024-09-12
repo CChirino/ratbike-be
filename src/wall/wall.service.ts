@@ -236,7 +236,7 @@ export class WallService {
         ...updateWallDto,
         status: 'revision',
         update_at: new Date(),
-      };
+      }; 
 
       if (files && files.length > 0) {
         const urlImageWall = files[0].path.replace(/\\/g, '/');

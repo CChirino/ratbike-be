@@ -19,7 +19,7 @@ export class ArticlesService {
     private lastReadingService: LastReadingService,
     private userReadingService: UsersreadingService,
     private usersService: UserService,
-  ) { }
+  ) {}
   async create(
     createArticleDto: CreateArticleDto,
     files: Express.Multer.File[],
@@ -59,8 +59,9 @@ export class ArticlesService {
         const urlImageWall = files[0].path.replace(/\\/g, '/');
         newArticle.urlImageArticle = urlImageWall;
 
-        const galleryImagesArticles = files
-          .map((file) => file.path.replace(/\\/g, '/'));
+        const galleryImagesArticles = files.map((file) =>
+          file.path.replace(/\\/g, '/'),
+        );
         newArticle.galleryImagesArticles = galleryImagesArticles;
       }
 
@@ -163,9 +164,9 @@ export class ArticlesService {
       const data = await query.exec();
 
       try {
-        user?.email && await this.handleUserReading(user);
+        user?.email && (await this.handleUserReading(user));
       } catch (error) {
-        console.log({ error })
+        console.log({ error });
       }
 
       const response: {
@@ -242,25 +243,23 @@ export class ArticlesService {
         throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
       }
 
+      files
+        .filter((file) => file.fieldname === 'productImage')
+        .map((file) => {
+          const urlImageArticle = file.path.replace(/\\/g, '/');
+          updateData.urlImageArticle = urlImageArticle;
+        });
+
       if (files && files.length > 0) {
-        const urlImageArticle = files[0].path.replace(/\\/g, '/');
-        updateData.urlImageArticle = urlImageArticle;
-        updateData.galleryImagesArticles = [
-          ...(updateArticleDto.filesToKeep.length
-            ? updateArticleDto.filesToKeep.split(',')
-            : []),
-        ];
-        if (files.length > 1) {
-          const galleryImagesArticles = files.map((file) =>
-            file.path.replace(/\\/g, '/'),
-          );
+        const galleryImagesArticles = files
+          .filter((file) => file.fieldname !== 'productImage')
+          .map((file) => file.path.replace(/\\/g, '/'));
           updateData.galleryImagesWall = [
             ...galleryImagesArticles,
             ...(updateArticleDto.filesToKeep.length
               ? updateArticleDto.filesToKeep.split(',')
               : []),
           ];
-        }
       } else {
         updateData.galleryImagesArticles = [
           ...(updateArticleDto.filesToKeep.length
@@ -401,10 +400,11 @@ export class ArticlesService {
         }
 
         // Actualizar el campo 'news' si el registro ya existe
-        user?.email && await this.userReadingService.updateReadingUsers(
-          usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
-          updateData,
-        );
+        user?.email &&
+          (await this.userReadingService.updateReadingUsers(
+            usersReading._id.toString(), // Verifica que `_id` esté presente en el documento.
+            updateData,
+          ));
       }
     } catch (error) {
       // Manejar errores
