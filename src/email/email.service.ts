@@ -101,7 +101,7 @@ export class EmailService {
         productId,
       });
       await this.mailerService.sendMail({
-        to: 'ratwave1999@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
+        to: 'ratwave1999@gmail.com',
         subject: translation.subject,
         html: translation.html,
       });
@@ -254,7 +254,7 @@ export class EmailService {
       wallId,
     });
     await this.mailerService.sendMail({
-      to: 'ratwave1999@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
+      to: 'ratwave1999@gmail.com',
       subject: translation.subject,
       html: translation.html,
     });
@@ -273,7 +273,7 @@ export class EmailService {
         },
       );
       await this.mailerService.sendMail({
-        to: 'ratwave1999@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
+        to: 'ratwave1999@gmail.com',
         subject: translation.subject,
         html: translation.html,
       });
@@ -383,7 +383,7 @@ export class EmailService {
         skillId,
       });
       await this.mailerService.sendMail({
-        to: 'ratwave1999@gmail.com', //TODO: CHANGE TO 'RatWave1999@gmail.com'
+        to: 'ratwave1999@gmail.com',
         subject: translation.subject,
         html: translation.html,
       });

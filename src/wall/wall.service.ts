@@ -311,7 +311,7 @@ export class WallService {
         throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
       }
 
-      //TODO add email when the paid status is updated
+      //TODO add email when the paid status is updated if its required
       // await this.emailService.postItProcessCompleteEmail(emailUser, updatedWall);
 
       const responseObj = {
@@ -492,28 +492,26 @@ export class WallService {
     wallType?: string,
     wallModality?: string,
     ownerId?: string,
-    showUpdatedOnly: any = 'true',
+    showUpdatedOnly: any = 'true', //TODO wait to check if this should be removed
     isPaid?: boolean,
   ): Promise<{ status: number; data: PaginationResponse<Wall> }> {
     try {
       const defaultLimit = 20; // Límite predeterminado si no se proporciona el parámetro limit
       const actualLimit = limit || defaultLimit; // Determinar el límite actual a utilizar
 
-      const oneMonthAgo = new Date();
-      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
       const query: any = {
         $or: [{ delete_at: null }, { delete_date: null }],
       };
 
+      query.updatedAt = {$gte: new Date(new Date().setMonth(new Date().getMonth() - 3))}
+      
       if (ownerId) {
         query.ownerId = { $in: [ownerId] };
         query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
       } else {
-        if (showUpdatedOnly === 'true') {
-          //se que parece una burrada, pero el queryparam llega como string, por eso toca hacer esto
-          query.update_at = { $gte: oneMonthAgo };
-        }
         query.status = { $in: [wallStatus] };
       }
 
@@ -521,19 +519,20 @@ export class WallService {
       //   query.ownerId = { $in: [ownerId] };
       // } else {
       //   if(!showUpdatedOnly){ //si está en false debería
-      //     query.update_at = { $gte: oneMonthAgo };
+      //     query.updatedAt = { $gte: threeMonthsAgo };
       //   }
       //   query.status = {$in: [wallStatus]};
       // }
 
-      if (wallStatus === 'desactualizado') {
-        query.update_at = { $not: { $gte: oneMonthAgo } };
-        query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
-      }
+      // if (wallStatus === 'desactualizado') {
+      //   query.updatedAt = { $not: { $gte: threeMonthsAgo } };
+      //   query.status = { $in: ['revision', 'aprobado', 'desaprobado'] };
+      // }
 
       if (isPaid !== null && isPaid !== undefined) {
         //HAVENT TESTED THIS IF WE HAVE A BUG CHECK THIS FIRST
-        query.isPaid = { $eq: isPaid };
+        //@ts-ignore
+        query.isPaid = { $eq: isPaid === 'true' };
       }
 
       if (search) {
@@ -670,13 +669,13 @@ export class WallService {
     try {
       // Buscar el ID del usuario por su correo electrónico
       const userId = await this.usersService.findUserIdByEmail(user.email);
-
+      
       if (!userId) {
         throw new HttpException('Usuario no encontrado.', HttpStatus.NOT_FOUND);
       }
-
+      
       // Buscar el registro de lectura del usuario
-      let usersReading = await this.userReadingService.findOneByUserId(userId);
+      let usersReading = await this.userReadingService.findOneByUserId(userId);   
 
       // Datos a utilizar para la creación o actualización
       const updateData = {

@@ -18,12 +18,7 @@ export class UsersreadingService {
       const usersReading = await this.userReadingModel
         .findOne({ userId })
         .exec();
-      if (!usersReading) {
-        throw new HttpException(
-          `Error al crear el registro de lectura`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
+
       return usersReading;
     } catch (error) {
       throw new UnexpectedException(error);
