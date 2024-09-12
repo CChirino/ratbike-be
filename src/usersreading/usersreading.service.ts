@@ -21,6 +21,7 @@ export class UsersreadingService {
 
       return usersReading;
     } catch (error) {
+      console.log({error})
       throw new UnexpectedException(error);
     }
   }
@@ -33,6 +34,7 @@ export class UsersreadingService {
       });
       return await createdRecord.save();
     } catch (error) {
+      console.log({error})
       throw new UnexpectedException(error);
     }
   }
@@ -51,6 +53,7 @@ export class UsersreadingService {
         .exec();
       return updatedUserReading;
     } catch (error) {
+      console.log({error})
       throw new UnexpectedException(error);
     }
   }
