@@ -3,7 +3,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Product } from 'src/products/schema/products.schema';
 import { Brotherhood } from 'src/brotherhood/schema/brotherhood.schema';
 import { Wall } from 'src/wall/schema/wall.schema';
-import { WallDocument } from 'src/wall/schema/wall.schema';
 import { Skill } from 'src/skills/schema/skills.schema';
 import { I18nService } from 'nestjs-i18n';
 import { UnexpectedException } from 'src/Unexpected.exception';
@@ -15,6 +14,7 @@ export class EmailService {
     private readonly i18n: I18nService,
   ) {}
 
+  private readonly ADMIN_EMAIL_URL: string = process.env.NODE_ENV === 'production' ? 'ratwave1999@gmail.com' : 'critijo@gmail.com'
   private readonly logger = new Logger(EmailService.name);
 
   private async getTranslation(
@@ -101,7 +101,7 @@ export class EmailService {
         productId,
       });
       await this.mailerService.sendMail({
-        to: 'ratwave1999@gmail.com',
+        to: this.ADMIN_EMAIL_URL,
         subject: translation.subject,
         html: translation.html,
       });
@@ -254,7 +254,7 @@ export class EmailService {
       wallId,
     });
     await this.mailerService.sendMail({
-      to: 'ratwave1999@gmail.com',
+      to: this.ADMIN_EMAIL_URL,
       subject: translation.subject,
       html: translation.html,
     });
@@ -273,7 +273,7 @@ export class EmailService {
         },
       );
       await this.mailerService.sendMail({
-        to: 'ratwave1999@gmail.com',
+        to: this.ADMIN_EMAIL_URL,
         subject: translation.subject,
         html: translation.html,
       });
@@ -383,7 +383,7 @@ export class EmailService {
         skillId,
       });
       await this.mailerService.sendMail({
-        to: 'ratwave1999@gmail.com',
+        to: this.ADMIN_EMAIL_URL,
         subject: translation.subject,
         html: translation.html,
       });
