@@ -263,7 +263,7 @@ export class ProductsService {
         const galleryImages = files
           .filter((file) => file.fieldname !== 'productImage')
           .map((file) => file.path.replace(/\\/g, '/'));
-        updateData.galleryImagesWall = [
+        updateData.galleryImages = [
           ...galleryImages,
           ...(updateProductDto.filesToKeep.length
             ? updateProductDto.filesToKeep.split(',')
